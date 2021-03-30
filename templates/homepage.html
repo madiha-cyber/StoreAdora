@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Movie Ratings Home{% endblock %}
+
+{% block body %}
+<h1>StoreAdora</h1>
+
+<h2>Learn how to create different makeup looks</h2>
+<ul>
+    <li><a href="/posts">View all makeup looks</a></li>
+    <li><a href="/products">View all products</a></li>
+</ul>
+
+<h2> Create an Account</h2>
+<form action="/users" method="POST">
+    <p>
+        Email <input type="text" name="email">
+    </p>
+    <p>
+        Password <input type="password" name="password">
+    </p>
+    <input type="submit">
+
+</form>
+{% endblock %}

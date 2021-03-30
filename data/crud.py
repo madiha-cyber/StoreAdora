@@ -50,3 +50,13 @@ def create_postproducts(product_id, post_id):
     db.session.add(p)
     db.session.commit()
     return p
+
+def get_posts():
+    """Return all posts"""
+
+    return Post.query.all()
+
+def get_products():
+    """Return all the products in a post"""
+
+    return Post.query.filter(Post.product_id)

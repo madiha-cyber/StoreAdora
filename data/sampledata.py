@@ -3,7 +3,7 @@ import json
 from random import choice, randint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from model import UserProfile, db
+from model import UserProfile, db, connect_to_db
 from crud import *
 
 from datetime import datetime
@@ -63,17 +63,6 @@ def add_sample_data():
     favorites_list.append(f)
 
     print("Added objects to DB")
-
-
-def connect_to_db(app):
-    """Connect the database to our Flask app."""
-
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///finalproject"
-    app.config["SQLALCHEMY_ECHO"] = False
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    db.init_app(app)
-    print("Connected to db!")
 
 
 if __name__ == "__main__":
