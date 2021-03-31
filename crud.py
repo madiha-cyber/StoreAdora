@@ -1,4 +1,4 @@
-from model import User, UserProfile, db, Post, Favorites, Product, PostProducts
+from data.model import User, UserProfile, db, Post, Favorites, Product, PostProducts
 
 from datetime import datetime
 
@@ -10,9 +10,9 @@ def create_user(email, password):
     return u
 
 
-def create_post(user_id, post_description, makeup_type):
+def create_post(user_id, title,post_description, makeup_type):
     p = Post(
-        user_id=user_id, post_description=post_description, makeup_type=makeup_type
+        user_id=user_id, title=title, post_description=post_description, makeup_type=makeup_type
     )
     db.session.add(p)
     db.session.commit()
@@ -26,9 +26,10 @@ def create_favorites(user_id, post_id):
     return f
 
 
-def create_product(product_details, website_link, image_url):
+def create_product(product_details, title, website_link, image_url):
     p = Product(
         # product_id=product_id,
+        title=title,
         product_details=product_details,
         website_link=website_link,
         image_url=image_url,
@@ -51,12 +52,20 @@ def create_postproducts(product_id, post_id):
     db.session.commit()
     return p
 
+
 def get_posts():
     """Return all posts"""
 
     return Post.query.all()
 
-def get_products():
+
+def get_products_for_post(post_id):
     """Return all the products in a post"""
 
-    return Post.query.filter(Post.product_id)
+    return Product.query.join(PostProducts).filter(PostProducts.post_id==2).all()
+    #return PostProducts.query.filter(PostProducts.post_id == post_id).all()
+
+
+
+def get_post(post_id):
+    return Post.query.filter(Post.post_id == post_id).all()

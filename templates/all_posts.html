@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %} Makeup Looks {% endblock %}
+
+{% block body %}
+<h1>Makeup Looks</h1>
+<ul>
+    {% for post in all_posts %}
+    <li>
+        <a href="/posts/{{post.post_id}}">
+            {{post.title}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

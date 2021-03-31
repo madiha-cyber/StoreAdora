@@ -3,9 +3,8 @@ import json
 from random import choice, randint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from model import UserProfile, db, connect_to_db
+from data.model import UserProfile, db, connect_to_db
 from crud import *
-
 from datetime import datetime
 
 
@@ -36,20 +35,34 @@ def add_sample_data():
     profiles_list.append(p)
 
     # Product 1
-    p = create_product("Foundation", "http://cnn.com", "/static/images/foundation1.jpg")
+    p = create_product(
+        "Foundation", "Nars Longwear", "http://cnn.com", "/static/images/foundation1.jpg"
+    )
     products_list.append(p)
 
-    # Product 1
-    p = create_product("Mac Foundation 10", "http://cnn.com", "/static/images/foundation1.jpg")
+    # Product 2
+    p = create_product(
+        "Concealer", "Huda Beauty", "http://cnn.com", "/static/images/foundation1.jpg"
+    )
     products_list.append(p)
 
     # User 1 Post 1
-    p = create_post(user_id=users_list[0].user_id, post_description="This is a dummy post", makeup_type="Dramatic")
+    p = create_post(
+        user_id=users_list[0].user_id,
+        title="Dramatic Makeup",
+        post_description="This is a dummy post",
+        makeup_type="Dramatic",
+    )
     posts_list.append(p)
     create_postproducts(products_list[0].product_id, p.post_id)
 
     # user 1 Post 2
-    p = create_post(user_id=users_list[0].user_id, post_description="This is a dummy post 2", makeup_type="Classic")
+    p = create_post(
+        user_id=users_list[0].user_id,
+        title="Classic Makeup",
+        post_description="This is a dummy post 2",
+        makeup_type="Classic",
+    )
     posts_list.append(p)
     create_postproducts(products_list[0].product_id, p.post_id)
     create_postproducts(products_list[1].product_id, p.post_id)

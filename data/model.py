@@ -63,6 +63,7 @@ class Post(db.Model):
     __tablename__ = "post"
 
     post_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    title = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
     post_description = db.Column(db.Text, nullable=True)
     makeup_type = db.Column(db.String, nullable=True)
@@ -102,12 +103,13 @@ class Product(db.Model):
     __tablename__ = "product"
 
     product_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    title = db.Column(db.String)
     product_details = db.Column(db.Text)
     website_link = db.Column(db.String)
     image_url = db.Column(db.String)
 
     def __repr__(self):
-        return f"<Product product_id={self.product_id} product_details={self.product_details} website_link={self.website_link} img_url={self.img_url}>"
+        return f"<Product product_id={self.product_id} product_details={self.product_details} website_link={self.website_link} img_url={self.image_url}>"
 
 
 class PostProducts(db.Model):
