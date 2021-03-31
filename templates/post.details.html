@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} {{post.title}} - {% endblock %}
+
+{% block body %}
+<h1>{{ post.title }}</h1>
+
+<p>
+    {{post.post_description}}
+</p>
+
+<p>{{post.makeup_type}}
+</p>
+
+{% for product in products %}
+<li><a href="{{product.website_link}}">{{product.title}}</a></li>
+<p>
+
+</p>
+<p>{{product.product_details}}</p>
+{% endfor %}
+
+{% endblock %}

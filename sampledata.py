@@ -36,13 +36,13 @@ def add_sample_data():
 
     # Product 1
     p = create_product(
-        "Foundation", "Nars Longwear", "http://cnn.com", "/static/images/foundation1.jpg"
+        "Foundation", "Nars Longwear", "https://www.sephora.com/", "/static/images/foundation1.jpg"
     )
     products_list.append(p)
 
     # Product 2
     p = create_product(
-        "Concealer", "Huda Beauty", "http://cnn.com", "/static/images/foundation1.jpg"
+        "Concealer", "Huda Beauty", "https://www.sephora.com/", "/static/images/foundation1.jpg"
     )
     products_list.append(p)
 

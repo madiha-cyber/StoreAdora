@@ -10,9 +10,12 @@ def create_user(email, password):
     return u
 
 
-def create_post(user_id, title,post_description, makeup_type):
+def create_post(user_id, title, post_description, makeup_type):
     p = Post(
-        user_id=user_id, title=title, post_description=post_description, makeup_type=makeup_type
+        user_id=user_id,
+        title=title,
+        post_description=post_description,
+        makeup_type=makeup_type,
     )
     db.session.add(p)
     db.session.commit()
@@ -28,7 +31,6 @@ def create_favorites(user_id, post_id):
 
 def create_product(product_details, title, website_link, image_url):
     p = Product(
-        # product_id=product_id,
         title=title,
         product_details=product_details,
         website_link=website_link,
@@ -62,10 +64,10 @@ def get_posts():
 def get_products_for_post(post_id):
     """Return all the products in a post"""
 
-    return Product.query.join(PostProducts).filter(PostProducts.post_id==2).all()
-    #return PostProducts.query.filter(PostProducts.post_id == post_id).all()
-
+    return (
+        Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
+    )
 
 
 def get_post(post_id):
-    return Post.query.filter(Post.post_id == post_id).all()
+    return Post.query.filter(Post.post_id == post_id).first()

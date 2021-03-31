@@ -26,11 +26,15 @@ def get_all_posts():
 
 @app.route('/posts/<post_id>')
 def get_post(post_id):
-    if post_id != None:
-        return crud.get_post(int(post_id))
-    else:
-        return "No ID"
+   """View each post"""
 
+   post = crud.get_post(post_id)
+   products = crud.get_products_for_post(post_id)
+
+   return render_template('post.details.html', post=post,
+                                               products=products)
+
+@app.route('/user', methods=[POST]
 
 if __name__ == '__main__':
     connect_to_db(app)
