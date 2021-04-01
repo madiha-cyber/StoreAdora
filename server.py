@@ -40,6 +40,16 @@ def get_post(post_id):
 @app.route("/login", methods=["GET"])
 def show_login():
     """Create a user"""
+
+    # Check if session exists.
+    # If session exists redirect to /user/<id>
+    if "user_id" in session:
+        # session['u#ser_id'] = user.user_id
+        # Assigning value of user_id at key session['user_id'] to id
+        id = session["user_id"]
+        return redirect("/user/" + str(id))
+
+    # If session does not exists display login page
     return render_template("login_page.html")
 
 
@@ -48,12 +58,17 @@ def login_user():
 
     email = request.form.get("email")
     password = request.form.get("password")
+    # print("*********************")
+    # print(email)
+    # print(password)
 
     user = crud.get_user_by_email_and_password(email, password)
+    print("*********************")
+    print(user)
     if not user:
         flash("Invalid email/password")
     else:
-        # Store user id in session or cookie
+        session["user_id"] = user.user_id
         return redirect("/user/" + str(user.user_id))
 
 
@@ -72,11 +87,12 @@ def show_user(user_id):
     """Show details on a particular user."""
 
     user = crud.get_user_by_id(user_id)
-    userprofile= get_user_profile(user_id)
+    userprofile = crud.get_user_profile(user_id)
 
-    return render_template("user.html", user=user,
-                                        userprofile=userprofile)
+    return render_template("user_profile.html", user=user, userprofile=userprofile)
 
 
 if __name__ == "__main__":
-        app.run(host="0.0.0.0", debug=True)
+    connect_to_db(app)
+
+    app.run(host="0.0.0.0", debug=True)

@@ -64,9 +64,8 @@ def get_posts():
 def get_products_for_post(post_id):
     """Return all the products in a post"""
 
-    return (
-        Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
-    )
+    return Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
+
 
 
 def get_post(post_id):
@@ -76,9 +75,9 @@ def get_post(post_id):
 def get_user_by_email_and_password(email, password):
     """Return a user by email"""
 
-    return (
-        User.query.filter(User.email == email).filter(User.password == password).first()
-    )
+    # return User.query.filter(User.email == email).filter(User.password == password).first()
+    return User.query.filter(User.email == email).filter(User.password == password).first()
+
 
 
 def get_user_profile(user_id):
