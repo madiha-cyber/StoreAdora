@@ -71,3 +71,21 @@ def get_products_for_post(post_id):
 
 def get_post(post_id):
     return Post.query.filter(Post.post_id == post_id).first()
+
+
+def get_user_by_email_and_password(email, password):
+    """Return a user by email"""
+
+    return (
+        User.query.filter(User.email == email).filter(User.password == password).first()
+    )
+
+
+def get_user_profile(user_id):
+    """Return user profile for each user"""
+
+    return UserProfile.query.filter(UserProfile.user_id == user_id).first()
+
+
+def get_user_by_id(user_id):
+    return User.query.filter(User.user_id == user_id).first()

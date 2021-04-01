@@ -18,7 +18,7 @@ db = SQLAlchemy()
 class User(db.Model):
     """A user."""
 
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     # PK
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -38,7 +38,9 @@ class UserProfile(db.Model):
     profile_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
     # FK
-    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+
+    user_name = db.Column(db.String)
 
     insta_handle = db.Column(
         db.String,
@@ -64,7 +66,7 @@ class Post(db.Model):
 
     post_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_description = db.Column(db.Text, nullable=True)
     makeup_type = db.Column(db.String, nullable=True)
 
@@ -91,7 +93,7 @@ class Favorites(db.Model):
     __tablename__ = "favorites"
 
     favorites_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_id = db.Column(db.Integer, db.ForeignKey("post.post_id"))
     date_favorites = db.Column(db.DateTime)
 

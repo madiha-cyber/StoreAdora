@@ -18,13 +18,13 @@ def add_sample_data():
 
     # User 1
     u = create_user(email="madihagoheer@outlook.com", password="123")
-    p = UserProfile(user_id=u.user_id, insta_handle="@madihagoheerofficial")
+    p = UserProfile(user_id=u.user_id, user_name="Madiha Goheer",insta_handle="@madihagoheerofficial",bio="Makeup Artist")
     users_list.append(u)
     profiles_list.append(p)
 
     # User 2
     u = create_user(email="asimgoheer@outlook.com", password="123")
-    p = UserProfile(user_id=u.user_id, insta_handle="@asimgoheerofficial")
+    p = UserProfile(user_id=u.user_id,user_name= "Myreen Goheer", insta_handle="@asimgoheerofficial", bio="Makeup Blogger")
     users_list.append(u)
     profiles_list.append(p)
 
@@ -74,6 +74,9 @@ def add_sample_data():
     # User 2 Favorites 2
     f = create_favorites(user_id=users_list[1].user_id, post_id=posts_list[1].post_id)
     favorites_list.append(f)
+
+    db.session.add_all(profiles_list)
+    db.session.commit()
 
     print("Added objects to DB")
 
