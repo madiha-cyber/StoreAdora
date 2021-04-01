@@ -41,9 +41,10 @@ def get_post(post_id):
 def show_login():
     """Create a user"""
 
+    #import pdb; pdb.set_trace()
     # Check if session exists.
     # If session exists redirect to /user/<id>
-    if "user_id" in session:
+    if "user_id" in session and session["user_id"]:
         # session['u#ser_id'] = user.user_id
         # Assigning value of user_id at key session['user_id'] to id
         id = session["user_id"]
@@ -69,7 +70,17 @@ def login_user():
         flash("Invalid email/password")
     else:
         session["user_id"] = user.user_id
-        return redirect("/user/" + str(user.user_id))
+        return redirect("/profile")
+
+
+@app.route("/logout", methods=["GET"])
+def logout_user():
+    """logout the user"""
+
+    if "user_id" in session and session["user_id"]:
+        del session["user_id"]
+
+    return redirect('/')
 
 
 @app.route("/signup", methods=["GET"])
@@ -90,6 +101,21 @@ def show_user(user_id):
     userprofile = crud.get_user_profile(user_id)
 
     return render_template("user_profile.html", user=user, userprofile=userprofile)
+
+
+@app.route("/profile")
+def show_userprofile():
+    """Show details on a particular user."""
+
+    if not session["user_id"] or not session["user_id"]:
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    user = crud.get_user_by_id(user_id)
+    userprofile = crud.get_user_profile(user_id)
+
+    return render_template("profile.html", user=user, userprofile=userprofile)
 
 
 if __name__ == "__main__":

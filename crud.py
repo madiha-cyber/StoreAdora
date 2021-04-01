@@ -74,6 +74,14 @@ def get_post(post_id):
 
 def get_user_by_email_and_password(email, password):
     """Return a user by email"""
+    # user = User.query.filter(User.email == email).first()
+    # if user.password == password:
+    #   return user
+    # else:
+    #   (something about wrong password)
+
+    # shorter version
+    # return user if user.password == password else 'Wrong password'
 
     # return User.query.filter(User.email == email).filter(User.password == password).first()
     return User.query.filter(User.email == email).filter(User.password == password).first()
@@ -84,6 +92,14 @@ def get_user_profile(user_id):
     """Return user profile for each user"""
 
     return UserProfile.query.filter(UserProfile.user_id == user_id).first()
+# >>> madiha = User.query.get(1)
+# <User user_id=1 email='madiha@gmail.com' ... >
+# >>> madiha.user_profile.insta_handle
+# 'madiha_insta_handle'
+# >>> madiha.posts
+# [<Post id=1...>, <Post id=2...>, ...]
+# >>> for post in madiha.posts:
+# ...     <a href=post.id>post.name</a>
 
 
 def get_user_by_id(user_id):

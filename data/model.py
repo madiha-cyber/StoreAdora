@@ -25,6 +25,8 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
 
+    # user = db.relationship('UserProfile', backref="users")
+
     def __repr__(self):
         return f"<User user_id={self.user_id} email={self.email}>"
 
@@ -34,11 +36,10 @@ class UserProfile(db.Model):
 
     __tablename__ = "userprofile"
 
-    # PK
-    profile_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
-    # FK
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    #user_id is the primary key and foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"),primary_key=True)
+
 
     user_name = db.Column(db.String)
 
@@ -54,6 +55,15 @@ class UserProfile(db.Model):
         db.String,
         nullable=True,
     )
+
+    # user = db.relationship('User', backref=userprofile)
+    # ^ what do you want to call 'users'?
+    #                                ^ backref: what do you want 'user' to call you?
+    # madiha = <User id=1 email='madiharules@gmail.com'>
+    # madiha.??? < that's backref
+
+    # last note about 1:1 https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#relationships-one-to-one
+    # we also have to specify uselist=False as an option when calling db.relationship(uselist=False)
 
     def __repr__(self):
         return f"<UserProfile profile_id={self.profile_id} insta_handle={self.insta_handle} >"

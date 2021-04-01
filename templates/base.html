@@ -8,14 +8,22 @@
         {% block title %} {% endblock %}
     </title>
 
-    {% block head %} {% endblock %}
+    {% block head %}
+    {% endblock %}
 
 </head>
 
 <body>
-    {% block body %} {% endblock %}
+    {% if "user_id" in session and session["user_id"] %}
+    <a href="/logout">logout</a>
+    {% else %}
+    <a href="/login">login</a>
+    {% endif %}
+    {% block body %}
+    {% endblock %}
 
-    {% block after_body %} {% endblock %}
+    {% block after_body %}
+    {% endblock %}
 </body>
 
 </html>

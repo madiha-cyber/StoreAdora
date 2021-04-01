@@ -8,6 +8,8 @@ from crud import *
 from datetime import datetime
 
 
+# madihagoheer@outlook.com,123
+# asimgoheer@outlook.com,123
 def add_sample_data():
 
     users_list = []
