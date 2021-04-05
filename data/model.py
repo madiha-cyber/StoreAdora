@@ -39,8 +39,7 @@ class UserProfile(db.Model):
 
     #user_id is the primary key and foreign key
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"),primary_key=True)
-
-
+    profile_picture = db.Column(db.String)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     insta_handle = db.Column(
@@ -79,6 +78,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_description = db.Column(db.Text, nullable=True)
     makeup_type = db.Column(db.String, nullable=True)
+
 
     def __repr__(self):
         return f"<Post post_id={self.post_id} makeup_type={self.makeup_type}  post_description={self.post_description}"

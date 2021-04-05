@@ -1,17 +1,31 @@
 {% extends 'base.html' %}
-{% block title %} {{user.user_id}} {% endblock %}
+{% block title %} {{user.user_id}}
+{% endblock %}
 
 {% block body %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<!-- test flash -->
+<ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <div id="container">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
     <p id="edit"><b> Click "Edit" to Edit your profile. </ b>
     </p>
-    <button type="submit" id="edit-button">Edit</button>
-    <button type="submit" id="end-editing">Done</button>
+    {%if userprofile.profile_picture%}
+    <img src="/static/images/profile/{{userprofile.profile_picture}}" />
+    {%else%}
+    <img src="/static/images/profile/default.png" />
+    {%endif%}
 </div>
 
-<p> Enter your Insta handle <a href="/profile/edit">Edit Profile</a></p>
-<p> bio <input type="text" name="bio"></p>
+<a href="/profile/edit">Edit Profile</a>
+
 
 
 {% endblock %}

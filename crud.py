@@ -122,3 +122,9 @@ def get_user_by_id(user_id):
 def get_user_by_email(email):
     """Return user by email"""
     return User.query.filter(User.email == email).first()
+
+
+def set_user_profile_picture(user_id, file_name):
+    p = UserProfile.query.get(user_id)
+    p.profile_picture = file_name
+    db.session.commit()

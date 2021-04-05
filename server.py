@@ -2,11 +2,13 @@
 
 from flask import Flask, render_template, request, flash, session, redirect
 from data.model import connect_to_db
+import os
 import crud
 
 from jinja2 import StrictUndefined
+from PIL import Image
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 app.secret_key = "dev"
 # app.jinja_env.undefined = StrictUndefined
 
@@ -124,7 +126,7 @@ def show_user(user_id):
 def show_userprofile():
     """Home page for logged in user."""
 
-    if not session["user_id"] or not session["user_id"]:
+    if "user_id" not in session and not session["user_id"]:
         return redirect("/")
 
     user_id = session["user_id"]
@@ -138,7 +140,7 @@ def show_userprofile():
 @app.route("/profile/edit", methods=["GET"])
 def start_edit_profile():
 
-    if not session["user_id"] or not session["user_id"]:
+    if "user_id" not in session and not session["user_id"]:
         return redirect("/")
 
     user_id = session["user_id"]
@@ -149,15 +151,72 @@ def start_edit_profile():
     return render_template("edit_profile.html", user=user, userprofile=userprofile)
 
 
+UPLOAD_FOLDER = "./static/images/profile/"
+
+
 @app.route("/profile/edit", methods=["POST"])
 def save_edit_profile():
 
-    if not session["user_id"] or not session["user_id"]:
+    if "user_id" not in session and not session["user_id"]:
         return redirect("/")
 
     user_id = session["user_id"]
-    fname = request.form.get("fname")
-    lname = request.form.get("lname")
+
+    form_id = request.form.get("form_id")
+    if form_id == "basic_info":
+        user_id = session["user_id"]
+        fname = request.form.get("fname")
+        lname = request.form.get("lname")
+        insta_handle = request.form.get("insta_handle")
+        bio = request.form.get("bio")
+        return redirect("/profile")
+    elif form_id == "profile_picture":
+        if "file1" not in request.files:
+            flash("No Profile Picture found")
+            return redirect("/profile")
+
+        f = request.files["file1"]
+
+        # if len(f.stream) > 3000000:
+        #     flash("file too big")
+        #     return redirect("/profile")
+
+        img = Image.open(f.stream)
+        if img.format != "JPEG":
+            flash("No Profile Picture found")
+            return redirect("/profile")
+
+        original_size = img.size
+        if original_size[0] > 5000 or original_size[0] < 50:
+            flash("No Profile Picture found")
+            return redirect("/profile")
+
+        if original_size[1] > 5000 or original_size[1] < 50:
+            flash("No Profile Picture found")
+            return redirect("/profile")
+        smallest_side = min(original_size[0], original_size[1])
+        if original_size[0] > original_size[1]:
+            x = (original_size[0] - smallest_side) / 2
+            new_size = (x, 0, x + smallest_side, original_size[1])
+        elif original_size[0] < original_size[1]:
+            y = (original_size[1] - smallest_side) / 2
+            new_size = (0, y, smallest_side, y + smallest_side)
+        else:
+            new_size = (0, 0, smallest_side, smallest_side)
+
+        cropped_image = img.crop(new_size)
+        resize_image = cropped_image.resize((100, 100))
+
+        file_name = str(user_id) + ".jpg"
+        path = os.path.join(UPLOAD_FOLDER, file_name)
+        resize_image.save(path)
+
+        crud.set_user_profile_picture(user_id, file_name)
+
+        flash("Uploaded picture")
+        return redirect("/profile")
+    else:
+        return redirect("/profile")
 
     # Update user profile to reflect these new changes.
 
