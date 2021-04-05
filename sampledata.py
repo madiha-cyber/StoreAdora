@@ -1,4 +1,4 @@
-jklimport os
+import os
 import json
 from random import choice, randint
 from datetime import datetime
@@ -20,13 +20,25 @@ def add_sample_data():
 
     # User 1
     u = create_user(email="madihagoheer@outlook.com", password="123")
-    p = UserProfile(user_id=u.user_id, user_name="Madiha Goheer",insta_handle="@madihagoheerofficial",bio="Makeup Artist")
+    p = UserProfile(
+        user_id=u.user_id,
+        first_name="Madiha",
+        last_name="Goheer",
+        insta_handle="@madihagoheerofficial",
+        bio="Makeup Artist",
+    )
     users_list.append(u)
     profiles_list.append(p)
 
     # User 2
     u = create_user(email="asimgoheer@outlook.com", password="123")
-    p = UserProfile(user_id=u.user_id,user_name= "Myreen Goheer", insta_handle="@asimgoheerofficial", bio="Makeup Blogger")
+    p = UserProfile(
+        user_id=u.user_id,
+        first_name="Myreen",
+        last_name="Goheer",
+        insta_handle="@asimgoheerofficial",
+        bio="Makeup Blogger",
+    )
     users_list.append(u)
     profiles_list.append(p)
 
@@ -38,13 +50,19 @@ def add_sample_data():
 
     # Product 1
     p = create_product(
-        "Foundation", "Nars Longwear", "https://www.sephora.com/", "/static/images/foundation1.jpg"
+        "Foundation",
+        "Nars Longwear",
+        "https://www.sephora.com/",
+        "/static/images/foundation1.jpg",
     )
     products_list.append(p)
 
     # Product 2
     p = create_product(
-        "Concealer", "Huda Beauty", "https://www.sephora.com/", "/static/images/foundation1.jpg"
+        "Concealer",
+        "Huda Beauty",
+        "https://www.sephora.com/",
+        "/static/images/foundation1.jpg",
     )
     products_list.append(p)
 

@@ -4,13 +4,12 @@
 {% block body %}
 <div id="container">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
-    <p id="edit"><b> Click "Edit" to Edit your profile. </ b>
-    </p>
+    <p id="edit"><b> Click "Edit" to Edit your profile. </ b></p>
     <button type="submit" id="edit-button">Edit</button>
     <button type="submit" id="end-editing">Done</button>
-</div>
+    </div>
 
-<p> Enter your Insta handle <a href="/profile/edit">Edit Profile</a></p>
+<p> Enter your Insta handle <input type="text" name="insta_handle"></p>
 <p> bio <input type="text" name="bio"></p>
 
 

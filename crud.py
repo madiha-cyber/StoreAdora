@@ -55,6 +55,15 @@ def create_postproducts(product_id, post_id):
     return p
 
 
+def create_user_and_profile(f_name, l_name, email, password):
+    """Create new user"""
+    u = create_user(email=email, password=password)
+    p = UserProfile(first_name=f_name, last_name=l_name, user_id=u.user_id)
+    db.session.add(p)
+    db.session.commit()
+    return u
+
+
 def get_posts():
     """Return all posts"""
 
@@ -64,8 +73,9 @@ def get_posts():
 def get_products_for_post(post_id):
     """Return all the products in a post"""
 
-    return Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
-
+    return (
+        Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
+    )
 
 
 def get_post(post_id):
@@ -84,14 +94,17 @@ def get_user_by_email_and_password(email, password):
     # return user if user.password == password else 'Wrong password'
 
     # return User.query.filter(User.email == email).filter(User.password == password).first()
-    return User.query.filter(User.email == email).filter(User.password == password).first()
-
+    return (
+        User.query.filter(User.email == email).filter(User.password == password).first()
+    )
 
 
 def get_user_profile(user_id):
     """Return user profile for each user"""
 
     return UserProfile.query.filter(UserProfile.user_id == user_id).first()
+
+
 # >>> madiha = User.query.get(1)
 # <User user_id=1 email='madiha@gmail.com' ... >
 # >>> madiha.user_profile.insta_handle
@@ -104,3 +117,8 @@ def get_user_profile(user_id):
 
 def get_user_by_id(user_id):
     return User.query.filter(User.user_id == user_id).first()
+
+
+def get_user_by_email(email):
+    """Return user by email"""
+    return User.query.filter(User.email == email).first()

@@ -41,8 +41,8 @@ class UserProfile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"),primary_key=True)
 
 
-    user_name = db.Column(db.String)
-
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
     insta_handle = db.Column(
         db.String,
         nullable=True,
