@@ -35,8 +35,11 @@ def get_post(post_id):
 
     post = crud.get_post(post_id)
     products = crud.get_products_for_post(post_id)
+    post_images = crud.get_post_images(post_id)
 
-    return render_template("post.details.html", post=post, products=products)
+    return render_template(
+        "post.details.html", post=post, products=products, post_images=post_images
+    )
 
 
 @app.route("/login", methods=["GET"])

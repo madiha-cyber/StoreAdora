@@ -36,9 +36,8 @@ class UserProfile(db.Model):
 
     __tablename__ = "userprofile"
 
-
-    #user_id is the primary key and foreign key
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"),primary_key=True)
+    # user_id is the primary key and foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), primary_key=True)
     profile_picture = db.Column(db.String)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
@@ -78,7 +77,6 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_description = db.Column(db.Text, nullable=True)
     makeup_type = db.Column(db.String, nullable=True)
-
 
     def __repr__(self):
         return f"<Post post_id={self.post_id} makeup_type={self.makeup_type}  post_description={self.post_description}"
@@ -136,17 +134,18 @@ class PostProducts(db.Model):
         return f"<PostProducts post_product_id={self.post_product_id} product_id={self.product_id} post_id={self.post_id}>"
 
 
-def connect_to_db(flask_app, db_uri='postgresql:///finalproject', echo=True):
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    flask_app.config['SQLALCHEMY_ECHO'] = echo
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def connect_to_db(flask_app, db_uri="postgresql:///finalproject", echo=True):
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    flask_app.config["SQLALCHEMY_ECHO"] = echo
+    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.app = flask_app
     db.init_app(flask_app)
 
-    print('Connected to the db!')
+    print("Connected to the db!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from server import app
 
     # Call connect_to_db(app, echo=False) if your program output gets

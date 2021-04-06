@@ -1,4 +1,4 @@
-from data.model import User, UserProfile, db, Post, Favorites, Product, PostProducts
+from data.model import User, UserProfile, db, Post, Favorites, Product, PostProducts, MakeupImage
 
 from datetime import datetime
 
@@ -41,8 +41,8 @@ def create_product(product_details, title, website_link, image_url):
     return p
 
 
-def create_makeupimage(img_id, post_id, img_url):
-    m = MakeupImage(img_id=img_id, post_id=post_id, img_url=img_url)
+def create_makeupimage(post_id, img_url):
+    m = MakeupImage(post_id=post_id, img_url=img_url)
     db.session.add(m)
     db.session.commit()
     return m
@@ -128,3 +128,7 @@ def set_user_profile_picture(user_id, file_name):
     p = UserProfile.query.get(user_id)
     p.profile_picture = file_name
     db.session.commit()
+
+def get_post_images(post_id):
+    """ """
+    return MakeupImage.query.filter(MakeupImage.post_id==post_id).all()
