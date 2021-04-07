@@ -1,4 +1,13 @@
-from data.model import User, UserProfile, db, Post, Favorites, Product, PostProducts, MakeupImage
+from data.model import (
+    User,
+    UserProfile,
+    db,
+    Post,
+    Favorites,
+    Product,
+    PostProducts,
+    MakeupImage,
+)
 
 from datetime import datetime
 
@@ -56,7 +65,10 @@ def create_postproducts(product_id, post_id):
 
 
 def create_user_and_profile(f_name, l_name, email, password):
-    """Create new user"""
+    """
+    Create new user with email & password.
+    Then create userprofile with first_name & last_name.
+    """
     u = create_user(email=email, password=password)
     p = UserProfile(first_name=f_name, last_name=l_name, user_id=u.user_id)
     db.session.add(p)
@@ -116,11 +128,14 @@ def get_user_profile(user_id):
 
 
 def get_user_by_id(user_id):
+    """"""
     return User.query.filter(User.user_id == user_id).first()
 
 
 def get_user_by_email(email):
-    """Return user by email"""
+    """
+    Return user by email
+    """
     return User.query.filter(User.email == email).first()
 
 
@@ -129,10 +144,48 @@ def set_user_profile_picture(user_id, file_name):
     p.profile_picture = file_name
     db.session.commit()
 
+
 def get_post_images(post_id):
-    """ """
-    return MakeupImage.query.filter(MakeupImage.post_id==post_id).all()
+    """"""
+    return MakeupImage.query.filter(MakeupImage.post_id == post_id).all()
+
 
 def get_posts_for_user(user_id):
-    """ """
-    return Post.query.filter(Post.user_id==user_id).all()
+    """"""
+    return Post.query.filter(Post.user_id == user_id).all()
+
+
+def update_user_profile_info(user_id, first_name, last_name, insta_handle, bio):
+    """
+    updates userprofile
+    """
+    db.session.query(UserProfile.user_id == user_id).update(
+        {
+            "first_name": first_name,
+            "last_name": last_name,
+            "insta_handle": insta_handle,
+            "bio": bio,
+        }
+    )
+    db.session.commit()
+
+
+def update_password_for_user_id(user_id, old_password, new_password):
+    """updates password"""
+
+    user = (
+        User.query.filter(User.user_id == user_id)
+        .filter(User.password == old_password)
+        .first()
+    )
+    if not user:
+        return False
+
+    db.session.query(User.user_id == user_id).update(
+        {
+            "password": new_password,
+        }
+    )
+
+    db.session.commit()
+    return True

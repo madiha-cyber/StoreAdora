@@ -3,16 +3,7 @@
 {% endblock %}
 
 {% block body %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<!-- test flash -->
-<ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+
 <div id="container">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
 

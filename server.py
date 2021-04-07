@@ -46,16 +46,22 @@ def get_post(post_id):
     )
 
 
-@app.route("/login", methods=["GET"])
-def show_login():
-    """Show Login page"""
+def is_user_signed_in():
+    """
+    Check if user's session exists
+    """
+    # return "user_id" in session and session["user_id"] != None
+    return session.get("user_id") != None
 
-    # Check if session exists.
-    # If session exists redirect to /profile
-    if "user_id" in session and session["user_id"]:
-        # session['u#ser_id'] = user.user_id
-        # Assigning value of user_id at key session['user_id'] to id
-        id = session["user_id"]
+
+@app.route("/login", methods=["GET"])
+def show_login_page():
+    """
+    Show Login page
+    """
+
+    # Check User Logged In
+    if is_user_signed_in():
         return redirect("/profile")
 
     # If session does not exists display login page
@@ -64,16 +70,21 @@ def show_login():
 
 @app.route("/login", methods=["POST"])
 def login_user():
-    # Login the user and redirect to /profile page
+    """
+    Login the user and redirect to /profile page
+    """
+
+    # Check User Logged In
+    if is_user_signed_in():
+        return redirect("/profile")
 
     email = request.form.get("email")
     password = request.form.get("password")
 
     user = crud.get_user_by_email_and_password(email, password)
-    print("*********************")
-    print(user)
     if not user:
         flash("Invalid email/password")
+        return redirect("/login")
     else:
         session["user_id"] = user.user_id
         return redirect("/profile")
@@ -81,59 +92,73 @@ def login_user():
 
 @app.route("/logout", methods=["GET"])
 def logout_user():
-    """logout the user"""
-
-    if "user_id" in session and session["user_id"]:
+    """
+    logout the user
+    """
+    # Check User Logged In
+    if is_user_signed_in():
         del session["user_id"]
-
     return redirect("/")
 
 
 @app.route("/signup", methods=["GET"])
-def show_signup():
-    # Show Signup page
-    if "user_id" in session and session["user_id"]:
-        # flash("You are already logged In")
+def show_signup_page():
+    """
+    Show Signup page
+    """
+    # Check User Logged In
+    if is_user_signed_in():
         return redirect("/")
-    else:
-        return render_template("sign_up.html")
+    return render_template("signup.html")
 
 
 @app.route("/signup", methods=["POST"])
 def signup_user():
-    # Create new Account then redirect to /profile page
+    """
+    Create new Account then redirect to /profile page
+    """
+    # Check User Logged In
+    if is_user_signed_in():
+        return redirect("/")
 
-    fname = request.form.get("fname")
-    lname = request.form.get("lname")
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
     email = request.form.get("email")
     password = request.form.get("password")
 
-    user = crud.get_user_by_email(email)
+    # Make sure we don't allow same email again.
+    existing_user = crud.get_user_by_email(email)
 
-    if user:
-        flash("You already have an account with this email")
+    if existing_user:
+        flash("This email is already in use.")
         return redirect("/signup")
     else:
-        user = crud.create_user_and_profile(fname, lname, email, password)
+        # create a new user and store its value in the session
+        user = crud.create_user_and_profile(first_name, last_name, email, password)
         session["user_id"] = user.user_id
         return redirect("/profile")
 
 
 @app.route("/user/<user_id>")
 def show_user(user_id):
-    """Show details on a particular user."""
-
+    """
+    Show details on a particular user.
+    """
     user = crud.get_user_by_id(user_id)
-    userprofile = crud.get_user_profile(user_id)
+    if not user:
+        return render_template("user_profile_not_found.html")
 
+    userprofile = crud.get_user_profile(user_id)
     return render_template("user_profile.html", user=user, userprofile=userprofile)
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET"])
 def show_userprofile():
-    """Home page for logged in user."""
-
-    if "user_id" not in session and not session["user_id"]:
+    """
+    Home page for logged in user.
+    """
+    # Check User Logged In
+    if not is_user_signed_in():
         return redirect("/")
 
     user_id = session["user_id"]
@@ -142,39 +167,49 @@ def show_userprofile():
     userprofile = crud.get_user_profile(user_id)
     user_posts = crud.get_posts_for_user(user_id)
 
-    return render_template("profile.html", user=user, userprofile=userprofile, user_posts=user_posts)
+    return render_template(
+        "profile.html", user=user, userprofile=userprofile, user_posts=user_posts
+    )
 
 
 @app.route("/profile/edit", methods=["GET"])
-def start_edit_profile():
-
-    if "user_id" not in session and not session["user_id"]:
+def show_edit_profile_page():
+    """
+    Show edit profile page.
+    """
+    # Check User Logged In
+    if not is_user_signed_in():
         return redirect("/")
 
     user_id = session["user_id"]
-
     user = crud.get_user_by_id(user_id)
     userprofile = crud.get_user_profile(user_id)
-
     return render_template("edit_profile.html", user=user, userprofile=userprofile)
 
 
 @app.route("/profile/edit", methods=["POST"])
 def save_edit_profile():
-
-    if "user_id" not in session and not session["user_id"]:
+    """
+    Save edit profile changes
+    """
+    # Check User Logged In
+    if not is_user_signed_in():
         return redirect("/")
 
     user_id = session["user_id"]
-
     form_id = request.form.get("form_id")
+    # If we are updating basic_info section
     if form_id == "basic_info":
-        user_id = session["user_id"]
-        fname = request.form.get("fname")
-        lname = request.form.get("lname")
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
         insta_handle = request.form.get("insta_handle")
         bio = request.form.get("bio")
-        return redirect("/profile")
+        # Add this to database
+        # Missing
+        crud.update_user_profile_info(user_id, first_name, last_name, insta_handle, bio)
+        return redirect("/profile/edit")
+
+    # if we are editing profile picture section
     elif form_id == "profile_picture":
         if "file1" not in request.files:
             flash("No Profile Picture found")
@@ -186,7 +221,7 @@ def save_edit_profile():
         (success, msg, resized_image) = result
         if success == False:
             flash(msg)
-            return redirect("/profile")
+            return redirect("/profile/edit")
         else:
             file_name = str(user_id) + ".jpg"
             path = os.path.join(UPLOAD_FOLDER_PROFILE_PICTURE, file_name)
@@ -194,15 +229,28 @@ def save_edit_profile():
 
             crud.set_user_profile_picture(user_id, file_name)
 
-            flash("Uploaded picture")
-            return redirect("/profile")
+            # flash("Uploaded picture")
+            return redirect("/profile/edit")
+    elif form_id == "profile_password":
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+        #to display an error message we are wrting this conditional
+        if crud.update_password_for_user_id(user_id, old_password, new_password) == False:
+            flash("Old password is incorrect")
+        else:
+            flash("Password Updated")
+        return redirect("/profile/edit")
+
+    # If it's unknown section
+    # we don't know the form_id then display this message
     else:
-        return redirect("/profile")
+        flash("Unhandled form submission")
+        return redirect("/profile/edit")
 
     # Update user profile to reflect these new changes.
 
 
-@app.route("/newlook")
+@app.route("/newlook", methods=["GET"])
 def show_newlook_page():
     # Show newlook page
     return render_template("newlook.html")
@@ -210,14 +258,11 @@ def show_newlook_page():
 
 @app.route("/newlook", methods=["POST"])
 def save_newlook_page():
-    if "user_id" not in session and not session["user_id"]:
+    # Check User Logged In
+    if not is_user_signed_in():
         return redirect("/")
 
     user_id = session["user_id"]
-
-    if "file1" not in request.files:
-        flash("No Post Picture specified")
-        return redirect("/newlook")
 
     index = 0
     file = request.files["file1"]
@@ -229,13 +274,19 @@ def save_newlook_page():
     # 5 - Save the resized images to folder
     # 6 - Redirect to new post page.
 
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
+    # file1 = image of the post ,
+    # check user is sending image file with the request
+    if "file1" not in request.files:
+        flash("No Post Picture specified")
+        return redirect("/newlook")
+
     post_title = request.form.get("post_title")
     if post_title == None or len(post_title) < 3:
         flash("Post Title is too short")
         return redirect("/newlook")
 
-    post_description = request.form.get("post_decription")
+    post_description = request.form.get("post_description")
     if post_description == None or len(post_description) > 150:
         flash("Post description is too long")
         return redirect("/newlook")
@@ -245,9 +296,13 @@ def save_newlook_page():
         flash("Makeup_type is too long")
         return redirect("/newlook")
 
-    (thumb_success,thumb_msg,resized_image_thumb) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
+    (
+        thumb_success,
+        thumb_msg,
+        resized_image_thumb,
+    ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
     (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
-        file.stream, (500,500)
+        file.stream, (500, 500)
     )
     if thumb_success == False or fullres_success == False:
         flash(thumb_msg or fullres_msg)
@@ -255,7 +310,12 @@ def save_newlook_page():
     else:
         # Crud post here
         #
-        post = crud.create_post(user_id=user_id, title="post_title", post_description="post_description", makeup_type="makeup_type")
+        post = crud.create_post(
+            user_id=user_id,
+            title=post_title,
+            post_description=post_description,
+            makeup_type=makeup_type,
+        )
         post_id = post.post_id
 
         # Save post image
@@ -275,5 +335,4 @@ def save_newlook_page():
 
 if __name__ == "__main__":
     connect_to_db(app)
-
     app.run(host="0.0.0.0", debug=True)

@@ -11,12 +11,24 @@
     {% block head %}
     {% endblock %}
 
-	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
 </head>
 
 <body>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <!-- test flash -->
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
     {% if "user_id" in session and session["user_id"] %}
     <a href="/logout">logout</a>
     <a href="/profile">profile</a>

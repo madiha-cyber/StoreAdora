@@ -28,6 +28,8 @@ def create(
         insta_handle=insta_handle,
         bio=bio,
     )
+    db.session.add(p)
+    db.session.commit()
     o = create_post(
         user_id=u.user_id,
         title=post_title,

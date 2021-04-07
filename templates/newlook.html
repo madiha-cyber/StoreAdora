@@ -8,10 +8,13 @@
 <form action="/newlook" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="form_id" value="new_look" accept="image/jpeg" />
     <input type='file' name="file1">
-    <br>
-    Post Description <input type="text" name="Add Post description" />
-    <br>
-    Add Products<input type="text" name="Add Products">
+    <br/>
+    Post Title <input type="text" name="post_title"/>
+    <br/>
+
+    Post Description <input type="text" name="post_description" />
+    <br/>
+    Add Products<input type="text" name="post_products">
 
     <select name="makeup_type" id="makeup_type">
         <option value="dramatic">Dramatic</option>
@@ -20,10 +23,10 @@
         <option value="runway">Runway</option>
         <option value="specialeffects">Special Effects</option>
     </select>
-    <br>
-    <br>
+    <br/>
+    <br/>
 
     <input type="submit" name="Save" />
 </form>
-<br>
+<br/>
 {% endblock %}
