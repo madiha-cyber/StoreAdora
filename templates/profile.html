@@ -15,16 +15,25 @@
 {% endwith %}
 <div id="container">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
-    <p id="edit"><b> Click "Edit" to Edit your profile. </ b>
-    </p>
+
+    <a href="/profile/edit">Edit Profile</a>
+
+    <a href="/newlook">Create New Look</a>
+    <br />
     {%if userprofile.profile_picture%}
     <img src="/static/images/profile/{{userprofile.profile_picture}}" />
     {%else%}
     <img src="/static/images/profile/default.png" />
     {%endif%}
+
+    <!-- Show all my looks on this page below -->
 </div>
 
-<a href="/profile/edit">Edit Profile</a>
+{% for post in user_posts %}
+<a href="/posts/{{post.post_id}}">
+<img src="/static/images/posts/{{post.post_id}}_p.jpg" />
+</a>
+{% endfor %}
 
 
 

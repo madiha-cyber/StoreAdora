@@ -132,3 +132,7 @@ def set_user_profile_picture(user_id, file_name):
 def get_post_images(post_id):
     """ """
     return MakeupImage.query.filter(MakeupImage.post_id==post_id).all()
+
+def get_posts_for_user(user_id):
+    """ """
+    return Post.query.filter(Post.user_id==user_id).all()

@@ -54,7 +54,7 @@ def add_sample_data():
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
         post_title="Dramatic makeup",
-        post_description="This is a look that I created using tis",
+        post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="1_1.jpg",
     )
@@ -68,7 +68,7 @@ def add_sample_data():
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
         post_title="Dramatic makeup",
-        post_description="This is a look that I created using tis",
+        post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="2_1.jpg",
     )
@@ -82,7 +82,7 @@ def add_sample_data():
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
         post_title="Dramatic makeup",
-        post_description="This is a look that I created using tis",
+        post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="3_1.jpg",
     )
@@ -96,7 +96,7 @@ def add_sample_data():
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
         post_title="Dramatic makeup",
-        post_description="This is a look that I created using tis",
+        post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="4_1.jpg",
     )

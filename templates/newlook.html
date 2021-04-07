@@ -2,3 +2,28 @@
 {% block title %} StoreAdora {% endblock %}
 
 {% block body %}
+
+<h1>Create a New Look</h1>
+<h2>Add an Image</h2>
+<form action="/newlook" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="form_id" value="new_look" accept="image/jpeg" />
+    <input type='file' name="file1">
+    <br>
+    Post Description <input type="text" name="Add Post description" />
+    <br>
+    Add Products<input type="text" name="Add Products">
+
+    <select name="makeup_type" id="makeup_type">
+        <option value="dramatic">Dramatic</option>
+        <option value="wedding">Wedding</option>
+        <option value="classic">Classic</option>
+        <option value="runway">Runway</option>
+        <option value="specialeffects">Special Effects</option>
+    </select>
+    <br>
+    <br>
+
+    <input type="submit" name="Save" />
+</form>
+<br>
+{% endblock %}

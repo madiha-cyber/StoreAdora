@@ -5,11 +5,9 @@
 <h1>Makeup Looks</h1>
 <ul>
     {% for post in all_posts %}
-    <li>
-        <a href="/posts/{{post.post_id}}">
-            {{post.title}}
-        </a>
-    </li>
+    <a href="/posts/{{post.post_id}}">
+        <img src="/static/images/posts/{{post.post_id}}_p.jpg" />
+    </a>
     {% endfor %}
 </ul>
 {% endblock %}

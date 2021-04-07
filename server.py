@@ -7,10 +7,14 @@ import crud
 
 from jinja2 import StrictUndefined
 from PIL import Image
+import image_helpers
 
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = "dev"
 # app.jinja_env.undefined = StrictUndefined
+
+UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
+UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
 
 
 @app.route("/")
@@ -136,8 +140,9 @@ def show_userprofile():
 
     user = crud.get_user_by_id(user_id)
     userprofile = crud.get_user_profile(user_id)
+    user_posts = crud.get_posts_for_user(user_id)
 
-    return render_template("profile.html", user=user, userprofile=userprofile)
+    return render_template("profile.html", user=user, userprofile=userprofile, user_posts=user_posts)
 
 
 @app.route("/profile/edit", methods=["GET"])
@@ -152,9 +157,6 @@ def start_edit_profile():
     userprofile = crud.get_user_profile(user_id)
 
     return render_template("edit_profile.html", user=user, userprofile=userprofile)
-
-
-UPLOAD_FOLDER = "./static/images/profile/"
 
 
 @app.route("/profile/edit", methods=["POST"])
@@ -180,44 +182,20 @@ def save_edit_profile():
 
         f = request.files["file1"]
 
-        # if len(f.stream) > 3000000:
-        #     flash("file too big")
-        #     return redirect("/profile")
-
-        img = Image.open(f.stream)
-        if img.format != "JPEG":
-            flash("No Profile Picture found")
+        result = image_helpers.resize_image_square_crop(f.stream, (100, 100))
+        (success, msg, resized_image) = result
+        if success == False:
+            flash(msg)
             return redirect("/profile")
-
-        original_size = img.size
-        if original_size[0] > 5000 or original_size[0] < 50:
-            flash("No Profile Picture found")
-            return redirect("/profile")
-
-        if original_size[1] > 5000 or original_size[1] < 50:
-            flash("No Profile Picture found")
-            return redirect("/profile")
-        smallest_side = min(original_size[0], original_size[1])
-        if original_size[0] > original_size[1]:
-            x = (original_size[0] - smallest_side) / 2
-            new_size = (x, 0, x + smallest_side, original_size[1])
-        elif original_size[0] < original_size[1]:
-            y = (original_size[1] - smallest_side) / 2
-            new_size = (0, y, smallest_side, y + smallest_side)
         else:
-            new_size = (0, 0, smallest_side, smallest_side)
+            file_name = str(user_id) + ".jpg"
+            path = os.path.join(UPLOAD_FOLDER_PROFILE_PICTURE, file_name)
+            resized_image.save(path)
 
-        cropped_image = img.crop(new_size)
-        resize_image = cropped_image.resize((100, 100))
+            crud.set_user_profile_picture(user_id, file_name)
 
-        file_name = str(user_id) + ".jpg"
-        path = os.path.join(UPLOAD_FOLDER, file_name)
-        resize_image.save(path)
-
-        crud.set_user_profile_picture(user_id, file_name)
-
-        flash("Uploaded picture")
-        return redirect("/profile")
+            flash("Uploaded picture")
+            return redirect("/profile")
     else:
         return redirect("/profile")
 
@@ -228,6 +206,71 @@ def save_edit_profile():
 def show_newlook_page():
     # Show newlook page
     return render_template("newlook.html")
+
+
+@app.route("/newlook", methods=["POST"])
+def save_newlook_page():
+    if "user_id" not in session and not session["user_id"]:
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    if "file1" not in request.files:
+        flash("No Post Picture specified")
+        return redirect("/newlook")
+
+    index = 0
+    file = request.files["file1"]
+
+    # 1 - check input from form. If invalid or missing redirect
+    # 2 - Resize the post image and create 1 thumbnail and 1 post image
+    # 3 - Create Post in database
+    # 4 - Create MakeupImage in database
+    # 5 - Save the resized images to folder
+    # 6 - Redirect to new post page.
+
+    import pdb; pdb.set_trace()
+    post_title = request.form.get("post_title")
+    if post_title == None or len(post_title) < 3:
+        flash("Post Title is too short")
+        return redirect("/newlook")
+
+    post_description = request.form.get("post_decription")
+    if post_description == None or len(post_description) > 150:
+        flash("Post description is too long")
+        return redirect("/newlook")
+
+    makeup_type = request.form.get("makeup_type")
+    if makeup_type == None or len(makeup_type) > 20:
+        flash("Makeup_type is too long")
+        return redirect("/newlook")
+
+    (thumb_success,thumb_msg,resized_image_thumb) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
+    (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
+        file.stream, (500,500)
+    )
+    if thumb_success == False or fullres_success == False:
+        flash(thumb_msg or fullres_msg)
+        return redirect("/newlook")
+    else:
+        # Crud post here
+        #
+        post = crud.create_post(user_id=user_id, title="post_title", post_description="post_description", makeup_type="makeup_type")
+        post_id = post.post_id
+
+        # Save post image
+        file_name = str.format("{0}_{1}.jpg", post_id, index)
+        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+        resized_image_post.save(path)
+        # Crud makeup image
+        crud.create_makeupimage(post_id=post_id, img_url=file_name)
+
+        # Save thumbnail image
+        file_name = str.format("{0}_p.jpg", post_id)
+        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+        resized_image_thumb.save(path)
+
+        return redirect(f"/posts/{post_id}")
 
 
 if __name__ == "__main__":

@@ -19,6 +19,8 @@
 <body>
     {% if "user_id" in session and session["user_id"] %}
     <a href="/logout">logout</a>
+    <a href="/profile">profile</a>
+    <a href="/newlook">create new post</a>
     {% else %}
     <a href="/login">login</a>
     <!-- <a href="/signup">login</a> -->
