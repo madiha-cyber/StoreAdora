@@ -250,6 +250,17 @@ def save_edit_profile():
     # Update user profile to reflect these new changes.
 
 
+@app.route("/posts/<post_id>/edit", methods=["GET"])
+def show_edit_post_page():
+    # Show newlook page
+    return render_template("edit_post.html")
+
+
+@app.route("/posts/<post_id>/edit", methods=["GET"])
+def save_edit_post_page():
+    return render_template("edit_post.html")
+
+
 @app.route("/newlook", methods=["GET"])
 def show_newlook_page():
     # Show newlook page
