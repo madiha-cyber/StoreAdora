@@ -5,6 +5,7 @@ import json
 from random import choice, randint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from dataclasses import dataclass
 
 from datetime import datetime
 
@@ -109,7 +110,15 @@ class Favorites(db.Model):
         return f"<Favorites favorites_id={self.favorites_id} user_id={self.user_id}  post_id={self.post_id} date_favorites={self.date_favorites}>"
 
 
+# https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json
+@dataclass
 class Product(db.Model):
+    product_id: int
+    title: str
+    product_details: str
+    website_link: str
+    image_url: str
+
     __tablename__ = "product"
 
     product_id = db.Column(db.Integer, autoincrement=True, primary_key=True)

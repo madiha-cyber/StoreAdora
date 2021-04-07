@@ -1,9 +1,10 @@
 """Server for StoreAdora app"""
 
-from flask import Flask, render_template, request, flash, session, redirect
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from data.model import connect_to_db
 import os
 import crud
+import json
 
 from jinja2 import StrictUndefined
 from PIL import Image
@@ -234,8 +235,11 @@ def save_edit_profile():
     elif form_id == "profile_password":
         old_password = request.form.get("old_password")
         new_password = request.form.get("new_password")
-        #to display an error message we are wrting this conditional
-        if crud.update_password_for_user_id(user_id, old_password, new_password) == False:
+        # to display an error message we are wrting this conditional
+        if (
+            crud.update_password_for_user_id(user_id, old_password, new_password)
+            == False
+        ):
             flash("Old password is incorrect")
         else:
             flash("Password Updated")
@@ -251,13 +255,30 @@ def save_edit_profile():
 
 
 @app.route("/posts/<post_id>/edit", methods=["GET"])
-def show_edit_post_page():
-    # Show newlook page
+def show_edit_post_page(post_id):
+    """ """
+    # Check User Logged In
+    if not is_user_signed_in():
+        return redirect("/")
+
+    post = crud.get_post(post_id)
+    if post.user_id != session["user_id"]:
+        return redirect("/")
+
     return render_template("edit_post.html")
 
 
-@app.route("/posts/<post_id>/edit", methods=["GET"])
-def save_edit_post_page():
+@app.route("/posts/<post_id>/edit", methods=["POST"])
+def save_edit_post_page(post_id):
+    """ """
+    # Check User Logged In
+    if not is_user_signed_in():
+        return redirect("/")
+
+    post = crud.get_post(post_id)
+    if post.user_id != session["user_id"]:
+        return redirect("/")
+
     return render_template("edit_post.html")
 
 
@@ -285,7 +306,7 @@ def save_newlook_page():
     # 5 - Save the resized images to folder
     # 6 - Redirect to new post page.
 
-    #import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     # file1 = image of the post ,
     # check user is sending image file with the request
     if "file1" not in request.files:
@@ -342,6 +363,32 @@ def save_newlook_page():
         resized_image_thumb.save(path)
 
         return redirect(f"/posts/{post_id}")
+
+
+@app.route("/products/search/<name>", methods=["GET"])
+def search_product_by_name(name):
+    """
+    Search Product that match the name in DB
+    """
+    result = crud.get_products_by_name(name)
+    return jsonify(result)
+
+
+@app.route("/products/add", methods=["POST"])
+def add_product():
+    """
+    Add new Product to DB
+    """
+    if not is_user_signed_in():
+        return redirect("/")
+
+    title = request.form.get("title")
+    details = request.form.get("details")
+    url = request.form.get("url")
+    product = crud.create_product(
+        product_details=details, title=title, website_link=url
+    )
+    # product
 
 
 if __name__ == "__main__":

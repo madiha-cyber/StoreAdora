@@ -13,6 +13,7 @@ from datetime import datetime
 
 
 def create_user(email, password):
+    """"""
     u = User(email=email, password=password)
     db.session.add(u)
     db.session.commit()
@@ -20,6 +21,7 @@ def create_user(email, password):
 
 
 def create_post(user_id, title, post_description, makeup_type):
+    """"""
     p = Post(
         user_id=user_id,
         title=title,
@@ -32,13 +34,15 @@ def create_post(user_id, title, post_description, makeup_type):
 
 
 def create_favorites(user_id, post_id):
+    """"""
     f = Favorites(user_id=user_id, post_id=post_id, date_favorites=datetime.now())
     db.session.add(f)
     db.session.commit()
     return f
 
 
-def create_product(product_details, title, website_link, image_url):
+def create_product(product_details, title, website_link=None, image_url=None):
+    """"""
     p = Product(
         title=title,
         product_details=product_details,
@@ -51,6 +55,7 @@ def create_product(product_details, title, website_link, image_url):
 
 
 def create_makeupimage(post_id, img_url):
+    """"""
     m = MakeupImage(post_id=post_id, img_url=img_url)
     db.session.add(m)
     db.session.commit()
@@ -58,6 +63,7 @@ def create_makeupimage(post_id, img_url):
 
 
 def create_postproducts(product_id, post_id):
+    """"""
     p = PostProducts(product_id=product_id, post_id=post_id)
     db.session.add(p)
     db.session.commit()
@@ -77,13 +83,17 @@ def create_user_and_profile(f_name, l_name, email, password):
 
 
 def get_posts():
-    """Return all posts"""
+    """
+    Return all posts
+    """
 
     return Post.query.all()
 
 
 def get_products_for_post(post_id):
-    """Return all the products in a post"""
+    """
+    Return all the products in a post
+    """
 
     return (
         Product.query.join(PostProducts).filter(PostProducts.post_id == post_id).all()
@@ -91,11 +101,14 @@ def get_products_for_post(post_id):
 
 
 def get_post(post_id):
+    """"""
     return Post.query.filter(Post.post_id == post_id).first()
 
 
 def get_user_by_email_and_password(email, password):
-    """Return a user by email"""
+    """
+    Return a user by email and password
+    """
     # user = User.query.filter(User.email == email).first()
     # if user.password == password:
     #   return user
@@ -112,7 +125,9 @@ def get_user_by_email_and_password(email, password):
 
 
 def get_user_profile(user_id):
-    """Return user profile for each user"""
+    """
+    Return user profile for each user
+    """
 
     return UserProfile.query.filter(UserProfile.user_id == user_id).first()
 
@@ -171,7 +186,9 @@ def update_user_profile_info(user_id, first_name, last_name, insta_handle, bio):
 
 
 def update_password_for_user_id(user_id, old_password, new_password):
-    """updates password"""
+    """
+    updates password
+    """
 
     user = (
         User.query.filter(User.user_id == user_id)
@@ -189,3 +206,10 @@ def update_password_for_user_id(user_id, old_password, new_password):
 
     db.session.commit()
     return True
+
+
+def get_products_by_name(name):
+    """
+    return products by their name
+    """
+    return Product.query.filter(Product.title.ilike(str.format("%{}%", name))).all()
