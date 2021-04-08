@@ -12,7 +12,7 @@ import image_helpers
 
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = "dev"
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 # app.jinja_env.undefined = StrictUndefined
 
 UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
@@ -263,10 +263,15 @@ def show_edit_post_page(post_id):
         return redirect("/")
 
     post = crud.get_post(post_id)
+    products = crud.get_products_for_post(post_id)
+    post_images = crud.get_post_images(post_id)
+
     if post.user_id != session["user_id"]:
         return redirect("/")
 
-    return render_template("edit_post.html")
+    return render_template(
+        "edit_post.html", post=post, post_images=post_images, products=products
+    )
 
 
 @app.route("/posts/<post_id>/edit", methods=["POST"])
@@ -276,11 +281,50 @@ def save_edit_post_page(post_id):
     if not is_user_signed_in():
         return redirect("/")
 
-    post = crud.get_post(post_id)
-    if post.user_id != session["user_id"]:
-        return redirect("/")
+    user_id = session["user_id"]
+    form_id = request.form.get("form_id")
 
-    return render_template("edit_post.html")
+    if form_id == "basic_info":
+        title = request.form.get("title")
+        post_description = request.form.get("post_description")
+        makeup_type = request.form.get("makeup_type")
+
+        crud.update_post_info(post_id, title, post_description, makeup_type)
+
+        # return redirect("posts/<post_id>/edit")
+    elif form_id == "post_image":
+        if "file1" not in request.files:
+            flash("No image found")
+            return redirect(f"/posts/{post_id}/edit")
+
+        file = request.files["file1"]
+        index = 0
+
+        (
+            thumb_success,
+            thumb_msg,
+            resized_image_thumb,
+        ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
+
+        (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
+            file.stream, (500, 500)
+        )
+        if thumb_success == False or fullres_success == False:
+            flash(thumb_msg or fullres_msg)
+            return redirect(f"/posts/{post_id}/edit")
+        else:
+            # Save post image
+            file_name = str.format("{0}_{1}.jpg", post_id, index)
+            path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+            resized_image_post.save(path)
+
+            # Save thumbnail image
+            file_name = str.format("{0}_p.jpg", post_id)
+            path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+            resized_image_thumb.save(path)
+            return redirect(f"/posts/{post_id}")
+
+    return render_template(f"/posts/{post_id}")
 
 
 @app.route("/newlook", methods=["GET"])
@@ -394,7 +438,43 @@ def add_product():
     product = crud.create_product(
         product_details=details, title=title, website_link=url
     )
-    # product
+
+
+@app.route("/favorites/<user_id>", methods=["GET"])
+def get_favorites_for_user(user_id):
+    """
+    Get list of all favorites for this user
+    """
+    # return crud.load_favorites
+    pass
+
+
+@app.route("/favorites/user/<post_id>", methods=["GET"])
+def get_is_post_favorite_by_user(post_id):
+    """
+    Is this post in user's favorite?
+    """
+
+    pass
+
+
+@app.route("/favorites/user/add/<post_id>", methods=["GET"])
+def add_post_to_user_favorites(post_id):
+    """
+    Add a post to user's favorites
+    """
+
+    # check if user logged in
+    # check if post_id is valid
+    # crud create new favorite for this user.
+
+    # Check User Logged In
+    if not is_user_signed_in():
+        return redirect("/")
+
+    user_id = session["user_id"]
+    f = crud.create_favorites(user_id=user_id, post_id=post_id)
+    return jsonify(f)
 
 
 if __name__ == "__main__":

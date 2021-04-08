@@ -12,7 +12,47 @@
 <p>{{post.makeup_type}}
 </p>
 
+<form action="/posts/{{post.post_id}}/edit" method="POST">
+    <input type="hidden" name="form_id" value="basic_info" />
+    <p> title: <input type="text" name="title" value="{{post.title}}"></p>
+    <p> Post_description: <input type="text" name="post_description" value="{{post.post_description}}"></p>
+    Makeup Type: <select name="makeup_type" id="makeup_type">
+        <option value="dramatic">Dramatic</option>
+        <option value="wedding">Wedding</option>
+        <option value="classic">Classic</option>
+        <option value="runway">Runway</option>
+        <option value="specialeffects">Special Effects</option>
+    </select>
+    <input type="submit" name="Save" />
+</form>
+<br />
+<form action="/posts/{{post.post_id}}/edit" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="form_id" value="post_image" />
+    <input type='file' name="file1">
+    <input type="submit" name="Save" />
+</form>
+
+
+</form>
+
+
+
 {% for product in products %}
+<img src="/static/images/products/{{product.image_url}}" height="50" width="50"/> <a href="{{product.website_link}}">{{product.title}}</a>
+<p>
+
+</p>
+<p>{{product.product_details}}</p>
+
+{% endfor %}
+
+
+{% for post_image in post_images %}
+<img src="/static/images/posts/{{post_image.img_url}}" />
+{% endfor %}
+
+<!-- {% for product in products %}
+
 <li><a href="{{product.website_link}}">{{product.title}}</a></li>
 <p>
 
@@ -23,7 +63,7 @@
 
 {% for post_image in post_images %}
 <img src="/static/images/posts/{{post_image.img_url}}" />
-{% endfor %}
+{% endfor %} -->
 
-<p>{{post.influencer_name}}</p>
+
 {% endblock %}

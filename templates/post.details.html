@@ -11,9 +11,9 @@
 
 <p>{{post.makeup_type}}
 </p>
-
+<a href= "/posts/{{post.post_id}}/edit">Edit </a>
 {% for product in products %}
-<li><a href="{{product.website_link}}">{{product.title}}</a></li>
+<img src="/static/images/products/{{product.image_url}}" height="50" width="50"/> <a href="{{product.website_link}}">{{product.title}}</a>
 <p>
 
 </p>

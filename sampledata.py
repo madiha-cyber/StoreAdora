@@ -20,6 +20,7 @@ def create(
     makeup_type,
     post_image,
     profile_picture,
+    products=[],
 ):
     u = create_user(email=email, password=password)
     p = UserProfile(
@@ -39,6 +40,8 @@ def create(
         makeup_type=makeup_type,
     )
     i = create_makeupimage(o.post_id, post_image)
+    for product in products:
+        create_postproducts(product.product_id, o.post_id)
     return u
 
 
@@ -49,96 +52,6 @@ def add_sample_data():
     posts_list = []
     favorites_list = []
     products_list = []
-
-    u = create(
-        email="amanda@outlook.com",
-        password="123",
-        first_name="Amanda",
-        last_name="Cerney",
-        insta_handle="@madihagoheerofficial",
-        bio="Some test bio",
-        post_title="Dramatic makeup",
-        post_description="This is a look that I created using these products",
-        makeup_type="Dramatic",
-        post_image="1_1.jpg",
-        profile_picture="1.jpg",
-    )
-    users_list.append(u)
-
-    u = create(
-        email="huda@outlook.com",
-        password="123",
-        first_name="madiha",
-        last_name="Latif",
-        insta_handle="@madihagoheerofficial",
-        bio="Some test bio",
-        post_title="Dramatic makeup",
-        post_description="This is a look that I created using these products",
-        makeup_type="Dramatic",
-        post_image="2_1.jpg",
-        profile_picture="2.jpg",
-    )
-    users_list.append(u)
-
-    u = create(
-        email="madihagoheer@outlook.com",
-        password="123",
-        first_name="Madiha",
-        last_name="Goheer",
-        insta_handle="@madihagoheerofficial",
-        bio="Some test bio",
-        post_title="Dramatic makeup",
-        post_description="This is a look that I created using these products",
-        makeup_type="Dramatic",
-        post_image="3_1.jpg",
-        profile_picture="3.jpg",
-    )
-    users_list.append(u)
-
-    u = create(
-        email="myreengoheer@outlook.com",
-        password="123",
-        first_name="Myreen",
-        last_name="Goheer",
-        insta_handle="@madihagoheerofficial",
-        bio="Some test bio",
-        post_title="Dramatic makeup",
-        post_description="This is a look that I created using these products",
-        makeup_type="Dramatic",
-        post_image="4_1.jpg",
-        profile_picture="1.jpg",
-    )
-    users_list.append(u)
-
-    # # User 1
-    # u = create_user(email="madihagoheer@outlook.com", password="123")
-    # p = UserProfile(
-    #     user_id=u.user_id,
-    #     first_name="Madiha",
-    #     last_name="Goheer",
-    #     insta_handle="@madihagoheerofficial",
-    #     bio="Makeup Artist",
-    # )
-    # users_list.append(u)
-    # profiles_list.append(p)
-
-    # # User 2
-    # u = create_user(email="asimgoheer@outlook.com", password="123")
-    # p = UserProfile(
-    #     user_id=u.user_id,
-    #     first_name="Myreen",
-    #     last_name="Goheer",
-    #     insta_handle="@asimgoheerofficial",
-    #     bio="Makeup Blogger",
-    # )
-    # users_list.append(u)
-    # profiles_list.append(p)
-
-    # # User 3
-    # u = create_user(email="myreen@hotmail.com", password="123")
-    # p = UserProfile(user_id=u.user_id, insta_handle="@myreengoheerofficial")
-    # users_list.append(u)
-    # profiles_list.append(p)
 
     # Product 1
     p = create_product(
@@ -158,7 +71,7 @@ def add_sample_data():
     )
     products_list.append(p)
 
-    # Product 2
+    # Product 3
     p = create_product(
         "Concealer",
         "Huda Beauty Concealer For Light Skin",
@@ -167,7 +80,7 @@ def add_sample_data():
     )
     products_list.append(p)
 
-    # Product 2
+    # Product 4
     p = create_product(
         "Concealer",
         "Huda Beauty makeup brushes",
@@ -175,6 +88,72 @@ def add_sample_data():
         "1.png",
     )
     products_list.append(p)
+
+    u = create(
+        email="amanda@outlook.com",
+        password="123",
+        first_name="Amanda",
+        last_name="Cerney",
+        insta_handle="@madihagoheerofficial",
+        bio="Some test bio",
+        post_title="Dramatic makeup",
+        post_description="This is a look that I created using these products",
+        makeup_type="Dramatic",
+        post_image="1_1.jpg",
+        profile_picture="1.jpg",
+        products=products_list,
+    )
+    users_list.append(u)
+
+    u = create(
+        email="huda@outlook.com",
+        password="123",
+        first_name="madiha",
+        last_name="Latif",
+        insta_handle="@madihagoheerofficial",
+        bio="Some test bio",
+        post_title="Dramatic makeup",
+        post_description="This is a look that I created using these products",
+        makeup_type="Dramatic",
+        post_image="2_1.jpg",
+        profile_picture="2.jpg",
+        products=products_list,
+    )
+    users_list.append(u)
+
+    u = create(
+        email="madihagoheer@outlook.com",
+        password="123",
+        first_name="Madiha",
+        last_name="Goheer",
+        insta_handle="@madihagoheerofficial",
+        bio="Some test bio",
+        post_title="Dramatic makeup",
+        post_description="This is a look that I created using these products",
+        makeup_type="Dramatic",
+        post_image="3_1.jpg",
+        profile_picture="3.jpg",
+        products=products_list,
+    )
+    users_list.append(u)
+
+    u = create(
+        email="myreengoheer@outlook.com",
+        password="123",
+        first_name="Myreen",
+        last_name="Goheer",
+        insta_handle="@madihagoheerofficial",
+        bio="Some test bio",
+        post_title="Dramatic makeup",
+        post_description="This is a look that I created using these products",
+        makeup_type="Dramatic",
+        post_image="4_1.jpg",
+        profile_picture="1.jpg",
+        products=products_list,
+    )
+    users_list.append(u)
+
+
     # # User 1 Post 1
     # p = create_post(
     #     user_id=users_list[0].user_id,
