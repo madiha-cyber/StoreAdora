@@ -6,10 +6,7 @@
 
 <div id="container">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
-
     <a href="/profile/edit">Edit Profile</a>
-
-    <a href="/newlook">Create New Look</a>
     <br />
     {%if userprofile.profile_picture%}
     <img src="/static/images/profile/{{userprofile.profile_picture}}" />
@@ -17,15 +14,13 @@
     <img src="/static/images/profile/default.png" />
     {%endif%}
 
+    <br/>
     <!-- Show all my looks on this page below -->
+    {% for post in user_posts %}
+    <a href="/posts/{{post.post_id}}">
+        <img src="/static/images/posts/{{post.post_id}}_p.jpg" />
+    </a>
+    {% endfor %}
 </div>
-
-{% for post in user_posts %}
-<a href="/posts/{{post.post_id}}">
-<img src="/static/images/posts/{{post.post_id}}_p.jpg" />
-</a>
-{% endfor %}
-
-
 
 {% endblock %}

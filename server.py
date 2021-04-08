@@ -12,6 +12,7 @@ import image_helpers
 
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = "dev"
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 # app.jinja_env.undefined = StrictUndefined
 
 UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
@@ -218,7 +219,7 @@ def save_edit_profile():
 
         f = request.files["file1"]
 
-        result = image_helpers.resize_image_square_crop(f.stream, (100, 100))
+        result = image_helpers.resize_image_square_crop(f.stream, (400, 400))
         (success, msg, resized_image) = result
         if success == False:
             flash(msg)

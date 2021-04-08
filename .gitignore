@@ -1,5 +1,5 @@
 env/
 *.pyc
 __pycache__
-static/images/profile/*.jpg
+static/images/*
 .vscode

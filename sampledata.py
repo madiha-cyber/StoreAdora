@@ -19,6 +19,7 @@ def create(
     post_description,
     makeup_type,
     post_image,
+    profile_picture,
 ):
     u = create_user(email=email, password=password)
     p = UserProfile(
@@ -27,6 +28,7 @@ def create(
         last_name=last_name,
         insta_handle=insta_handle,
         bio=bio,
+        profile_picture=profile_picture,
     )
     db.session.add(p)
     db.session.commit()
@@ -49,21 +51,22 @@ def add_sample_data():
     products_list = []
 
     u = create(
-        email="madihagoheer@outlook.com",
+        email="amanda@outlook.com",
         password="123",
-        first_name="madiha",
-        last_name="Goheer",
+        first_name="Amanda",
+        last_name="Cerney",
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="1_1.jpg",
+        profile_picture="1.jpg",
     )
     users_list.append(u)
 
     u = create(
-        email="madiha_latif@outlook.com",
+        email="huda@outlook.com",
         password="123",
         first_name="madiha",
         last_name="Latif",
@@ -73,13 +76,14 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="2_1.jpg",
+        profile_picture="2.jpg",
     )
     users_list.append(u)
 
     u = create(
-        email="asimgoheer@outlook.com",
+        email="madihagoheer@outlook.com",
         password="123",
-        first_name="Asim",
+        first_name="Madiha",
         last_name="Goheer",
         insta_handle="@madihagoheerofficial",
         bio="Some test bio",
@@ -87,6 +91,7 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="3_1.jpg",
+        profile_picture="3.jpg",
     )
     users_list.append(u)
 
@@ -101,6 +106,7 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         post_image="4_1.jpg",
+        profile_picture="1.jpg",
     )
     users_list.append(u)
 
@@ -139,7 +145,7 @@ def add_sample_data():
         "Foundation",
         "Nars Longwear",
         "https://www.sephora.com/",
-        "/static/images/foundation1.jpg",
+        "1.png",
     )
     products_list.append(p)
 
@@ -148,7 +154,7 @@ def add_sample_data():
         "Concealer",
         "Huda Beauty Concealer for Dark Skin",
         "https://www.sephora.com/",
-        "/static/images/foundation1.jpg",
+        "2.png",
     )
     products_list.append(p)
 
@@ -157,7 +163,7 @@ def add_sample_data():
         "Concealer",
         "Huda Beauty Concealer For Light Skin",
         "https://www.sephora.com/",
-        "/static/images/foundation1.jpg",
+        "3.png",
     )
     products_list.append(p)
 
@@ -166,7 +172,7 @@ def add_sample_data():
         "Concealer",
         "Huda Beauty makeup brushes",
         "https://www.sephora.com/",
-        "/static/images/foundation1.jpg",
+        "1.png",
     )
     products_list.append(p)
     # # User 1 Post 1
@@ -204,6 +210,10 @@ def add_sample_data():
     print("Added objects to DB")
 
 
+def add_sample_images():
+    os.system("cp -r data/sampledata/* static/images/")
+
+
 if __name__ == "__main__":
     from flask import Flask
 
@@ -214,3 +224,4 @@ if __name__ == "__main__":
     connect_to_db(app)
     db.create_all()
     add_sample_data()
+    add_sample_images()
