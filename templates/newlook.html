@@ -5,28 +5,93 @@
 
 <h1>Create a New Look</h1>
 <h2>Add an Image</h2>
-<form action="/newlook" method="POST" enctype="multipart/form-data">
+<style>
+    .column20 {
+        float: left;
+        width: 20%;
+    }
+
+    .column80 {
+        float: left;
+        width: 80%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        function setProduct(product) {
+            if (product == undefined || product == null || !product.id || product.id == -1) {
+                return "Search for a product";
+            }
+            var $product = $('<div class="row"><div class="column20"><img src="/static/images/posts/10_p.jpg" width="50" height="50"></div><div class="column80"><div>' + product.title + '</div><div>' + product.description + '</div></div></div>');
+            return $product;
+        }
+        function transformResults(data) {
+            var results = [];
+            $.each(data, function (index, product) {
+                results.push({
+                    id: product.product_id,
+                    title: product.title,
+                    description: product.product_details,
+                    img_url: product.image_url,
+                })
+            });
+            return {
+                "results": results
+            };
+        }
+        $("#selProduct").select2({
+            placeholder: "Search for a product",
+            templateResult: setProduct,
+            //templateSelection: setProduct,
+            ajax: {
+                processResults: transformResults,
+                url: '/products/search.json',
+                type: "get",
+                dataType: 'json',
+                delay: 250,
+            },
+        });
+        $('#selProduct').on('select2:select', function (e) {
+            var data = e.params.data;
+            console.log(data);
+            $('#products').append("<div id='" + data.id + "'><img src='/static/images/posts/10_p.jpg' width='30' height='30'/><input type='hidden' name='product' value='" + data.id + "' /><input type='button' name='remove' value='remove'/></div>");
+        });
+    });
+</script>
+<form id="newlook" action="/newlook" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="form_id" value="new_look" accept="image/jpeg" />
-    <input type='file' name="file1">
-    <br/>
-    Post Title <input type="text" name="post_title"/>
-    <br/>
-
-    Post Description <input type="text" name="post_description" />
-    <br/>
-    Add Products<input type="text" name="post_products">
-
-    <select name="makeup_type" id="makeup_type">
+    <br />
+    Post Title: <input type="text" name="post_title" />
+    <br />
+    Post Description: <input type="text" name="post_description" />
+    <br />
+    <!-- Example https://select2.org/data-sources/ajax -->
+    Search for a Product:
+    <select id="selProduct" style="width:400px;">
+        <!-- <option value="-1">- Search for Product to Add -</option> -->
+    </select>
+    <br />
+    <div id="products"></div>
+    <br />
+    Makeup Type: <select name="makeup_type" id="makeup_type">
         <option value="dramatic">Dramatic</option>
         <option value="wedding">Wedding</option>
         <option value="classic">Classic</option>
         <option value="runway">Runway</option>
         <option value="specialeffects">Special Effects</option>
     </select>
-    <br/>
-    <br/>
+    <br />
+    Select Image: <input type='file' name="file1">
+    <br />
 
     <input type="submit" name="Save" />
 </form>
-<br/>
+<br />
 {% endblock %}

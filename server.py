@@ -365,13 +365,18 @@ def save_newlook_page():
         return redirect(f"/posts/{post_id}")
 
 
-@app.route("/products/search/<name>", methods=["GET"])
-def search_product_by_name(name):
+@app.route("/products/search.json", methods=["GET"])
+def search_product_by_name():
     """
     Search Product that match the name in DB
     """
-    result = crud.get_products_by_name(name)
-    return jsonify(result)
+    name = request.args.get("q")
+    if name is None:
+        return jsonify([])
+
+    results = crud.get_products_by_name(name)
+
+    return jsonify(results)
 
 
 @app.route("/products/add", methods=["POST"])

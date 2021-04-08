@@ -146,12 +146,29 @@ def add_sample_data():
     # Product 2
     p = create_product(
         "Concealer",
-        "Huda Beauty",
+        "Huda Beauty Concealer for Dark Skin",
         "https://www.sephora.com/",
         "/static/images/foundation1.jpg",
     )
     products_list.append(p)
 
+    # Product 2
+    p = create_product(
+        "Concealer",
+        "Huda Beauty Concealer For Light Skin",
+        "https://www.sephora.com/",
+        "/static/images/foundation1.jpg",
+    )
+    products_list.append(p)
+
+    # Product 2
+    p = create_product(
+        "Concealer",
+        "Huda Beauty makeup brushes",
+        "https://www.sephora.com/",
+        "/static/images/foundation1.jpg",
+    )
+    products_list.append(p)
     # # User 1 Post 1
     # p = create_post(
     #     user_id=users_list[0].user_id,
