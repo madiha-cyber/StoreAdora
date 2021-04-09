@@ -110,7 +110,7 @@ class Favorites(db.Model):
         return f"<Favorites favorites_id={self.favorites_id} user_id={self.user_id}  post_id={self.post_id} date_favorites={self.date_favorites}>"
 
 
-# https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json
+#
 @dataclass
 class Product(db.Model):
     product_id: int

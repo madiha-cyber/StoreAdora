@@ -40,9 +40,26 @@ def create_favorites(user_id, post_id):
     db.session.commit()
     return f
 
+
 def load_favorites(user_id):
     """"""
     return Favorites.query.filter(Favorites.user_id == user_id).all()
+
+
+def get_is_post_favorite_by_user(user_id, post_id):
+    """ checks if post is favorite by the user"""
+
+    return (
+        Favorites.query.filter(Favorites.user_id == user_id)
+        .filter(Favorites.post_id == post_id)
+        .first()
+    )
+
+def remove_post_from_user_favorites(user_id, post_id):
+    """"""
+
+    return  Favorites.query.filter(Favorites.user_id == user_id).filter(Favorites.post_id == post_id).delete()
+
 
 
 def create_product(product_details, title, website_link=None, image_url=None):
@@ -188,15 +205,16 @@ def update_user_profile_info(user_id, first_name, last_name, insta_handle, bio):
     )
     db.session.commit()
 
+
 def update_post_info(post_id, title, post_description, makeup_type):
     """updates users post"""
     # import pdb; pdb.set_trace()
     db.session.query(Post.post_id == post_id).update(
         {
-            "title":title,
+            "title": title,
             "post_description": post_description,
-            "makeup_type" : makeup_type,
-            #product_details :product_details
+            "makeup_type": makeup_type,
+            # product_details :product_details
         }
     )
     db.session.commit()

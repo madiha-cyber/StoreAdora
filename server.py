@@ -454,8 +454,15 @@ def get_is_post_favorite_by_user(post_id):
     """
     Is this post in user's favorite?
     """
-
-    pass
+    # Check User Logged In
+    if not is_user_signed_in():
+        return jsonify({})
+    user_id = session["user_id"]
+    result = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
+    if result != None:
+        return jsonify({"id": result.favorites_id})
+    else:
+        return jsonify([])
 
 
 @app.route("/favorites/user/add/<post_id>", methods=["GET"])
@@ -463,18 +470,44 @@ def add_post_to_user_favorites(post_id):
     """
     Add a post to user's favorites
     """
-
-    # check if user logged in
-    # check if post_id is valid
-    # crud create new favorite for this user.
-
     # Check User Logged In
     if not is_user_signed_in():
-        return redirect("/")
+        return jsonify({})
 
     user_id = session["user_id"]
+    p = crud.get_post(post_id=post_id)
+    if p == None:
+        return jsonify([])
+
+    u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
+    if u != None:
+        return jsonify({"id": u.favorites_id})
+
     f = crud.create_favorites(user_id=user_id, post_id=post_id)
-    return jsonify(f)
+    return jsonify({"id": f.favorites_id})
+
+
+@app.route("/favorites/user/remove/<post_id>", methods=["GET"])
+def remove_post_from_user_favorites(post_id):
+    """
+    Remove a post from user's favorites
+    """
+    # Check User Logged In
+    if not is_user_signed_in():
+        return jsonify({})
+
+    user_id = session["user_id"]
+    p = crud.get_post(post_id=post_id)
+    if p == None:
+        return jsonify([])
+
+    u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
+    if u == None:
+        return jsonify([])
+
+    r = crud.remove_post_from_user_favorites(user_id=user_id, post_id=post_id)
+    if r != None:
+        return jsonify({})
 
 
 if __name__ == "__main__":
