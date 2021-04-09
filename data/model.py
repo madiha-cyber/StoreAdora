@@ -1,13 +1,7 @@
-"""Models from Myreens Beauty Hub"""
+"""Models for StoreAdora"""
 
-import os
-import json
-from random import choice, randint
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
-
-from datetime import datetime
 
 db = SQLAlchemy()
 

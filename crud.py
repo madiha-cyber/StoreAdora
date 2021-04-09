@@ -55,11 +55,15 @@ def get_is_post_favorite_by_user(user_id, post_id):
         .first()
     )
 
+
 def remove_post_from_user_favorites(user_id, post_id):
     """"""
 
-    return  Favorites.query.filter(Favorites.user_id == user_id).filter(Favorites.post_id == post_id).delete()
-
+    return (
+        Favorites.query.filter(Favorites.user_id == user_id)
+        .filter(Favorites.post_id == post_id)
+        .delete()
+    )
 
 
 def create_product(product_details, title, website_link=None, image_url=None):

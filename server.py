@@ -4,10 +4,6 @@ from flask import Flask, render_template, request, flash, session, redirect, jso
 from data.model import connect_to_db
 import os
 import crud
-import json
-
-from jinja2 import StrictUndefined
-from PIL import Image
 import image_helpers
 
 app = Flask(__name__, static_url_path="/static")
@@ -52,8 +48,8 @@ def is_user_signed_in():
     """
     Check if user's session exists
     """
-    # return "user_id" in session and session["user_id"] != None
-    return session.get("user_id") != None
+    # return "user_id" in session and session["user_id"] is not None
+    return session.get("user_id") is not None
 
 
 @app.route("/login", methods=["GET"])
@@ -221,7 +217,7 @@ def save_edit_profile():
 
         result = image_helpers.resize_image_square_crop(f.stream, (400, 400))
         (success, msg, resized_image) = result
-        if success == False:
+        if success is False:
             flash(msg)
             return redirect("/profile/edit")
         else:
@@ -239,7 +235,7 @@ def save_edit_profile():
         # to display an error message we are wrting this conditional
         if (
             crud.update_password_for_user_id(user_id, old_password, new_password)
-            == False
+            is False
         ):
             flash("Old password is incorrect")
         else:
@@ -281,7 +277,6 @@ def save_edit_post_page(post_id):
     if not is_user_signed_in():
         return redirect("/")
 
-    user_id = session["user_id"]
     form_id = request.form.get("form_id")
 
     if form_id == "basic_info":
@@ -309,7 +304,7 @@ def save_edit_post_page(post_id):
         (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
             file.stream, (500, 500)
         )
-        if thumb_success == False or fullres_success == False:
+        if thumb_success is False or fullres_success is False:
             flash(thumb_msg or fullres_msg)
             return redirect(f"/posts/{post_id}/edit")
         else:
@@ -359,17 +354,17 @@ def save_newlook_page():
         return redirect("/newlook")
 
     post_title = request.form.get("post_title")
-    if post_title == None or len(post_title) < 3:
+    if post_title is None or len(post_title) < 3:
         flash("Post Title is too short")
         return redirect("/newlook")
 
     post_description = request.form.get("post_description")
-    if post_description == None or len(post_description) > 150:
+    if post_description is None or len(post_description) > 150:
         flash("Post description is too long")
         return redirect("/newlook")
 
     makeup_type = request.form.get("makeup_type")
-    if makeup_type == None or len(makeup_type) > 20:
+    if makeup_type is None or len(makeup_type) > 20:
         flash("Makeup_type is too long")
         return redirect("/newlook")
 
@@ -381,7 +376,7 @@ def save_newlook_page():
     (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
         file.stream, (500, 500)
     )
-    if thumb_success == False or fullres_success == False:
+    if thumb_success is False or fullres_success is False:
         flash(thumb_msg or fullres_msg)
         return redirect("/newlook")
     else:
@@ -438,6 +433,7 @@ def add_product():
     product = crud.create_product(
         product_details=details, title=title, website_link=url
     )
+    return jsonify(product)
 
 
 @app.route("/favorites/<user_id>", methods=["GET"])
@@ -459,7 +455,7 @@ def get_is_post_favorite_by_user(post_id):
         return jsonify({})
     user_id = session["user_id"]
     result = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
-    if result != None:
+    if result is not None:
         return jsonify({"id": result.favorites_id})
     else:
         return jsonify([])
@@ -476,11 +472,11 @@ def add_post_to_user_favorites(post_id):
 
     user_id = session["user_id"]
     p = crud.get_post(post_id=post_id)
-    if p == None:
+    if p is None:
         return jsonify([])
 
     u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
-    if u != None:
+    if u is not None:
         return jsonify({"id": u.favorites_id})
 
     f = crud.create_favorites(user_id=user_id, post_id=post_id)
@@ -498,15 +494,15 @@ def remove_post_from_user_favorites(post_id):
 
     user_id = session["user_id"]
     p = crud.get_post(post_id=post_id)
-    if p == None:
+    if p is None:
         return jsonify([])
 
     u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
-    if u == None:
+    if u is None:
         return jsonify([])
 
     r = crud.remove_post_from_user_favorites(user_id=user_id, post_id=post_id)
-    if r != None:
+    if r is not None:
         return jsonify({})
 
 
