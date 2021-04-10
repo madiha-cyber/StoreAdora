@@ -11,16 +11,18 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
-    """A user."""
+    """
+    A user
+    """
 
     __tablename__ = "users"
 
-    # PK
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    # Columns
+    user_id = db.Column(
+        db.Integer, autoincrement=True, primary_key=True, nullable=False
+    )
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
-
-    # user = db.relationship('UserProfile', backref="users")
 
     def __repr__(self):
         return f"<User user_id={self.user_id} email={self.email}>"
@@ -29,10 +31,15 @@ class User(db.Model):
 class UserProfile(db.Model):
     """Each user's profile"""
 
-    __tablename__ = "userprofile"
+    __tablename__ = "userprofiles"
+
+    # Relationships
+    user = db.relationship("User", backref="userprofiles")
 
     # user_id is the primary key and foreign key
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), primary_key=True)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("users.user_id"), primary_key=True, nullable=False
+    )
     profile_picture = db.Column(db.String)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
@@ -59,17 +66,24 @@ class UserProfile(db.Model):
     # we also have to specify uselist=False as an option when calling db.relationship(uselist=False)
 
     def __repr__(self):
-        return f"<UserProfile profile_id={self.profile_id} insta_handle={self.insta_handle} >"
+        return f"<UserProfile user_id={self.user_id} insta_handle={self.insta_handle} >"
 
 
 class Post(db.Model):
     """A Post created by the user"""
 
-    __tablename__ = "post"
+    __tablename__ = "posts"
 
-    post_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    # Relationships
+    user = db.relationship("User", backref="posts")
+    products = db.relationship("Product", backref="posts", secondary="postproducts")
+
+    # Columns
+    post_id = db.Column(
+        db.Integer, autoincrement=True, primary_key=True, nullable=False
+    )
     title = db.Column(db.String)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
     post_description = db.Column(db.Text, nullable=True)
     makeup_type = db.Column(db.String, nullable=True)
 
@@ -80,28 +94,37 @@ class Post(db.Model):
 class MakeupImage(db.Model):
     """Images of each post"""
 
-    __tablename__ = "makeupimage"
+    __tablename__ = "makeupimages"
 
+    # Relationships
+    post = db.relationship("Post", backref="makeupimages")
+
+    # Columns
     img_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey("post.post_id"))
-    img_url = db.Column(db.String)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.post_id"))
+    image = db.Column(db.String)
 
     def __repr__(self):
-        return f"<MakeupImage img_id={self.img_id} post_id={self.post_id}  img_url={self.img_url}"
+        return f"<MakeupImage img_id={self.img_id} post_id={self.post_id}  image={self.image}"
 
 
-class Favorites(db.Model):
-    """Favorites Post of each User"""
+class Favorite(db.Model):
+    """Favorite Post of each User"""
 
     __tablename__ = "favorites"
 
+    # Relationships
+    post = db.relationship("Post", backref="favorites")
+    user = db.relationship("User", backref="favorites")
+
+    # Columns
     favorites_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
-    post_id = db.Column(db.Integer, db.ForeignKey("post.post_id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.post_id"))
     date_favorites = db.Column(db.DateTime)
 
     def __repr__(self):
-        return f"<Favorites favorites_id={self.favorites_id} user_id={self.user_id}  post_id={self.post_id} date_favorites={self.date_favorites}>"
+        return f"<Favorite favorites_id={self.favorites_id} user_id={self.user_id}  post_id={self.post_id} date_favorites={self.date_favorites}>"
 
 
 #
@@ -109,29 +132,30 @@ class Favorites(db.Model):
 class Product(db.Model):
     product_id: int
     title: str
-    product_details: str
-    website_link: str
-    image_url: str
+    details: str
+    url: str
+    image: str
 
-    __tablename__ = "product"
+    __tablename__ = "products"
 
     product_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String)
-    product_details = db.Column(db.Text)
-    website_link = db.Column(db.String)
-    image_url = db.Column(db.String)
+    details = db.Column(db.Text)
+    url = db.Column(db.String)
+    image = db.Column(db.String)
 
     def __repr__(self):
-        return f"<Product product_id={self.product_id} product_details={self.product_details} website_link={self.website_link} img_url={self.image_url}>"
+        return f"<Product product_id={self.product_id} details={self.details} url={self.url} image={self.image}>"
 
 
 class PostProducts(db.Model):
 
     __tablename__ = "postproducts"
 
+    # Columns
     post_product_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey("product.product_id"))
-    post_id = db.Column(db.Integer, db.ForeignKey("post.post_id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("products.product_id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.post_id"))
 
     def __repr__(self):
         return f"<PostProducts post_product_id={self.post_product_id} product_id={self.product_id} post_id={self.post_id}>"

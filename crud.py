@@ -3,7 +3,7 @@ from data.model import (
     UserProfile,
     db,
     Post,
-    Favorites,
+    Favorite,
     Product,
     PostProducts,
     MakeupImage,
@@ -35,7 +35,7 @@ def create_post(user_id, title, post_description, makeup_type):
 
 def create_favorites(user_id, post_id):
     """"""
-    f = Favorites(user_id=user_id, post_id=post_id, date_favorites=datetime.now())
+    f = Favorite(user_id=user_id, post_id=post_id, date_favorites=datetime.now())
     db.session.add(f)
     db.session.commit()
     return f
@@ -43,15 +43,15 @@ def create_favorites(user_id, post_id):
 
 def load_favorites(user_id):
     """"""
-    return Favorites.query.filter(Favorites.user_id == user_id).all()
+    return Favorite.query.filter(Favorite.user_id == user_id).all()
 
 
 def get_is_post_favorite_by_user(user_id, post_id):
     """ checks if post is favorite by the user"""
 
     return (
-        Favorites.query.filter(Favorites.user_id == user_id)
-        .filter(Favorites.post_id == post_id)
+        Favorite.query.filter(Favorite.user_id == user_id)
+        .filter(Favorite.post_id == post_id)
         .first()
     )
 
@@ -60,28 +60,28 @@ def remove_post_from_user_favorites(user_id, post_id):
     """"""
 
     return (
-        Favorites.query.filter(Favorites.user_id == user_id)
-        .filter(Favorites.post_id == post_id)
+        Favorite.query.filter(Favorite.user_id == user_id)
+        .filter(Favorite.post_id == post_id)
         .delete()
     )
 
 
-def create_product(product_details, title, website_link=None, image_url=None):
+def create_product(details, title, url=None, image=None):
     """"""
     p = Product(
         title=title,
-        product_details=product_details,
-        website_link=website_link,
-        image_url=image_url,
+        details=details,
+        url=url,
+        image=image,
     )
     db.session.add(p)
     db.session.commit()
     return p
 
 
-def create_makeupimage(post_id, img_url):
+def create_makeupimage(post_id, image):
     """"""
-    m = MakeupImage(post_id=post_id, img_url=img_url)
+    m = MakeupImage(post_id=post_id, image=image)
     db.session.add(m)
     db.session.commit()
     return m
@@ -218,7 +218,7 @@ def update_post_info(post_id, title, post_description, makeup_type):
             "title": title,
             "post_description": post_description,
             "makeup_type": makeup_type,
-            # product_details :product_details
+            # details :details
         }
     )
     db.session.commit()

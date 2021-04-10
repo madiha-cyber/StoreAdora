@@ -29,7 +29,7 @@
             if (product == undefined || product == null || !product.id || product.id == -1) {
                 return "Search for a product";
             }
-            var $product = $('<div class="row"><div class="column20"><img src="/static/images/products/'+product.img_url+'" width="50" height="50"></div><div class="column80"><div>' + product.title + '</div><div>' + product.description + '</div></div></div>');
+            var $product = $('<div class="row"><div class="column20"><img src="/static/images/products/'+product.image+'" width="50" height="50"></div><div class="column80"><div>' + product.title + '</div><div>' + product.description + '</div></div></div>');
             return $product;
         }
         function transformResults(data) {
@@ -38,8 +38,8 @@
                 results.push({
                     id: product.product_id,
                     title: product.title,
-                    description: product.product_details,
-                    img_url: product.image_url,
+                    description: product.details,
+                    image: product.image,
                 })
             });
             return {
@@ -61,7 +61,7 @@
         $('#selProduct').on('select2:select', function (e) {
             var data = e.params.data;
             console.log(data);
-            $('#products').append("<div id='" + data.id + "'><img src='/static/images/products/"+data.img_url+"' width='30' height='30'/><input type='hidden' name='product' value='" + data.id + "' /><input type='button' name='remove' value='remove'/></div>");
+            $('#products').append("<div id='" + data.id + "'><img src='/static/images/products/"+data.image+"' width='30' height='30'/><input type='hidden' name='product' value='" + data.id + "' /><input type='button' name='remove' value='remove'/></div>");
         });
     });
 </script>

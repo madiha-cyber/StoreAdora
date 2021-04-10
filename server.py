@@ -292,6 +292,7 @@ def save_edit_post_page(post_id):
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
 
+        import pdb; pdb.set_trace()
         file = request.files["file1"]
         index = 0
 
@@ -395,7 +396,7 @@ def save_newlook_page():
         path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
         resized_image_post.save(path)
         # Crud makeup image
-        crud.create_makeupimage(post_id=post_id, img_url=file_name)
+        crud.create_makeupimage(post_id=post_id, image=file_name)
 
         # Save thumbnail image
         file_name = str.format("{0}_p.jpg", post_id)
@@ -431,7 +432,7 @@ def add_product():
     details = request.form.get("details")
     url = request.form.get("url")
     product = crud.create_product(
-        product_details=details, title=title, website_link=url
+        details=details, title=title, url=url
     )
     return jsonify(product)
 

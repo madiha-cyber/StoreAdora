@@ -18,30 +18,42 @@ def create(
     post_title,
     post_description,
     makeup_type,
-    post_image,
+    post_images,
     profile_picture,
     products=[],
 ):
     u = create_user(email=email, password=password)
-    p = UserProfile(
-        user_id=u.user_id,
-        first_name=first_name,
-        last_name=last_name,
-        insta_handle=insta_handle,
-        bio=bio,
-        profile_picture=profile_picture,
+    u.userprofiles.append(
+        UserProfile(
+            user_id=u.user_id,
+            first_name=first_name,
+            last_name=last_name,
+            insta_handle=insta_handle,
+            bio=bio,
+            profile_picture=profile_picture,
+        )
     )
-    db.session.add(p)
-    db.session.commit()
-    o = create_post(
+    p = Post(
         user_id=u.user_id,
         title=post_title,
         post_description=post_description,
         makeup_type=makeup_type,
     )
-    i = create_makeupimage(o.post_id, post_image)
-    for product in products:
-        create_postproducts(product.product_id, o.post_id)
+    for post_image in post_images:
+        p.makeupimages.append(MakeupImage(image=post_image))
+    p.products.append(
+        Product(
+            title="Foundation",
+            details="Nars Longwear",
+            url="https://www.sephora.com/",
+            image="1.png",
+        )
+    )
+    u.posts.append(p)
+    db.session.commit()
+
+    # for product in products:
+    #     create_postproducts(product.product_id, o.post_id)
     return u
 
 
@@ -99,7 +111,7 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_image="1_1.jpg",
+        post_images=["1_0.jpg", "1_1.jpg", "1_2.jpg"],
         profile_picture="1.jpg",
         products=products_list,
     )
@@ -115,7 +127,7 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_image="2_1.jpg",
+        post_images=["2_0.jpg", "2_1.jpg", "2_2.jpg"],
         profile_picture="2.jpg",
         products=products_list,
     )
@@ -131,7 +143,7 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_image="3_1.jpg",
+        post_images=["3_0.jpg"],
         profile_picture="3.jpg",
         products=products_list,
     )
@@ -147,12 +159,11 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_image="4_1.jpg",
+        post_images=["4_0.jpg"],
         profile_picture="1.jpg",
         products=products_list,
     )
     users_list.append(u)
-
 
     # # User 1 Post 1
     # p = create_post(
@@ -175,11 +186,11 @@ def add_sample_data():
     # create_postproducts(products_list[0].product_id, p.post_id)
     # create_postproducts(products_list[1].product_id, p.post_id)
 
-    # # User 2 Favorites 1
+    # # User 2 Favorite 1
     # f = create_favorites(user_id=users_list[1].user_id, post_id=posts_list[0].post_id)
     # favorites_list.append(f)
 
-    # # User 2 Favorites 2
+    # # User 2 Favorite 2
     # f = create_favorites(user_id=users_list[1].user_id, post_id=posts_list[1].post_id)
     # favorites_list.append(f)
 

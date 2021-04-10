@@ -38,31 +38,31 @@
 
 
 {% for product in products %}
-<img src="/static/images/products/{{product.image_url}}" height="50" width="50"/> <a href="{{product.website_link}}">{{product.title}}</a>
+<img src="/static/images/products/{{product.image}}" height="50" width="50"/> <a href="{{product.url}}">{{product.title}}</a>
 <p>
 
 </p>
-<p>{{product.product_details}}</p>
+<p>{{product.details}}</p>
 
 {% endfor %}
 
 
 {% for post_image in post_images %}
-<img src="/static/images/posts/{{post_image.img_url}}" />
+<img src="/static/images/posts/{{post_image.image}}" />
 {% endfor %}
 
 <!-- {% for product in products %}
 
-<li><a href="{{product.website_link}}">{{product.title}}</a></li>
+<li><a href="{{product.url}}">{{product.title}}</a></li>
 <p>
 
 </p>
-<p>{{product.product_details}}</p>
+<p>{{product.details}}</p>
 
 {% endfor %}
 
 {% for post_image in post_images %}
-<img src="/static/images/posts/{{post_image.img_url}}" />
+<img src="/static/images/posts/{{post_image.image}}" />
 {% endfor %} -->
 
 
