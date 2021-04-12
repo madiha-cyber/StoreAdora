@@ -59,12 +59,13 @@ def get_is_post_favorite_by_user(user_id, post_id):
 def remove_post_from_user_favorites(user_id, post_id):
     """"""
 
-    return (
+    result = (
         Favorite.query.filter(Favorite.user_id == user_id)
         .filter(Favorite.post_id == post_id)
         .delete()
     )
-
+    db.session.commit()
+    return result
 
 def create_product(details, title, url=None, image=None):
     """"""

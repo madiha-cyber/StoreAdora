@@ -259,6 +259,9 @@ def show_edit_post_page(post_id):
         return redirect("/")
 
     post = crud.get_post(post_id)
+    if not post:
+        return redirect("/")
+
     products = crud.get_products_for_post(post_id)
     post_images = crud.get_post_images(post_id)
 
@@ -292,7 +295,9 @@ def save_edit_post_page(post_id):
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
 
-        import pdb; pdb.set_trace()
+        import pdb
+
+        pdb.set_trace()
         file = request.files["file1"]
         index = 0
 
@@ -413,7 +418,7 @@ def search_product_by_name():
     """
     name = request.args.get("q")
     if name is None:
-        return jsonify([])
+        return jsonify({})
 
     results = crud.get_products_by_name(name)
 
@@ -431,9 +436,7 @@ def add_product():
     title = request.form.get("title")
     details = request.form.get("details")
     url = request.form.get("url")
-    product = crud.create_product(
-        details=details, title=title, url=url
-    )
+    product = crud.create_product(details=details, title=title, url=url)
     return jsonify(product)
 
 
@@ -459,7 +462,7 @@ def get_is_post_favorite_by_user(post_id):
     if result is not None:
         return jsonify({"id": result.favorites_id})
     else:
-        return jsonify([])
+        return jsonify({})
 
 
 @app.route("/favorites/user/add/<post_id>", methods=["GET"])
@@ -474,7 +477,7 @@ def add_post_to_user_favorites(post_id):
     user_id = session["user_id"]
     p = crud.get_post(post_id=post_id)
     if p is None:
-        return jsonify([])
+        return jsonify({})
 
     u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
     if u is not None:
@@ -496,15 +499,17 @@ def remove_post_from_user_favorites(post_id):
     user_id = session["user_id"]
     p = crud.get_post(post_id=post_id)
     if p is None:
-        return jsonify([])
+        return jsonify({})
 
-    u = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
-    if u is None:
-        return jsonify([])
+    fav = crud.get_is_post_favorite_by_user(user_id=user_id, post_id=post_id)
+    if fav is None:
+        return jsonify({})
 
+    id = fav.favorites_id
     r = crud.remove_post_from_user_favorites(user_id=user_id, post_id=post_id)
     if r is not None:
-        return jsonify({})
+        return jsonify({"id": id})
+    return jsonify({})
 
 
 if __name__ == "__main__":

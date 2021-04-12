@@ -3,22 +3,48 @@
 {% block title %} {{post.title}} - {% endblock %}
 
 {% block body %}
+
 <h1>{{ post.title }}</h1>
+<div>
+    <button type="submit" id="button_add">Add to favorites</button>
+    <button type="submit" id="button_remove">Remove from favorites</button>
+</div>
 <script>
     // Add code here
     $(document).ready(function () {
+
         let url = "/favorites/user/{{post.post_id}}";
-        $.get(url, {}, function (result) {
-            if (result != undefined) {
-                console.log(result);
-                if (result["id"] !== undefined) {
-                    console.log("show remove from favorites button");
+        $.get(url, {}, function (data) {
+            if (data != undefined) {
+                //console.log(data);
+                if (data["id"] !== undefined) {
+                    //console.log("show remove from favorites button");
+                    $("#button_add").hide();
+                    $("#button_remove").show();
                 } else {
-                    console.log("show add to favorites button.")
+                    //console.log("show add to favorites button.")
+                    $("#button_add").show();
+                    $("#button_remove").hide();
                 }
             } else {
                 console.log("Some error happened.");
+                $("#button_add").show();
+                $("#button_remove").hide();
             }
+        });
+
+        $("#button_add").click(function () {
+            $.get("/favorites/user/add/{{post.post_id}}", {}, function (data) {
+                $("#button_remove").show();
+                $("#button_add").hide();
+            })
+        });
+
+        $("#button_remove").click(function () {
+            $.get("/favorites/user/remove/{{post.post_id}}", {}, function (data) {
+                $("#button_remove").hide();
+                $("#button_add").show();
+            })
         });
     });
 </script>
