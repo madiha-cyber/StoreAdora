@@ -207,6 +207,9 @@ def add_sample_images():
 if __name__ == "__main__":
     from flask import Flask
 
+    os.system("rm -r static/images/profile/*.jpg")
+    os.system("rm -r static/images/products/*")
+    os.system("rm -r static/images/posts/*.jpg")
     os.system("dropdb finalproject")
     os.system("createdb finalproject")
 
