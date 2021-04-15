@@ -221,7 +221,7 @@ def save_edit_profile():
             flash(msg)
             return redirect("/profile/edit")
         else:
-            file_name = str(user_id) + ".jpg"
+            file_name = f"{user_id}.jpg"
             path = os.path.join(UPLOAD_FOLDER_PROFILE_PICTURE, file_name)
             resized_image.save(path)
 
@@ -291,39 +291,58 @@ def save_edit_post_page(post_id):
 
         # return redirect("posts/<post_id>/edit")
     elif form_id == "post_image":
-        if "file1" not in request.files:
+        # import pdb; pdb.set_trace()
+        if "images" not in request.files:
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
 
-        import pdb
-
-        pdb.set_trace()
-        file = request.files["file1"]
+        # import pdb; pdb.set_trace()
         index = 0
+        results = []
 
+        # Create thumbnail image
         (
             thumb_success,
             thumb_msg,
             resized_image_thumb,
-        ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
-
-        (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
-            file.stream, (500, 500)
+        ) = image_helpers.resize_image_square_crop(
+            request.files.getlist("images")[0].stream, (200, 200)
         )
-        if thumb_success is False or fullres_success is False:
-            flash(thumb_msg or fullres_msg)
+
+        if thumb_success is False:
+            flash(thumb_msg)
             return redirect(f"/posts/{post_id}/edit")
-        else:
+
+        # Create resized post images
+        for file in request.files.getlist("images"):
+            r = image_helpers.resize_image(file.stream, (500, 500))
+            results.append(r)
+
+            (fullres_success, fullres_msg, resized_image_post) = r
+            if fullres_success is False:
+                flash(thumb_msg or fullres_msg)
+                return redirect(f"/posts/{post_id}/edit")
+
+        # Store all resized post images and thumbnails here
+
+        # Save thumbnail image
+        file_name = str.format("{0}_p.jpg", post_id)
+        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+        resized_image_thumb.save(path)
+
+        for result in results:
+            (fullres_success, fullres_msg, resized_image_post) = result
+
             # Save post image
             file_name = str.format("{0}_{1}.jpg", post_id, index)
             path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
             resized_image_post.save(path)
 
-            # Save thumbnail image
-            file_name = str.format("{0}_p.jpg", post_id)
-            path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-            resized_image_thumb.save(path)
-            return redirect(f"/posts/{post_id}")
+            # Add to the database
+            crud.create_makeupimage(post_id=post_id, image=file_name)
+
+
+        return redirect(f"/posts/{post_id}")
 
     return render_template(f"/posts/{post_id}")
 
@@ -342,8 +361,8 @@ def save_newlook_page():
 
     user_id = session["user_id"]
 
-    index = 0
-    file = request.files["file1"]
+
+    #file = request.files["images"]
 
     # 1 - check input from form. If invalid or missing redirect
     # 2 - Resize the post image and create 1 thumbnail and 1 post image
@@ -355,7 +374,9 @@ def save_newlook_page():
     # import pdb; pdb.set_trace()
     # file1 = image of the post ,
     # check user is sending image file with the request
-    if "file1" not in request.files:
+
+    # images = request.files.getlist("images")
+    if "images" not in request.files:
         flash("No Post Picture specified")
         return redirect("/newlook")
 
@@ -374,41 +395,100 @@ def save_newlook_page():
         flash("Makeup_type is too long")
         return redirect("/newlook")
 
+
+
+    index = 0
+    results = []
+
+    # Create thumbnail image
     (
         thumb_success,
         thumb_msg,
         resized_image_thumb,
-    ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
-    (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
-        file.stream, (500, 500)
+    ) = image_helpers.resize_image_square_crop(
+        request.files.getlist("images")[0].stream, (200, 200)
     )
-    if thumb_success is False or fullres_success is False:
-        flash(thumb_msg or fullres_msg)
+
+    if thumb_success is False:
+        flash(thumb_msg)
         return redirect("/newlook")
-    else:
-        # Crud post here
-        #
-        post = crud.create_post(
+
+    # Create resized post images
+    for file in request.files.getlist("images"):
+        r = image_helpers.resize_image(file.stream, (500, 500))
+        results.append(r)
+
+        (fullres_success, fullres_msg, resized_image_post) = r
+        if fullres_success is False:
+            flash(thumb_msg or fullres_msg)
+            return redirect("/newlook")
+
+    # Store all resized post images and thumbnails here
+
+    # Save thumbnail image
+
+    post = crud.create_post(
             user_id=user_id,
             title=post_title,
             post_description=post_description,
             makeup_type=makeup_type,
         )
-        post_id = post.post_id
+    post_id = post.post_id
+
+    file_name = f"{post_id}_p.jpg"
+    path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+    resized_image_thumb.save(path)
+
+    for result in results:
+        (fullres_success, fullres_msg, resized_image_post) = result
 
         # Save post image
         file_name = str.format("{0}_{1}.jpg", post_id, index)
         path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
         resized_image_post.save(path)
-        # Crud makeup image
+
+        # Add to the database
         crud.create_makeupimage(post_id=post_id, image=file_name)
+    return redirect(f"/posts/{post_id}")
 
-        # Save thumbnail image
-        file_name = str.format("{0}_p.jpg", post_id)
-        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-        resized_image_thumb.save(path)
+    #return render_template(f"/posts/{post_id}")
+    # #old code
 
-        return redirect(f"/posts/{post_id}")
+    # (
+    #     thumb_success,
+    #     thumb_msg,
+    #     resized_image_thumb,
+    # ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
+    # (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
+    #     file.stream, (500, 500)
+    # )
+    # if thumb_success is False or fullres_success is False:
+    #     flash(thumb_msg or fullres_msg)
+    #     return redirect("/newlook")
+    # else:
+    #     # Crud post here
+    #     #
+    #     post = crud.create_post(
+    #         user_id=user_id,
+    #         title=post_title,
+    #         post_description=post_description,
+    #         makeup_type=makeup_type,
+    #     )
+    #     post_id = post.post_id
+
+    #     # Save post image
+    #     file_name = str.format("{0}_{1}.jpg", post_id, index)
+    #     path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+    #     resized_image_post.save(path)
+    #     # Crud makeup image
+    #     crud.create_makeupimage(post_id=post_id, image=file_name)
+
+    #     # Save thumbnail image
+    #     file_name = str.format("{0}_p.jpg", post_id)
+    #     path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+    #     resized_image_thumb.save(path)
+
+    #     return redirect(f"/posts/{post_id}")
 
 
 @app.route("/products/search.json", methods=["GET"])

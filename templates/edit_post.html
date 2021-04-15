@@ -28,17 +28,15 @@
 <br />
 <form action="/posts/{{post.post_id}}/edit" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="form_id" value="post_image" />
-    <input type='file' name="file1">
+    <input type='file' name="images" id="images" accept="image/jpeg" multiple>
     <input type="submit" name="Save" />
-</form>
-
-
 </form>
 
 
 
 {% for product in products %}
-<img src="/static/images/products/{{product.image}}" height="50" width="50"/> <a href="{{product.url}}">{{product.title}}</a>
+<img src="/static/images/products/{{product.image}}" height="50" width="50" /> <a
+    href="{{product.url}}">{{product.title}}</a>
 <p>
 
 </p>
