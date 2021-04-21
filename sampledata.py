@@ -18,7 +18,7 @@ def create(
     post_title,
     post_description,
     makeup_type,
-    post_images,
+    posts,
     profile_picture,
     products=[],
 ):
@@ -33,24 +33,26 @@ def create(
             profile_picture=profile_picture,
         )
     )
-    p = Post(
-        user_id=u.user_id,
-        title=post_title,
-        post_description=post_description,
-        makeup_type=makeup_type,
-    )
-    for post_image in post_images:
-        p.makeupimages.append(MakeupImage(image=post_image))
-    p.products.append(
-        Product(
-            title="Foundation",
-            details="Nars Longwear",
-            url="https://www.sephora.com/",
-            image="1.png",
+    for post in posts:
+        p = Post(
+            user_id=u.user_id,
+            title=post_title,
+            post_description=post_description,
+            makeup_type=makeup_type,
         )
-    )
-    u.posts.append(p)
-    db.session.commit()
+        for post_image in post:
+            p.makeupimages.append(MakeupImage(image=post_image))
+
+        p.products.append(
+            Product(
+                title="Foundation",
+                details="Nars Longwear",
+                url="https://www.sephora.com/",
+                image="1.png",
+            )
+        )
+        u.posts.append(p)
+        db.session.commit()
 
     # for product in products:
     #     create_postproducts(product.product_id, o.post_id)
@@ -111,7 +113,11 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_images=["1_0.jpg", "1_1.jpg", "1_2.jpg"],
+        posts=[
+            ["1_0.jpg", "1_1.jpg", "1_2.jpg"],
+            ["6_0.jpg", "6_1.jpg", "6_2.jpg"],
+            ["7_0.jpg", "7_1.jpg", "7_2.jpg"],
+            ],
         profile_picture="1.jpg",
         products=products_list,
     )
@@ -127,7 +133,11 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_images=["2_0.jpg", "2_1.jpg", "2_2.jpg"],
+        posts=[
+            ["2_0.jpg", "2_1.jpg", "2_2.jpg"],
+            ["8_0.jpg", "8_1.jpg", "8_2.jpg", "8_3.jpg"],
+            ["9_0.jpg","9_1.jpg",]
+        ],
         profile_picture="2.jpg",
         products=products_list,
     )
@@ -143,7 +153,10 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_images=["3_0.jpg"],
+        posts=[
+            ["3_0.jpg"],
+            ["10_0.jpg", "10_1.jpg",]
+        ],
         profile_picture="3.jpg",
         products=products_list,
     )
@@ -159,7 +172,11 @@ def add_sample_data():
         post_title="Dramatic makeup",
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
-        post_images=["4_0.jpg"],
+        posts=[
+            ["4_0.jpg"],
+            [ "11_0.jpg", "11_1.jpg"],
+            ["12_0.jpg","12_1.jpg"]
+        ],
         profile_picture="1.jpg",
         products=products_list,
     )
