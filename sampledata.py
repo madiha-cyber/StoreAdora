@@ -165,34 +165,13 @@ def add_sample_data():
     )
     users_list.append(u)
 
-    # # User 1 Post 1
-    # p = create_post(
-    #     user_id=users_list[0].user_id,
-    #     title="Dramatic Makeup",
-    #     post_description="This is a dummy post",
-    #     makeup_type="Dramatic",
-    # )
-    # posts_list.append(p)
-    # create_postproducts(products_list[0].product_id, p.post_id)
-
-    # # user 1 Post 2
-    # p = create_post(
-    #     user_id=users_list[0].user_id,
-    #     title="Classic Makeup",
-    #     post_description="This is a dummy post 2",
-    #     makeup_type="Classic",
-    # )
-    # posts_list.append(p)
-    # create_postproducts(products_list[0].product_id, p.post_id)
-    # create_postproducts(products_list[1].product_id, p.post_id)
-
-    # # User 2 Favorite 1
-    # f = create_favorites(user_id=users_list[1].user_id, post_id=posts_list[0].post_id)
-    # favorites_list.append(f)
-
-    # # User 2 Favorite 2
-    # f = create_favorites(user_id=users_list[1].user_id, post_id=posts_list[1].post_id)
-    # favorites_list.append(f)
+    create_comment(1, 1, "This is a commnet on post 1")
+    create_comment(1, 2, "This is a commnet on post 2")
+    create_comment(1, 3, "This is a commnet on post 3")
+    create_comment(1, 4, "This is a commnet on post 4")
+    create_comment(2, 4, "This is a commnet on post 4")
+    create_comment(3, 4, "This is a commnet on post 4")
+    create_comment(4, 4, "This is a commnet on post 4")
 
     db.session.add_all(profiles_list)
     db.session.commit()

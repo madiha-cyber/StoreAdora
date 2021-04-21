@@ -38,9 +38,14 @@ def get_post(post_id):
     post = crud.get_post(post_id)
     products = crud.get_products_for_post(post_id)
     post_images = crud.get_post_images(post_id)
+    comments = crud.get_comments_by_post_id(post_id)
 
     return render_template(
-        "post.details.html", post=post, products=products, post_images=post_images
+        "post.details.html",
+        post=post,
+        products=products,
+        post_images=post_images,
+        comments=comments,
     )
 
 
@@ -251,6 +256,58 @@ def save_edit_profile():
     # Update user profile to reflect these new changes.
 
 
+@app.route("/posts/<post_id>/comment", methods=["POST"])
+def add_comment_from_post_page(post_id):
+    #import pdb; pdb.set_trace()
+    if not is_user_signed_in():
+        return redirect ("/")
+
+    post = crud.get_post(post_id)
+    if not post:
+        return redirect("/")
+
+    user_id = session["user_id"]
+    comment = request.form.get("comment")
+
+
+    crud.create_comment(user_id=user_id, post_id=post_id, text=comment)
+    return redirect(f"/posts/{post_id}")
+
+
+# @app.route("/posts/<post_id>/comments", methods=["GET"])
+# def add_comments_to_the_post():
+#     """ Adds a comment to the post"""
+
+@app.route("/posts/<post_id>/delete", methods=["POST"])
+def delete_post_by_user(post_id):
+    if not is_user_signed_in():
+        return redirect ("/")
+
+    post = crud.get_post(post_id)
+    if not post:
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    crud.delete_post_by_user(user_id=user_id, post_id=post_id)
+
+    return redirect (f"/profile")
+
+
+@app.route("/posts/<post_id>/comments/<comment_id>/delete" , methods=["POST"])
+def delete_comment_from_post(post_id, comment_id):
+
+    if not is_user_signed_in():
+        return redirect ("/")
+
+    user_id = session["user_id"]
+
+    crud.delete_comment(user_id=user_id, comment_id=comment_id)
+    flash("Comment deleted")
+    return redirect(f"/posts/{post_id}")
+
+
+
 @app.route("/posts/<post_id>/edit", methods=["GET"])
 def show_edit_post_page(post_id):
     """ """
@@ -341,7 +398,6 @@ def save_edit_post_page(post_id):
             # Add to the database
             crud.create_makeupimage(post_id=post_id, image=file_name)
 
-
         return redirect(f"/posts/{post_id}")
 
     return render_template(f"/posts/{post_id}")
@@ -361,8 +417,7 @@ def save_newlook_page():
 
     user_id = session["user_id"]
 
-
-    #file = request.files["images"]
+    # file = request.files["images"]
 
     # 1 - check input from form. If invalid or missing redirect
     # 2 - Resize the post image and create 1 thumbnail and 1 post image
@@ -395,8 +450,6 @@ def save_newlook_page():
         flash("Makeup_type is too long")
         return redirect("/newlook")
 
-
-
     index = 0
     results = []
 
@@ -428,11 +481,11 @@ def save_newlook_page():
     # Save thumbnail image
 
     post = crud.create_post(
-            user_id=user_id,
-            title=post_title,
-            post_description=post_description,
-            makeup_type=makeup_type,
-        )
+        user_id=user_id,
+        title=post_title,
+        post_description=post_description,
+        makeup_type=makeup_type,
+    )
     post_id = post.post_id
 
     file_name = f"{post_id}_p.jpg"
@@ -451,7 +504,7 @@ def save_newlook_page():
         crud.create_makeupimage(post_id=post_id, image=file_name)
     return redirect(f"/posts/{post_id}")
 
-    #return render_template(f"/posts/{post_id}")
+    # return render_template(f"/posts/{post_id}")
     # #old code
 
     # (

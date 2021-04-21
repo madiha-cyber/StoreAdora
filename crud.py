@@ -7,6 +7,7 @@ from data.model import (
     Product,
     PostProducts,
     MakeupImage,
+    Comment
 )
 
 from datetime import datetime
@@ -253,3 +254,39 @@ def get_products_by_name(name):
     return products by their name
     """
     return Product.query.filter(Product.title.ilike(str.format("%{}%", name))).all()
+
+def get_comments_by_post_id(post_id):
+    """return comments made by a user on a post"""
+
+    return Comment.query.filter(Comment.post_id == post_id).all()
+
+def create_comment(user_id, post_id, text):
+    """ create a comment by a user"""
+
+    c = Comment(user_id=user_id,
+                post_id=post_id,
+                text=text)
+    db.session.add(c)
+    db.session.commit()
+
+def delete_comment(user_id, comment_id):
+    """deletes comment by user"""
+
+    c = Comment.query.filter(Comment.user_id == user_id).filter(Comment.comment_id == comment_id).first()
+
+    # check if there is a comment_id created by this user_id
+    if c == None:
+        return
+
+    db.session.delete(c)
+    db.session.commit()
+
+def delete_post_by_user(user_id, post_id):
+    """deletes post by the user who created that post"""
+    #checking if the owner/user of the post is this user"
+    c = Post.query.filter(Post.user_id == user_id).filter(Post.post_id == post_id).first()
+
+    if c == None:
+        return
+    db.session.delete(c)
+    db.session.commit()

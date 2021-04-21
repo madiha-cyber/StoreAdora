@@ -25,6 +25,7 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
+
         function setProduct(product) {
             if (product == undefined || product == null || !product.id || product.id == -1) {
                 return "Search for a product";
@@ -32,6 +33,7 @@
             var $product = $('<div class="row"><div class="column20"><img src="/static/images/products/'+product.image+'" width="50" height="50"></div><div class="column80"><div>' + product.title + '</div><div>' + product.description + '</div></div></div>');
             return $product;
         }
+        //make an empty list and use .each on data from server (dictionary, key value pairs ) and create a  new dictionary and add it to the list
         function transformResults(data) {
             var results = [];
             $.each(data, function (index, product) {
@@ -46,18 +48,26 @@
                 "results": results
             };
         }
+        // used select2 library over here and add its script and jquery script in base.html
+
         $("#selProduct").select2({
+            //placeholder shows text when nothing is there in the text box
             placeholder: "Search for a product",
+            //call set product function over here
             templateResult: setProduct,
             //templateSelection: setProduct,
+            //ajax call
             ajax: {
+                //send get request on the url below and after getting the results from the server this function will be called.
                 processResults: transformResults,
                 url: '/products/search.json',
                 type: "get",
                 dataType: 'json',
+                // wait for 250 milli seconds after typing and then send search request to the server
                 delay: 250,
             },
         });
+        //this function will be called when an item will be selected
         $('#selProduct').on('select2:select', function (e) {
             var data = e.params.data;
             console.log(data);

@@ -160,14 +160,14 @@ class PostProducts(db.Model):
     def __repr__(self):
         return f"<PostProducts post_product_id={self.post_product_id} product_id={self.product_id} post_id={self.post_id}>"
 
-class Comments(db.Model):
+class Comment(db.Model):
 
     __tablename__ = "comments"
 
     comment_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_id = db.Column(db.Integer, db.ForeignKey("posts.post_id"))
-    text = db.column(db.String)
+    text = db.Column(db.String)
 
     user = db.relationship("User" , backref = "comments")
     post = db.relationship("Post", backref = "comments")

@@ -4,6 +4,12 @@
 
 {% block body %}
 
+{% if post.user_id == session.get("user_id") %}
+<form action="/posts/{{post.post_id}}/delete" method="post">
+    <!-- <input type="hidden" name="post_id" value="{{post.post_id}}" /> -->
+    <input type="submit" value="delete">
+</form>
+{% endif %}
 <h1>{{ post.title }}</h1>
 <div>
     <button type="submit" id="button_add">Add to favorites</button>
@@ -53,6 +59,7 @@
     {{post.post_description}}
 </p>
 
+<p>{{post.influencer_name}}</p>
 <p>{{post.makeup_type}}
 </p>
 <a href="/posts/{{post.post_id}}/edit">Edit </a>
@@ -71,13 +78,25 @@
 {% endfor %}
 
 
-<form action="/posts/{{post.post_id}}" method="post">
-    <div>
-    <textarea name="comments" id="comments" style="font-family:sans-serif;font-size:1.2em;">
-    Hey... say something!
-    </textarea>
-    </div>
-    <input type="submit" value="Submit">
-    </form>
-<p>{{post.influencer_name}}</p>
+
+<h3>Comments</h3>
+{% for comment in comments %}
+<p>{{comment.text}}</p>
+{% if comment.user_id == session.get("user_id") %}
+<form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
+    <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
+    <input type="submit" value="delete">
+</form>
+{% endif %}
+{% endfor %}
+
+<form action="/posts/{{post.post_id}}/comment" method="post">
+
+    <textarea name="comment" id="comment"
+        style="font-family:sans-serif;font-size:1.2em;">Hey... say something!</textarea>
+
+    <input type="submit" value="Comment" title="Comment">
+</form>
+
+
 {% endblock %}
