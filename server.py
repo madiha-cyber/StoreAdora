@@ -19,8 +19,8 @@ UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 @app.route("/")
 def homepage():
     """View homepage"""
-
-    return render_template("homepage.html")
+    posts = crud.get_posts(max_posts=12)
+    return render_template("homepage.html", all_posts=posts)
 
 
 @app.route("/posts")

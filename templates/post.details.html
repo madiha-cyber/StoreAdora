@@ -3,101 +3,123 @@
 {% block title %} {{post.title}} - {% endblock %}
 
 {% block body %}
+<div class="row">
 
-{% if post.user_id == session.get("user_id") %}
-<form action="/posts/{{post.post_id}}/delete" method="post">
-    <!-- <input type="hidden" name="post_id" value="{{post.post_id}}" /> -->
-    <input type="submit" value="delete">
-</form>
-{% endif %}
-<h1>{{ post.title }}</h1>
-<div>
-    <button type="submit" id="button_add">Add to favorites</button>
-    <button type="submit" id="button_remove">Remove from favorites</button>
+    <h6 class="h6">{{ post.title }}</h4>
+
+        <script>
+            // Add code here
+            $(document).ready(function () {
+
+                let url = "/favorites/user/{{post.post_id}}";
+                $.get(url, {}, function (data) {
+                    if (data != undefined) {
+                        //console.log(data);
+                        if (data["id"] !== undefined) {
+                            //console.log("show remove from favorites button");
+                            $("#button_add").hide();
+                            $("#button_remove").show();
+                        } else {
+                            //console.log("show add to favorites button.")
+                            $("#button_add").show();
+                            $("#button_remove").hide();
+                        }
+                    } else {
+                        console.log("Some error happened.");
+                        $("#button_add").show();
+                        $("#button_remove").hide();
+                    }
+                });
+
+                $("#button_add").click(function () {
+                    $.get("/favorites/user/add/{{post.post_id}}", {}, function (data) {
+                        $("#button_remove").show();
+                        $("#button_add").hide();
+                    })
+                });
+
+                $("#button_remove").click(function () {
+                    $.get("/favorites/user/remove/{{post.post_id}}", {}, function (data) {
+                        $("#button_remove").hide();
+                        $("#button_add").show();
+                    })
+                });
+            });
+        </script>
+
+
+
 </div>
-<script>
-    // Add code here
-    $(document).ready(function () {
+<div class="row">
+    <div class="col-9">{% for post_image in post_images %}
+        <img src="/static/images/posts/{{post_image.image}}" width="700" />
+        <br />
+        <br />
+        {% endfor %}
+    </div>
+    <div class="col-3">
+        <div>
+            <p class="h6">Influencer:</p>
+            <p>{{post.influencer_name}}</p>
+            <p class="h6">Type:</p>
+            <p>{{post.makeup_type}}
+            </p>
+            <p class="h6">Description:</p>
+            <p class="h6">
+                {{post.post_description}}
+            </p>
+        </div>
+        {% if post.user_id == session.get("user_id") %}
+        <div>
+            <form action="/posts/{{post.post_id}}/delete" method="post">
+                <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
 
-        let url = "/favorites/user/{{post.post_id}}";
-        $.get(url, {}, function (data) {
-            if (data != undefined) {
-                //console.log(data);
-                if (data["id"] !== undefined) {
-                    //console.log("show remove from favorites button");
-                    $("#button_add").hide();
-                    $("#button_remove").show();
-                } else {
-                    //console.log("show add to favorites button.")
-                    $("#button_add").show();
-                    $("#button_remove").hide();
-                }
-            } else {
-                console.log("Some error happened.");
-                $("#button_add").show();
-                $("#button_remove").hide();
-            }
-        });
+                <input class="btn btn-outline-danger" for="danger-outlined" type="submit" value="delete">
+            </form>
 
-        $("#button_add").click(function () {
-            $.get("/favorites/user/add/{{post.post_id}}", {}, function (data) {
-                $("#button_remove").show();
-                $("#button_add").hide();
-            })
-        });
+            <a class="btn btn-outline-primary" href="/posts/{{post.post_id}}/edit">Edit</a>
+        </div>
+        {% endif %}
+        <div>
+            <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
+                checked>
+            <button type="submit" id="button_add" for="success-outlined" class="btn btn-outline-success">Add to
+                favorites</button>
 
-        $("#button_remove").click(function () {
-            $.get("/favorites/user/remove/{{post.post_id}}", {}, function (data) {
-                $("#button_remove").hide();
-                $("#button_add").show();
-            })
-        });
-    });
-</script>
+            <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
+            <button type="submit" id="button_remove" class="btn btn-outline-danger" for="danger-outlined">Remove from
+                favorites</button>
+        </div>
+        <br />
+        <h6 class="display-6">products</h6>
+        {% for product in products %}
+        <img src="/static/images/products/{{product.image}}" height="50" width="50" /> <a
+            href="{{product.url}}">{{product.title}}</a>
+        <p>
+        </p>
+        <p>{{product.details}}</p>
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
 
-<p>
-    {{post.post_description}}
-</p>
+    <h4 class="h4">Comments</h4>
+    {% for comment in comments %}
+    <p class="h6">{{comment.text}}</p>
 
-<p>{{post.influencer_name}}</p>
-<p>{{post.makeup_type}}
-</p>
-<a href="/posts/{{post.post_id}}/edit">Edit </a>
-{% for product in products %}
-<img src="/static/images/products/{{product.image}}" height="50" width="50" /> <a
-    href="{{product.url}}">{{product.title}}</a>
-<p>
+    {% if comment.user_id == session.get("user_id") %}
+    <form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
+        <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
+        <input type="submit" value="delete">
+    </form>
+    {% endif %}
+    {% endfor %}
 
-</p>
-<p>{{product.details}}</p>
-{% endfor %}
-
-{% for post_image in post_images %}
-<img src="/static/images/posts/{{post_image.image}}" width="700" />
-<br />
-<br/>
-{% endfor %}
-
-
-
-<h3>Comments</h3>
-{% for comment in comments %}
-<p>{{comment.text}}</p>
-{% if comment.user_id == session.get("user_id") %}
-<form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
-    <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
-    <input type="submit" value="delete">
-</form>
-{% endif %}
-{% endfor %}
-
-<form action="/posts/{{post.post_id}}/comment" method="post">
-
-    <textarea name="comment" id="comment"
-        style="font-family:sans-serif;font-size:1.2em;">Hey... say something!</textarea>
-
-    <input type="submit" value="Comment" title="Comment">
-</form>
-
+    <form action="/posts/{{post.post_id}}/comment" method="post">
+        <textarea name="comment" id="comment" style="font-family:sans-serif;"></textarea>
+        <br />
+        <input type="submit" value="Comment" title="Comment">
+    </form>
+</div>
 
 {% endblock %}

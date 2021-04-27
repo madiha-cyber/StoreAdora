@@ -121,12 +121,14 @@ def create_user_and_profile(f_name, l_name, email, password):
     return u
 
 
-def get_posts():
+def get_posts(max_posts=None):
     """
     Return all posts
     """
-
-    return Post.query.all()
+    if not max_posts:
+        return Post.query.all()
+    else:
+        return Post.query.limit(max_posts).all()
 
 
 def get_products_for_post(post_id):

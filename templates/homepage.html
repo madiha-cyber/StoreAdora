@@ -2,13 +2,16 @@
 {% block title %} StoreAdora {% endblock %}
 
 {% block body %}
-<h1>StoreAdora</h1>
 
-<h2>Learn how to create different makeup looks</h2>
-<ul>
-    <li><a href="/posts">View all makeup looks</a></li>
-    <li><a href="/products">View all products</a></li>
-    <li><a href="/signup">Sign Up</a></li>
-</ul>
 
+<h4 class="h4">Learn how to create different makeup looks</h4>
+<div class="row">
+    <ul>
+        {% for post in all_posts %}
+        <a href="/posts/{{post.post_id}}">
+            <img src="/static/images/posts/{{post.post_id}}_p.jpg" width="300" />
+        </a>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
