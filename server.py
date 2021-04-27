@@ -13,6 +13,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
 UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
+UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 
 
 @app.route("/")
@@ -258,9 +259,9 @@ def save_edit_profile():
 
 @app.route("/posts/<post_id>/comment", methods=["POST"])
 def add_comment_from_post_page(post_id):
-    #import pdb; pdb.set_trace()
+
     if not is_user_signed_in():
-        return redirect ("/")
+        return redirect("/")
 
     post = crud.get_post(post_id)
     if not post:
@@ -268,7 +269,6 @@ def add_comment_from_post_page(post_id):
 
     user_id = session["user_id"]
     comment = request.form.get("comment")
-
 
     crud.create_comment(user_id=user_id, post_id=post_id, text=comment)
     return redirect(f"/posts/{post_id}")
@@ -278,10 +278,11 @@ def add_comment_from_post_page(post_id):
 # def add_comments_to_the_post():
 #     """ Adds a comment to the post"""
 
+
 @app.route("/posts/<post_id>/delete", methods=["POST"])
 def delete_post_by_user(post_id):
     if not is_user_signed_in():
-        return redirect ("/")
+        return redirect("/")
 
     post = crud.get_post(post_id)
     if not post:
@@ -291,21 +292,20 @@ def delete_post_by_user(post_id):
 
     crud.delete_post_by_user(user_id=user_id, post_id=post_id)
 
-    return redirect (f"/profile")
+    return redirect(f"/profile")
 
 
-@app.route("/posts/<post_id>/comments/<comment_id>/delete" , methods=["POST"])
+@app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
 def delete_comment_from_post(post_id, comment_id):
 
     if not is_user_signed_in():
-        return redirect ("/")
+        return redirect("/")
 
     user_id = session["user_id"]
 
     crud.delete_comment(user_id=user_id, comment_id=comment_id)
     flash("Comment deleted")
     return redirect(f"/posts/{post_id}")
-
 
 
 @app.route("/posts/<post_id>/edit", methods=["GET"])
@@ -348,12 +348,12 @@ def save_edit_post_page(post_id):
 
         # return redirect("posts/<post_id>/edit")
     elif form_id == "post_image":
-        # import pdb; pdb.set_trace()
+
         if "images" not in request.files:
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
 
-        # import pdb; pdb.set_trace()
+
         index = 0
         results = []
 
@@ -426,7 +426,6 @@ def save_newlook_page():
     # 5 - Save the resized images to folder
     # 6 - Redirect to new post page.
 
-    # import pdb; pdb.set_trace()
     # file1 = image of the post ,
     # check user is sending image file with the request
 
@@ -485,6 +484,7 @@ def save_newlook_page():
         title=post_title,
         post_description=post_description,
         makeup_type=makeup_type,
+        products=request.form.getlist('products'),
     )
     post_id = post.post_id
 
@@ -542,6 +542,59 @@ def save_newlook_page():
     #     resized_image_thumb.save(path)
 
     #     return redirect(f"/posts/{post_id}")
+
+
+@app.route("/newproduct", methods=["GET"])
+def display_product_page():
+    """Display a new product"""
+    return render_template("newproduct.html")
+
+
+@app.route("/newproduct", methods=["POST"])
+def add_a_new_product():
+    """Adds a new product"""
+
+    if not is_user_signed_in():
+        return redirect("/newproduct")
+
+    product_title = request.form.get("product_title")
+    if product_title is None or len(product_title) < 3:
+        flash("Select a product title")
+        return redirect("/newproduct")
+
+    product_details = request.form.get("product_details")
+    if product_details is None or len(product_details) > 150:
+        flash("Add product details")
+        return redirect("/newproduct")
+
+    product_url = request.form.get("product_url")
+    if product_url is None :
+        flash("Add product link")
+        return redirect("/newproduct")
+
+    #user_id = session["user_id"]
+
+    if "file1" not in request.files:
+        flash("Upload a product image")
+        return redirect("/newproduct")
+
+    f = request.files["file1"]
+
+    result = image_helpers.resize_image_square_crop(f.stream, (50, 50))
+    (success, msg, resized_image) = result
+    if success is False:
+        flash(msg)
+        return redirect("/newproduct")
+    else:
+        p = crud.create_product(details=product_details, title=product_title, url=product_url)
+        file_name = f"{p.product_id}.jpg"
+        path = os.path.join(UPLOAD_FOLDER_PRODUCT_PICTURES, file_name)
+        resized_image.save(path)
+        crud.set_product_image(product_id=p.product_id,image=file_name)
+
+
+
+        return redirect("/profile")
 
 
 @app.route("/products/search.json", methods=["GET"])

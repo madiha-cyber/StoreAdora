@@ -71,7 +71,7 @@
         $('#selProduct').on('select2:select', function (e) {
             var data = e.params.data;
             console.log(data);
-            $('#products').append("<div id='" + data.id + "'><img src='/static/images/products/"+data.image+"' width='30' height='30'/><input type='hidden' name='product' value='" + data.id + "' /><input type='button' name='remove' value='remove'/></div>");
+            $('#products').append("<div id='" + data.id + "'><img src='/static/images/products/"+data.image+"' width='30' height='30'/><input type='hidden' name='products' value='" + data.id + "' /><input type='button' name='remove' value='remove'/></div>");
         });
     });
 </script>
@@ -90,6 +90,9 @@
     <br />
     <div id="products"></div>
     <br />
+
+
+    Add a new product: <a href="/newproduct">Add New Product</a>
     Makeup Type: <select name="makeup_type" id="makeup_type">
         <option value="dramatic">Dramatic</option>
         <option value="wedding">Wedding</option>

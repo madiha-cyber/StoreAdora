@@ -21,7 +21,7 @@ def create_user(email, password):
     return u
 
 
-def create_post(user_id, title, post_description, makeup_type):
+def create_post(user_id, title, post_description, makeup_type, products=[]):
     """"""
     p = Post(
         user_id=user_id,
@@ -31,6 +31,10 @@ def create_post(user_id, title, post_description, makeup_type):
     )
     db.session.add(p)
     db.session.commit()
+    if products:
+        for product in products:
+            p.products.append( Product.query.get(product))
+        db.session.commit()
     return p
 
 
@@ -79,6 +83,14 @@ def create_product(details, title, url=None, image=None):
     db.session.add(p)
     db.session.commit()
     return p
+
+#Adding image in the product after creating a new product in the databse we got a new product_id
+def set_product_image(product_id, image):
+    """"""
+
+    p = Product.query.get(product_id)
+    p.image = image
+    db.session.commit()
 
 
 def create_makeupimage(post_id, image):
@@ -187,6 +199,7 @@ def set_user_profile_picture(user_id, file_name):
     db.session.commit()
 
 
+
 def get_post_images(post_id):
     """"""
     return MakeupImage.query.filter(MakeupImage.post_id == post_id).all()
@@ -214,7 +227,6 @@ def update_user_profile_info(user_id, first_name, last_name, insta_handle, bio):
 
 def update_post_info(post_id, title, post_description, makeup_type):
     """updates users post"""
-    # import pdb; pdb.set_trace()
     db.session.query(Post.post_id == post_id).update(
         {
             "title": title,

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} StoreAdora {% endblock %}
+
+{% block body %}
+
+<h1>Add a new product</h1>
+<form action="/newproduct" method="POST" enctype="multipart/form-data">
+
+
+    Product Title: <input type="text" name="product_title" />
+
+    <br />
+    Product details: <input type="text" name="product_details" />
+    <br />
+
+    Add product url: <input type="text" name="product_url">
+
+    Add product Image: <input type="hidden" name="form_id" value="profile_picture" />
+    <input type='file' name="file1">
+    <input type="submit" name="Save" />
+
+</form>
+{%endblock%}
