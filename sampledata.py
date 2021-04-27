@@ -115,9 +115,13 @@ def add_sample_data():
         makeup_type="Dramatic",
         posts=[
             ["1_0.jpg", "1_1.jpg", "1_2.jpg"],
+            ["2_0.jpg", "2_1.jpg", "2_2.jpg"],
+            ["3_0.jpg"],
+            ["4_0.jpg"],
+            ["5_0.jpg"],
             ["6_0.jpg", "6_1.jpg", "6_2.jpg"],
             ["7_0.jpg", "7_1.jpg", "7_2.jpg"],
-            ],
+        ],
         profile_picture="1.jpg",
         products=products_list,
     )
@@ -134,9 +138,13 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         posts=[
-            ["2_0.jpg", "2_1.jpg", "2_2.jpg"],
             ["8_0.jpg", "8_1.jpg", "8_2.jpg", "8_3.jpg"],
-            ["9_0.jpg","9_1.jpg",]
+            ["9_0.jpg", "9_1.jpg"],
+            ["10_0.jpg", "10_1.jpg"],
+            ["11_0.jpg", "11_1.jpg"],
+            ["12_0.jpg", "12_1.jpg"],
+            ["13_0.jpg"],
+            ["14_0.jpg"],
         ],
         profile_picture="2.jpg",
         products=products_list,
@@ -154,8 +162,9 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         posts=[
-            ["3_0.jpg"],
-            ["10_0.jpg", "10_1.jpg",]
+            ["15_0.jpg", "15_1.jpg", "15_2.jpg"],
+            ["16_0.jpg", "16_1.jpg"],
+            ["17_0.jpg", "17_1.jpg"],
         ],
         profile_picture="3.jpg",
         products=products_list,
@@ -173,9 +182,8 @@ def add_sample_data():
         post_description="This is a look that I created using these products",
         makeup_type="Dramatic",
         posts=[
-            ["4_0.jpg"],
-            [ "11_0.jpg", "11_1.jpg"],
-            ["12_0.jpg","12_1.jpg"]
+            ["18_0.jpg", "18_1.jpg", "18_2.jpg"],
+            ["19_0.jpg", "19_1.jpg", "19_2.jpg"],
         ],
         profile_picture="1.jpg",
         products=products_list,
