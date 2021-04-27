@@ -49,15 +49,16 @@
 
 
         <div class="row">
-            <div class="col-9 align-self-start">
+            <div class="col-8 align-self-start">
                 <h1 class="display-6">STORE</h1>
                 <h1 class="display-6">ADORA</h1>
             </div>
-            <div class="col-3 align-self-end align-top">
+            <div class="col-4 align-self-end align-top">
                 {% if "user_id" in session and session["user_id"] %}
                 <a class="display-6 text-decoration-none" style="font-size: 80%" href="/">HOME</a>
                 <!-- <a class="display-6 text-decoration-none" style="font-size: 80%" href="/all">LOGOUT</a> -->
                 <a class="display-6 text-decoration-none" style="font-size: 80%" href="/profile">PROFILE</a>
+                <a class="display-6 text-decoration-none" style="font-size: 80%" href="/user/{{session['user_id']}}/favorites">FAVORITES</a>
                 <a class="display-6 text-decoration-none" style="font-size: 80%" href="/newlook">NEW POST</a>
                 <a class="display-6 text-decoration-none" style="font-size: 80%" href="/logout">LOGOUT</a>
                 {% else %}

@@ -156,6 +156,18 @@ def show_user(user_id):
     return render_template("user_profile.html", user=user, userprofile=userprofile)
 
 
+@app.route("/user/<user_id>/favorites")
+def show_user_favorites(user_id):
+    """
+    Show Favorites of a particular user.
+    """
+    user = crud.get_user_by_id(user_id)
+    if not user:
+        return render_template("user_profile_not_found.html")
+
+    return render_template("favorites.html", posts=crud.get_user_favorites(user_id))
+
+
 @app.route("/profile", methods=["GET"])
 def show_userprofile():
     """

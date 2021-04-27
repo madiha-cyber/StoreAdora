@@ -172,6 +172,10 @@ def get_user_profile(user_id):
 
     return UserProfile.query.filter(UserProfile.user_id == user_id).first()
 
+def get_user_favorites(user_id):
+    """
+    """
+    return User.query.get(user_id).favorites
 
 # >>> madiha = User.query.get(1)
 # <User user_id=1 email='madiha@gmail.com' ... >
