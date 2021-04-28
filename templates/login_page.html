@@ -2,16 +2,23 @@
 {% block title %} Login {% endblock %}
 
 {% block body %}
-<h2> Login </h2>
-<form action="/login" method="POST">
-    <p>
-        Email <input type="text" name="email">
-    </p>
-    <p>
-        Password <input type="password" name="password">
-    </p>
-    <input type="submit">
-
-</form>
-
+<div class="row">
+    <div class="col-4">
+        <h2 class="display-4">Login</h2>
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                    placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                    else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

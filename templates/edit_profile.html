@@ -2,29 +2,55 @@
 {% block title %} {{user.user_id}} {% endblock %}
 
 {% block body %}
-<div id="container">
+<div class="row">
     <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
 </div>
 
-<form action="/profile/edit" method="POST">
-    <input type="hidden" name="form_id" value="basic_info" />
-    <p> First name: <input type="text" name="first_name" value="{{userprofile.first_name}}"></p>
-    <p> Last name: <input type="text" name="last_name" value="{{userprofile.last_name}}"></p>
-    <p> Enter your Insta handle: <input type="text" name="insta_handle" value="{{userprofile.insta_handle}}"></p>
-    <p> bio <input type="text" name="bio" value="{{userprofile.bio}}"></p>
-    <input type="submit" name="Save" />
-</form>
-<br />
-<form action="/profile/edit" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="form_id" value="profile_picture" />
-    <input type='file' name="file1">
-    <input type="submit" name="Save" />
-</form>
-<br />
-<form action="/profile/edit" method="POST">
-    <input type="hidden" name="form_id" value="profile_password" />
-    <p> Old Password: <input type="text" name="old_password"></p>
-    <p> New Password: <input type="text" name="new_password"></p>
-    <input type="submit" name="Save" />
-</form>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">Update Profile</div>
+            <div class="card-body">
+                <form action="/profile/edit" method="POST">
+                    <input type="hidden" name="form_id" value="basic_info" />
+                    <p> First name: <input type="text" name="first_name" value="{{userprofile.first_name}}"></p>
+                    <p> Last name: <input type="text" name="last_name" value="{{userprofile.last_name}}"></p>
+                    <p> Enter your Insta handle: <input type="text" name="insta_handle"
+                            value="{{userprofile.insta_handle}}">
+                    </p>
+                    <p> bio <input type="text" name="bio" value="{{userprofile.bio}}"></p>
+                    <input type="submit" name="Save" />
+                </form>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-header">Change Profile Picture</div>
+            <div class="card-body">
+                <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+                    <form>
+                        <div class="form-group">
+                            <input type="hidden" name="form_id" value="profile_picture" />
+                            <input type='file' name="file1">
+                            <input type="submit" name="Save" />
+
+                        </div>
+                    </form>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-header">Change Password</div>
+            <div class="card-body">
+                <br />
+                <form action="/profile/edit" method="POST">
+                    <input type="hidden" name="form_id" value="profile_password" />
+                    <p> Old Password: <input type="text" name="old_password"></p>
+                    <p> New Password: <input type="text" name="new_password"></p>
+                    <input type="submit" name="Save" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
