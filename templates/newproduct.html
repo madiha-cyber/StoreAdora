@@ -3,21 +3,36 @@
 
 {% block body %}
 
-<h1>Add a new product</h1>
-<form action="/newproduct" method="POST" enctype="multipart/form-data">
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">Add a new product</div>
+            <div class="card-body">
+                <form action="/newproduct" method="POST" enctype="multipart/form-data">
+                    Product Title:<input type="text" name="product_title" />
+
+                    <br />
+                    <br/>
+                    Product details: <input type="text" name="product_details" />
+                    <br />
+                    <br/>
+
+                    Add product url: <input type="text" name="product_url">
+                    <br/>
+
+                    <br/>
+                    Add product Image: <input type="hidden" name="form_id" value="profile_picture" />
+                    <input type='file' name="file1">
+                    <br/>
+                    <br/>
+                    <input type="submit" name="Save" />
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-    Product Title: <input type="text" name="product_title" />
-
-    <br />
-    Product details: <input type="text" name="product_details" />
-    <br />
-
-    Add product url: <input type="text" name="product_url">
-
-    Add product Image: <input type="hidden" name="form_id" value="profile_picture" />
-    <input type='file' name="file1">
-    <input type="submit" name="Save" />
-
-</form>
 {%endblock%}
