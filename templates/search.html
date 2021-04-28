@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Makeup Looks {% endblock %}
+
+{% block body %}
+<div class="row">
+    <h1 class="h5 align-self-end">Search Results</h1>
+</div>
+<div class="row">
+    <form action="/search" method="GET">
+        <input type="search" name="search_text" value="{{search_text}}"/>
+        <input type="submit" title="Search" />
+    </form>
+</div>
+<div class="row">
+    <ul>
+        {% for post in posts %}
+        <a href="/posts/{{post.post_id}}">
+            <img src="/static/images/posts/{{post.post_id}}_p.jpg" width="300" />
+        </a>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -710,6 +710,13 @@ def remove_post_from_user_favorites(post_id):
     return jsonify({})
 
 
+@app.route("/search", methods=["GET"])
+def search():
+    search_text = request.args.get("search_text")
+
+    posts = crud.search_posts(search_text=search_text)
+    return render_template("search.html", search_text=search_text, posts=posts)
+
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(host="0.0.0.0", debug=True)
