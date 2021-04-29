@@ -13,3 +13,5 @@ urllib3==1.25.9
 Werkzeug==1.0.1
 pillow
 dataclasses
+flask_wtf
+wtforms[email]

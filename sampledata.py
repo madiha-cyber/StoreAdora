@@ -102,7 +102,7 @@ def add_sample_data():
 
     u = create(
         email="amanda@outlook.com",
-        password="123",
+        password="123456",
         first_name="Amanda",
         last_name="Cerney",
         insta_handle="@madihagoheerofficial",
@@ -158,7 +158,7 @@ def add_sample_data():
 
     u = create(
         email="huda@outlook.com",
-        password="123",
+        password="123456",
         first_name="madiha",
         last_name="Latif",
         insta_handle="@madihagoheerofficial",
@@ -214,7 +214,7 @@ def add_sample_data():
 
     u = create(
         email="madihagoheer@outlook.com",
-        password="123",
+        password="123456",
         first_name="Madiha",
         last_name="Goheer",
         insta_handle="@madihagoheerofficial",
@@ -246,7 +246,7 @@ def add_sample_data():
 
     u = create(
         email="myreengoheer@outlook.com",
-        password="123",
+        password="123456",
         first_name="Myreen",
         last_name="Goheer",
         insta_handle="@madihagoheerofficial",

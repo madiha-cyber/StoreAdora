@@ -6,6 +6,10 @@ import os
 import crud
 import image_helpers
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms import validators
+
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = "dev"
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
@@ -16,6 +20,71 @@ UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
 UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 
 
+###############################################################################
+# Login Related Forms & Functions
+###############################################################################
+
+class LoginForm(FlaskForm):
+    email = StringField(
+        "email",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    password = PasswordField(
+        "password",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+
+
+def is_user_signed_in():
+    """
+    Check if user's session exists
+    """
+    # return "user_id" in session and session["user_id"] is not None
+    return session.get("user_id") is not None
+
+
+@app.route("/login", methods=["GET"])
+def show_login_page():
+    """
+    Show Login page
+    """
+
+    # Check User Logged In Already
+    if is_user_signed_in():
+        return redirect("/profile")
+
+    form = LoginForm()
+
+    # If session does not exists display login page
+    return render_template("login_page.html", form=form)
+
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    """
+    Login the user and redirect to /profile page
+    """
+
+    # Check User Logged In Already
+    if is_user_signed_in():
+        return redirect("/profile")
+
+    form = LoginForm()
+    if not form.validate_on_submit():
+        return redirect("/login")
+
+    user = crud.get_user_by_email_and_password(form.email.data, form.password.data)
+    if not user:
+        flash("Invalid email/password")
+        return redirect("/login")
+    else:
+        session["user_id"] = user.user_id
+        return redirect("/profile")
+
+
+###############################################################################
+# Home Page Functions
+###############################################################################
 @app.route("/")
 def homepage():
     """View homepage"""
@@ -50,56 +119,12 @@ def get_post(post_id):
     )
 
 
-def is_user_signed_in():
-    """
-    Check if user's session exists
-    """
-    # return "user_id" in session and session["user_id"] is not None
-    return session.get("user_id") is not None
-
-
-@app.route("/login", methods=["GET"])
-def show_login_page():
-    """
-    Show Login page
-    """
-
-    # Check User Logged In
-    if is_user_signed_in():
-        return redirect("/profile")
-
-    # If session does not exists display login page
-    return render_template("login_page.html")
-
-
-@app.route("/login", methods=["POST"])
-def login_user():
-    """
-    Login the user and redirect to /profile page
-    """
-
-    # Check User Logged In
-    if is_user_signed_in():
-        return redirect("/profile")
-
-    email = request.form.get("email")
-    password = request.form.get("password")
-
-    user = crud.get_user_by_email_and_password(email, password)
-    if not user:
-        flash("Invalid email/password")
-        return redirect("/login")
-    else:
-        session["user_id"] = user.user_id
-        return redirect("/profile")
-
-
 @app.route("/logout", methods=["GET"])
 def logout_user():
     """
     logout the user
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if is_user_signed_in():
         del session["user_id"]
     return redirect("/")
@@ -110,7 +135,7 @@ def show_signup_page():
     """
     Show Signup page
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if is_user_signed_in():
         return redirect("/")
     return render_template("signup.html")
@@ -121,7 +146,7 @@ def signup_user():
     """
     Create new Account then redirect to /profile page
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if is_user_signed_in():
         return redirect("/")
 
@@ -173,7 +198,7 @@ def show_userprofile():
     """
     Home page for logged in user.
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -193,7 +218,7 @@ def show_edit_profile_page():
     """
     Show edit profile page.
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -208,7 +233,7 @@ def save_edit_profile():
     """
     Save edit profile changes
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -304,7 +329,7 @@ def delete_post_by_user(post_id):
 
     crud.delete_post_by_user(user_id=user_id, post_id=post_id)
 
-    return redirect(f"/profile")
+    return redirect("/profile")
 
 
 @app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
@@ -323,7 +348,7 @@ def delete_comment_from_post(post_id, comment_id):
 @app.route("/posts/<post_id>/edit", methods=["GET"])
 def show_edit_post_page(post_id):
     """ """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -345,7 +370,7 @@ def show_edit_post_page(post_id):
 @app.route("/posts/<post_id>/edit", methods=["POST"])
 def save_edit_post_page(post_id):
     """ """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -364,7 +389,6 @@ def save_edit_post_page(post_id):
         if "images" not in request.files:
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
-
 
         index = 0
         results = []
@@ -423,7 +447,7 @@ def show_newlook_page():
 
 @app.route("/newlook", methods=["POST"])
 def save_newlook_page():
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
 
@@ -496,7 +520,7 @@ def save_newlook_page():
         title=post_title,
         post_description=post_description,
         makeup_type=makeup_type,
-        products=request.form.getlist('products'),
+        products=request.form.getlist("products"),
     )
     post_id = post.post_id
 
@@ -580,11 +604,11 @@ def add_a_new_product():
         return redirect("/newproduct")
 
     product_url = request.form.get("product_url")
-    if product_url is None :
+    if product_url is None:
         flash("Add product link")
         return redirect("/newproduct")
 
-    #user_id = session["user_id"]
+    # user_id = session["user_id"]
 
     if "file1" not in request.files:
         flash("Upload a product image")
@@ -598,13 +622,13 @@ def add_a_new_product():
         flash(msg)
         return redirect("/newproduct")
     else:
-        p = crud.create_product(details=product_details, title=product_title, url=product_url)
+        p = crud.create_product(
+            details=product_details, title=product_title, url=product_url
+        )
         file_name = f"{p.product_id}.jpg"
         path = os.path.join(UPLOAD_FOLDER_PRODUCT_PICTURES, file_name)
         resized_image.save(path)
-        crud.set_product_image(product_id=p.product_id,image=file_name)
-
-
+        crud.set_product_image(product_id=p.product_id, image=file_name)
 
         return redirect("/profile")
 
@@ -652,7 +676,7 @@ def get_is_post_favorite_by_user(post_id):
     """
     Is this post in user's favorite?
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return jsonify({})
     user_id = session["user_id"]
@@ -668,7 +692,7 @@ def add_post_to_user_favorites(post_id):
     """
     Add a post to user's favorites
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return jsonify({})
 
@@ -690,7 +714,7 @@ def remove_post_from_user_favorites(post_id):
     """
     Remove a post from user's favorites
     """
-    # Check User Logged In
+    # Check User Logged In Already
     if not is_user_signed_in():
         return jsonify({})
 
@@ -716,6 +740,7 @@ def search():
 
     posts = crud.search_posts(search_text=search_text)
     return render_template("search.html", search_text=search_text, posts=posts)
+
 
 if __name__ == "__main__":
     connect_to_db(app)
