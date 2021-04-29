@@ -24,6 +24,7 @@ UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 # Login Related Forms & Functions
 ###############################################################################
 
+
 class LoginForm(FlaskForm):
     email = StringField(
         "email",
@@ -83,6 +84,74 @@ def login_user():
 
 
 ###############################################################################
+# Signup Related Forms & Functions
+###############################################################################
+
+
+class SignupForm(FlaskForm):
+    email = StringField(
+        "email",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    password = PasswordField(
+        "password",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    first_name = StringField(
+        "first_name",
+        validators=[validators.DataRequired(), validators.Length(min=3, max=35)],
+    )
+    last_name = StringField(
+        "last_name",
+        validators=[validators.DataRequired(), validators.Length(min=3, max=35)],
+    )
+
+
+@app.route("/signup", methods=["GET"])
+def show_signup_page():
+    """
+    Show Signup page
+    """
+    # Check User Logged In Already
+    if is_user_signed_in():
+        return redirect("/")
+
+    form = SignupForm()
+    return render_template("signup.html", form=form)
+
+
+@app.route("/signup", methods=["POST"])
+def signup_user():
+    """
+    Create new Account then redirect to /profile page
+    """
+    # Check User Logged In Already
+    if is_user_signed_in():
+        return redirect("/")
+
+    form = SignupForm()
+    if not form.validate_on_submit():
+        return redirect("/signup")
+
+    # Make sure we don't allow same email again.
+    existing_user = crud.get_user_by_email(form.email.data)
+
+    if existing_user:
+        flash("This email is already in use.")
+        return redirect("/signup")
+    else:
+        # create a new user and store its value in the session
+        user = crud.create_user_and_profile(
+            form.first_name.data,
+            form.last_name.data,
+            form.email.data,
+            form.password.data,
+        )
+        session["user_id"] = user.user_id
+        return redirect("/profile")
+
+
+###############################################################################
 # Home Page Functions
 ###############################################################################
 @app.route("/")
@@ -128,44 +197,6 @@ def logout_user():
     if is_user_signed_in():
         del session["user_id"]
     return redirect("/")
-
-
-@app.route("/signup", methods=["GET"])
-def show_signup_page():
-    """
-    Show Signup page
-    """
-    # Check User Logged In Already
-    if is_user_signed_in():
-        return redirect("/")
-    return render_template("signup.html")
-
-
-@app.route("/signup", methods=["POST"])
-def signup_user():
-    """
-    Create new Account then redirect to /profile page
-    """
-    # Check User Logged In Already
-    if is_user_signed_in():
-        return redirect("/")
-
-    first_name = request.form.get("first_name")
-    last_name = request.form.get("last_name")
-    email = request.form.get("email")
-    password = request.form.get("password")
-
-    # Make sure we don't allow same email again.
-    existing_user = crud.get_user_by_email(email)
-
-    if existing_user:
-        flash("This email is already in use.")
-        return redirect("/signup")
-    else:
-        # create a new user and store its value in the session
-        user = crud.create_user_and_profile(first_name, last_name, email, password)
-        session["user_id"] = user.user_id
-        return redirect("/profile")
 
 
 @app.route("/user/<user_id>")

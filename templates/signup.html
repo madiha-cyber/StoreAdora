@@ -2,18 +2,23 @@
 {% block title %} Sign up {% endblock %}
 
 {% block body %}
-<h1>Sign Up</h1>
+<h1 class="display-6">Sign Up</h1>
 <form action="/signup" method="POST">
+    {{ form.hidden_tag() }}
     <p>
-        First name <input type="text" name="first_name" id="first_name">
+        First name
+        {{ form.first_name(class_="form-control", placeholder="Enter First Name") }}
     </p>
     <p>
-        Last name <input type="text" name="last_name" id="last_name">
+        Last name
+        {{form.last_name(class_="form-control", placeholder="Enter Last Name") }}
     </p>
-    <p> Email <input type="text" name="email" id="email">
+    <p> Email
+        {{ form.email(class_="form-control", aria_describedby="emailHelp", placeholder="Enter email") }}
     </p>
     <p>
-        Password <input type="password" name="password" id="password">
+        Password
+        {{ form.password(class_="form-control", placeholder="Password") }}
     </p>
     <input type="submit" name="Enter">
 </form>

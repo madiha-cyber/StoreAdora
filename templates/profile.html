@@ -9,14 +9,14 @@
     <div class="card-header">Your Profile</div>
     <div class="card-body">
         <div class="row">
-            <div class="col-2">
+            <div class="col">
                 {%if userprofile.profile_picture%}
                 <img src="/static/images/profile/{{userprofile.profile_picture}}" height="200" width="200" />
                 {%else%}
-                <img src="/static/images/profile/default.png" />
+                <img src="/static/images/profile/default.png" height="200" />
                 {%endif%}
             </div>
-            <div class="col-3">
+            <div class="col">
                 <div class="display-6" style="font-size: 98%">First Name: {{userprofile.first_name}}</div>
                 <div class="display-6" style="font-size: 98%">Last Name: {{userprofile.last_name}}</div>
                 <div class="display-6" style="font-size: 98%">Insta Handle: {{userprofile.insta_handle}}</div>
