@@ -16,7 +16,6 @@
 
     <link rel="icon" type="image/png" href="/static/images/title.png">
 
-
     <!-- jQuery script tag from code.jquery.com -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -28,29 +27,28 @@
         integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
         crossorigin="anonymous"></script>
 
-
-
     <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet'
         type='text/css'>
-    <!-- Script -->
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>
-
-    <!------ Include the above in your HEAD tag ---------->
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
+
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <!-- test flash -->
-        <ul class=flashes>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
+
+        <div class="row justify-content-md-center">
+            <div class="col-10 ">
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
         {% endif %}
         {% endwith %}
 
@@ -78,7 +76,7 @@
                                     href="/user/{{session['user_id']}}/favorites">FAVORITES</a>
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/newlook">NEW
-                                    POST</a>
+                                    LOOK</a>
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/profile">PROFILE</a>
 

@@ -8,6 +8,7 @@ import image_helpers
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import validators
 
 app = Flask(__name__, static_url_path="/static")
@@ -20,18 +21,26 @@ UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
 UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 
 
+def flash_errors(form):
+    """Flashes form errors"""
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(
+                f"Error: '{getattr(form, field).label.text}' - {error}",
+                "error",
+            )
+
+
 ###############################################################################
 # Login Related Forms & Functions
 ###############################################################################
-
-
 class LoginForm(FlaskForm):
     email = StringField(
-        "email",
-        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+        "Email",
+        validators=[validators.DataRequired(), validators.Email()],
     )
     password = PasswordField(
-        "password",
+        "Password",
         validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
     )
 
@@ -72,6 +81,7 @@ def login_user():
 
     form = LoginForm()
     if not form.validate_on_submit():
+        flash_errors(form)
         return redirect("/login")
 
     user = crud.get_user_by_email_and_password(form.email.data, form.password.data)
@@ -83,26 +93,35 @@ def login_user():
         return redirect("/profile")
 
 
+@app.route("/logout", methods=["GET"])
+def logout_user():
+    """
+    logout the user
+    """
+    # Check User Logged In Already
+    if is_user_signed_in():
+        del session["user_id"]
+    return redirect("/")
+
+
 ###############################################################################
 # Signup Related Forms & Functions
 ###############################################################################
-
-
 class SignupForm(FlaskForm):
     email = StringField(
-        "email",
-        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+        "Email",
+        validators=[validators.DataRequired(), validators.Email()],
     )
     password = PasswordField(
-        "password",
+        "Password",
         validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
     )
     first_name = StringField(
-        "first_name",
+        "First Name",
         validators=[validators.DataRequired(), validators.Length(min=3, max=35)],
     )
     last_name = StringField(
-        "last_name",
+        "Last Name",
         validators=[validators.DataRequired(), validators.Length(min=3, max=35)],
     )
 
@@ -131,6 +150,7 @@ def signup_user():
 
     form = SignupForm()
     if not form.validate_on_submit():
+        flash_errors(form)
         return redirect("/signup")
 
     # Make sure we don't allow same email again.
@@ -161,6 +181,107 @@ def homepage():
     return render_template("homepage.html", posts=posts)
 
 
+###############################################################################
+# New Post Related Forms & Functions
+###############################################################################
+class NewLookForm(FlaskForm):
+    description = StringField(
+        "Description",
+        validators=[validators.DataRequired(), validators.Length(min=10, max=200)],
+    )
+    title = StringField(
+        "Title",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    images = FileField(validators=[FileRequired()])
+    makeup_type = StringField("Makeup Type", validators=[validators.DataRequired()])
+    products = StringField("Products")
+
+
+@app.route("/newlook", methods=["GET"])
+def show_newlook_page():
+    """Show newlook page"""
+    form = NewLookForm()
+    return render_template("newlook.html", form=form)
+
+
+@app.route("/newlook", methods=["POST"])
+def save_newlook_page():
+    """Create new look"""
+
+    # Check User Logged In Already
+    if not is_user_signed_in():
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    form = NewLookForm()
+    if not form.validate_on_submit():
+        flash_errors(form)
+        return redirect("/newlook")
+
+    # 1 - check input from form. If invalid or missing redirect
+    # 2 - Resize the post image and create 1 thumbnail and 1 post image
+    # 3 - Create Post in database
+    # 4 - Create MakeupImage in database
+    # 5 - Save the resized images to folder
+    # 6 - Redirect to new post page.
+
+    # check user is sending image file with the request
+
+    index = 0
+    results = []
+
+    # Create thumbnail image
+    (
+        thumb_success,
+        thumb_msg,
+        resized_image_thumb,
+    ) = image_helpers.resize_image_square_crop(
+        request.files.getlist("images")[0].stream, (200, 200)
+    )
+
+    if thumb_success is False:
+        flash(thumb_msg)
+        return redirect("/newlook")
+
+    # Create resized post images
+    for file in request.files.getlist("images"):
+        r = image_helpers.resize_image(file.stream, (500, 500))
+        results.append(r)
+
+        (fullres_success, fullres_msg, resized_image_post) = r
+        if fullres_success is False:
+            flash(thumb_msg or fullres_msg)
+            return redirect("/newlook")
+
+    # Store all resized post images and thumbnails here
+    post = crud.create_post(
+        user_id=user_id,
+        title=form.title.data,
+        post_description=form.description.data,
+        makeup_type=form.makeup_type.data,
+        products=request.form.getlist("products"),
+    )
+    post_id = post.post_id
+
+    file_name = f"{post_id}_p.jpg"
+    path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+    resized_image_thumb.save(path)
+
+    for result in results:
+        (fullres_success, fullres_msg, resized_image_post) = result
+
+        # Save post image
+        file_name = str.format("{0}_{1}.jpg", post_id, index)
+        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
+        resized_image_post.save(path)
+
+        # Add to the database
+        crud.create_makeupimage(post_id=post_id, image=file_name)
+    return redirect(f"/posts/{post_id}")
+
+
 @app.route("/posts")
 def get_all_posts():
     """View all posts"""
@@ -186,17 +307,6 @@ def get_post(post_id):
         post_images=post_images,
         comments=comments,
     )
-
-
-@app.route("/logout", methods=["GET"])
-def logout_user():
-    """
-    logout the user
-    """
-    # Check User Logged In Already
-    if is_user_signed_in():
-        del session["user_id"]
-    return redirect("/")
 
 
 @app.route("/user/<user_id>")
@@ -468,147 +578,6 @@ def save_edit_post_page(post_id):
         return redirect(f"/posts/{post_id}")
 
     return render_template(f"/posts/{post_id}")
-
-
-@app.route("/newlook", methods=["GET"])
-def show_newlook_page():
-    # Show newlook page
-    return render_template("newlook.html")
-
-
-@app.route("/newlook", methods=["POST"])
-def save_newlook_page():
-    # Check User Logged In Already
-    if not is_user_signed_in():
-        return redirect("/")
-
-    user_id = session["user_id"]
-
-    # file = request.files["images"]
-
-    # 1 - check input from form. If invalid or missing redirect
-    # 2 - Resize the post image and create 1 thumbnail and 1 post image
-    # 3 - Create Post in database
-    # 4 - Create MakeupImage in database
-    # 5 - Save the resized images to folder
-    # 6 - Redirect to new post page.
-
-    # file1 = image of the post ,
-    # check user is sending image file with the request
-
-    # images = request.files.getlist("images")
-    if "images" not in request.files:
-        flash("No Post Picture specified")
-        return redirect("/newlook")
-
-    post_title = request.form.get("post_title")
-    if post_title is None or len(post_title) < 3:
-        flash("Post Title is too short")
-        return redirect("/newlook")
-
-    post_description = request.form.get("post_description")
-    if post_description is None or len(post_description) > 150:
-        flash("Post description is too long")
-        return redirect("/newlook")
-
-    makeup_type = request.form.get("makeup_type")
-    if makeup_type is None or len(makeup_type) > 20:
-        flash("Makeup_type is too long")
-        return redirect("/newlook")
-
-    index = 0
-    results = []
-
-    # Create thumbnail image
-    (
-        thumb_success,
-        thumb_msg,
-        resized_image_thumb,
-    ) = image_helpers.resize_image_square_crop(
-        request.files.getlist("images")[0].stream, (200, 200)
-    )
-
-    if thumb_success is False:
-        flash(thumb_msg)
-        return redirect("/newlook")
-
-    # Create resized post images
-    for file in request.files.getlist("images"):
-        r = image_helpers.resize_image(file.stream, (500, 500))
-        results.append(r)
-
-        (fullres_success, fullres_msg, resized_image_post) = r
-        if fullres_success is False:
-            flash(thumb_msg or fullres_msg)
-            return redirect("/newlook")
-
-    # Store all resized post images and thumbnails here
-
-    # Save thumbnail image
-
-    post = crud.create_post(
-        user_id=user_id,
-        title=post_title,
-        post_description=post_description,
-        makeup_type=makeup_type,
-        products=request.form.getlist("products"),
-    )
-    post_id = post.post_id
-
-    file_name = f"{post_id}_p.jpg"
-    path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-    resized_image_thumb.save(path)
-
-    for result in results:
-        (fullres_success, fullres_msg, resized_image_post) = result
-
-        # Save post image
-        file_name = str.format("{0}_{1}.jpg", post_id, index)
-        path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-        resized_image_post.save(path)
-
-        # Add to the database
-        crud.create_makeupimage(post_id=post_id, image=file_name)
-    return redirect(f"/posts/{post_id}")
-
-    # return render_template(f"/posts/{post_id}")
-    # #old code
-
-    # (
-    #     thumb_success,
-    #     thumb_msg,
-    #     resized_image_thumb,
-    # ) = image_helpers.resize_image_square_crop(file.stream, (200, 200))
-    # (fullres_success, fullres_msg, resized_image_post) = image_helpers.resize_image(
-    #     file.stream, (500, 500)
-    # )
-    # if thumb_success is False or fullres_success is False:
-    #     flash(thumb_msg or fullres_msg)
-    #     return redirect("/newlook")
-    # else:
-    #     # Crud post here
-    #     #
-    #     post = crud.create_post(
-    #         user_id=user_id,
-    #         title=post_title,
-    #         post_description=post_description,
-    #         makeup_type=makeup_type,
-    #     )
-    #     post_id = post.post_id
-
-    #     # Save post image
-    #     file_name = str.format("{0}_{1}.jpg", post_id, index)
-    #     path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-    #     resized_image_post.save(path)
-    #     # Crud makeup image
-    #     crud.create_makeupimage(post_id=post_id, image=file_name)
-
-    #     # Save thumbnail image
-    #     file_name = str.format("{0}_p.jpg", post_id)
-    #     path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
-    #     resized_image_thumb.save(path)
-
-    #     return redirect(f"/posts/{post_id}")
 
 
 @app.route("/newproduct", methods=["GET"])
