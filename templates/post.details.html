@@ -3,56 +3,55 @@
 {% block title %} {{post.title}} - {% endblock %}
 
 {% block body %}
+<script>
+    // Add code here
+    $(document).ready(function () {
+
+        let url = "/favorites/user/{{post.post_id}}";
+        $.get(url, {}, function (data) {
+            if (data != undefined) {
+                //console.log(data);
+                if (data["id"] !== undefined) {
+                    //console.log("show remove from favorites button");
+                    $("#button_add").hide();
+                    $("#button_remove").show();
+                } else {
+                    //console.log("show add to favorites button.")
+                    $("#button_add").show();
+                    $("#button_remove").hide();
+                }
+            } else {
+                console.log("Some error happened.");
+                $("#button_add").show();
+                $("#button_remove").hide();
+            }
+        });
+
+        $("#button_add").click(function () {
+            $.get("/favorites/user/add/{{post.post_id}}", {}, function (data) {
+                $("#button_remove").show();
+                $("#button_add").hide();
+            })
+        });
+
+        $("#button_remove").click(function () {
+            $.get("/favorites/user/remove/{{post.post_id}}", {}, function (data) {
+                $("#button_remove").hide();
+                $("#button_add").show();
+            })
+        });
+    });
+</script>
 <div class="row">
-
-    <h6 class="h6">{{ post.title }}</h4>
-
-        <script>
-            // Add code here
-            $(document).ready(function () {
-
-                let url = "/favorites/user/{{post.post_id}}";
-                $.get(url, {}, function (data) {
-                    if (data != undefined) {
-                        //console.log(data);
-                        if (data["id"] !== undefined) {
-                            //console.log("show remove from favorites button");
-                            $("#button_add").hide();
-                            $("#button_remove").show();
-                        } else {
-                            //console.log("show add to favorites button.")
-                            $("#button_add").show();
-                            $("#button_remove").hide();
-                        }
-                    } else {
-                        console.log("Some error happened.");
-                        $("#button_add").show();
-                        $("#button_remove").hide();
-                    }
-                });
-
-                $("#button_add").click(function () {
-                    $.get("/favorites/user/add/{{post.post_id}}", {}, function (data) {
-                        $("#button_remove").show();
-                        $("#button_add").hide();
-                    })
-                });
-
-                $("#button_remove").click(function () {
-                    $.get("/favorites/user/remove/{{post.post_id}}", {}, function (data) {
-                        $("#button_remove").hide();
-                        $("#button_add").show();
-                    })
-                });
-            });
-        </script>
-
-
-
+    <h6 class="display-6">{{ post.title }}</h4>
 </div>
+
 <div class="row">
     <div class="col-9">{% for post_image in post_images %}
-        <img src="/static/images/posts/{{post_image.image}}" width="700" />
+        <figure class="figure">
+            <img src="/static/images/posts/{{post_image.image}}" class="figure-img img-fluid rounded"
+                style="width: 700px">
+        </figure>
         <br />
         <br />
         {% endfor %}

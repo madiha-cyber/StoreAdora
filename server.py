@@ -20,7 +20,7 @@ UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 def homepage():
     """View homepage"""
     posts = crud.get_posts(max_posts=12)
-    return render_template("homepage.html", all_posts=posts)
+    return render_template("homepage.html", posts=posts)
 
 
 @app.route("/posts")
@@ -29,7 +29,7 @@ def get_all_posts():
 
     posts = crud.get_posts()
 
-    return render_template("all_posts.html", all_posts=posts)
+    return render_template("all_posts.html", posts=posts)
 
 
 @app.route("/posts/<post_id>")
@@ -184,7 +184,7 @@ def show_userprofile():
     user_posts = crud.get_posts_for_user(user_id)
 
     return render_template(
-        "profile.html", user=user, userprofile=userprofile, user_posts=user_posts
+        "profile.html", user=user, userprofile=userprofile, posts=user_posts
     )
 
 

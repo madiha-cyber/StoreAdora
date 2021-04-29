@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
-
+    <link rel="icon" type="image/png" href="/static/images/title.png">
 
 
     <!-- jQuery script tag from code.jquery.com -->
@@ -35,6 +35,10 @@
     <!-- Script -->
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>
+
+    <!------ Include the above in your HEAD tag ---------->
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -59,28 +63,32 @@
             <div class="col-10 ">
                 <div class="row">
                     <div class="col-3">
-                        <img src="/static/images/titlexcf.png" width="100" />
+                        <img src="/static/images/title.png" width="100" />
                     </div>
                     <div class="col-9">
                         <div class="row align-items-end">
-                            <div class="col-8 offset-4 float-right">
+                            <div class="col text-end">
                                 {% if "user_id" in session and session["user_id"] %}
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%" href="/">HOME</a>
-                                <!-- <a class="display-6 text-decoration-none" style="font-size: 80%" href="/all">LOGOUT</a> -->
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%"
-                                    href="/profile">PROFILE</a>
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%"
-                                    href="/user/{{session['user_id']}}/favorites">FAVORITES</a>
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%" href="/posts">MAKEUP
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/">HOME</a>
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/posts">MAKEUP
                                     LOOKS</a>
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%" href="/newlook">NEW
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/user/{{session['user_id']}}/favorites">FAVORITES</a>
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/newlook">NEW
                                     POST</a>
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%"
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/profile">PROFILE</a>
+
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/logout">LOGOUT</a>
 
                                 {% else %}
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%" href="/login">LOGIN</a>
-                                <a class="display-6 text-decoration-none p-1" style="font-size: 80%"
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/login">LOGIN</a>
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/signup">SIGNUP</a>
                                 {% endif %}
                             </div>
@@ -91,9 +99,10 @@
                                 <form action="/search" method="GET">
                                     <div class="input-group">
                                         <input type="search" class="form-control rounded" name="search_text"
-                                            value="{{search_text}}" placeholder="Search" aria-label="Search"
-                                            aria-describedby="search-addon" />
-                                        <button type="submit" class="btn btn-outline-primary">search</button>
+                                            style="font-size: 70%" value="{{search_text}}" placeholder="Search"
+                                            aria-label="Search" aria-describedby="search-addon" />
+                                        <button type="submit" class="btn btn-outline-secondary"
+                                            style="font-size: 70%">search</button>
                                     </div>
                                 </form>
                             </div>
@@ -102,20 +111,29 @@
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row justify-content-md-center">
+            <div class="col-10">
+                {% block body %}
+                {% endblock %}
 
-    <br />
-
-
-    <div class="row justify-content-md-center">
-        <div class="col-10 ">
-            {% block body %}
-            {% endblock %}
-
-            {% block after_body %}
-            {% endblock %}
+                {% block after_body %}
+                {% endblock %}
+            </div>
         </div>
 
+        <br />
+        <div class="row">
+            <div class="col-2 offset-8">
+                <div class="text-center center-block">
+                    <a class="text-decoration-none p-1 text-dark" href="https://www.facebook.com/madihagoheer"><i
+                            class="fa fa-facebook fa-2x social"></i></a>
+                    <a class="text-decoration-none p-1 text-dark" href="https://instagram.com/madihagoheerofficial"><i
+                            class="fa fa-instagram fa-2x social"></i></a>
+                    <a class="text-decoration-none p-1 text-dark" href="mailto:madihagoheer@gmail.com"><i
+                            class="fa fa-envelope-square fa-2x social"></i></a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

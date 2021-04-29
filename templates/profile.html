@@ -4,23 +4,37 @@
 
 {% block body %}
 
-<div id="container">
-    <h3>Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h3>
-    <a href="/profile/edit">Edit Profile</a>
-    <br />
-    {%if userprofile.profile_picture%}
-    <img src="/static/images/profile/{{userprofile.profile_picture}}" height="100" width = "100" />
-    {%else%}
-    <img src="/static/images/profile/default.png" />
-    {%endif%}
-
-    <br/>
-    <!-- Show all my looks on this page below -->
-    {% for post in user_posts %}
-    <a href="/posts/{{post.post_id}}">
-        <img src="/static/images/posts/{{post.post_id}}_p.jpg" />
-    </a>
-    {% endfor %}
+<h4 class="display-6 d-flex justify-content-center">Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h4>
+<div class="card">
+    <div class="card-header">Your Profile</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-2">
+                {%if userprofile.profile_picture%}
+                <img src="/static/images/profile/{{userprofile.profile_picture}}" height="200" width="200" />
+                {%else%}
+                <img src="/static/images/profile/default.png" />
+                {%endif%}
+            </div>
+            <div class="col-3">
+                <div class="display-6" style="font-size: 98%">First Name: {{userprofile.first_name}}</div>
+                <div class="display-6" style="font-size: 98%">Last Name: {{userprofile.last_name}}</div>
+                <div class="display-6" style="font-size: 98%">Insta Handle: {{userprofile.insta_handle}}</div>
+                <div class="display-6" style="font-size: 98%">Bio: {{userprofile.bio}}</div>
+                <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
+                    checked>
+                <a href="/profile/edit" id="button_add" for="success-outlined" class="btn btn-outline-success">Edit
+                    Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="card">
+    <div class="card-header">Your Posts</div>
+    <div class="card-body">
+        {% include 'pictures_grid.html' %}
+    </div>
 </div>
 
 {% endblock %}

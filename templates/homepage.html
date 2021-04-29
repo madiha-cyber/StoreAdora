@@ -1,18 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} StoreAdora {% endblock %}
-
 {% block body %}
-
-
-
 <h4 class="display-6 d-flex justify-content-center">Learn how to create different makeup looks</h4>
-<div class="d-flex justify-content-center">
-    <ul>
-        {% for post in all_posts %}
-        <a href="/posts/{{post.post_id}}">
-            <img src="/static/images/posts/{{post.post_id}}_p.jpg" width="300" />
-        </a>
-        {% endfor %}
-    </ul>
-</div>
+{% include 'pictures_grid.html' %}
 {% endblock %}

@@ -4,13 +4,5 @@
 {% block body %}
 
 <h4 class="display-6 d-flex justify-content-center">Results for "{{search_text}}"</h4>
-<div class="d-flex justify-content-center">
-    <ul>
-        {% for post in posts %}
-        <a href="/posts/{{post.post_id}}">
-            <img src="/static/images/posts/{{post.post_id}}_p.jpg" width="300" />
-        </a>
-        {% endfor %}
-    </ul>
-</div>
+{% include 'pictures_grid.html' %}
 {% endblock %}

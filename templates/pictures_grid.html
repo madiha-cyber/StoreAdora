@@ -1,0 +1,16 @@
+<div class="d-flex">
+    <center>
+        <ul class="list-inline mx-auto justify-content-center">
+
+            {% for post in posts %}
+            <figure class="figure">
+                <a href="/posts/{{post.post_id}}">
+                    <img src="/static/images/posts/{{post.post_id}}_p.jpg" class="figure-img img-fluid rounded"
+                        style="width: 250px">
+                </a>
+                <figcaption class="figure-caption">{{post.title}}</figcaption>
+            </figure>
+            {% endfor %}
+        </ul>
+    </center>
+</div>
