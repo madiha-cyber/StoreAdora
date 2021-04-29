@@ -168,6 +168,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     post_id = db.Column(db.Integer, db.ForeignKey("posts.post_id"))
     text = db.Column(db.String)
+    date_added = db.Column(db.DateTime)
 
     user = db.relationship("User" , backref = "comments")
     post = db.relationship("Post", backref = "comments")

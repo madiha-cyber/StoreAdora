@@ -45,7 +45,6 @@
 <div class="row">
     <h6 class="display-6">{{ post.title }}</h4>
 </div>
-
 <div class="row">
     <div class="col-9">{% for post_image in post_images %}
         <figure class="figure">
@@ -59,12 +58,12 @@
     <div class="col-3">
         <div>
             <p class="h6">Influencer:</p>
-            <p>{{post.influencer_name}}</p>
-            <p class="h6">Type:</p>
+            <p>{{post.user.userprofiles[0].first_name}} {{post.user.userprofiles[0].last_name}}</p>
+            <p class="h6">Look:</p>
             <p>{{post.makeup_type}}
             </p>
             <p class="h6">Description:</p>
-            <p class="h6">
+            <p>
                 {{post.post_description}}
             </p>
         </div>
@@ -79,6 +78,7 @@
             <a class="btn btn-outline-primary" href="/posts/{{post.post_id}}/edit">Edit</a>
         </div>
         {% endif %}
+        <hr />
         <div>
             <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
                 checked>
@@ -92,26 +92,24 @@
         <br />
         <h6 class="display-6">products</h6>
         {% for product in products %}
-        <img src="/static/images/products/{{product.image}}" height="50" width="50" /> <a
-            href="{{product.url}}">{{product.title}}</a>
-        <p>
-        </p>
-        <p>{{product.details}}</p>
+        <a href="{{product.url}}" class="text-dark text-decoration-none">
+            <img src="/static/images/products/{{product.image}}" height="25" width="25" />{{product.title}}</a>
         {% endfor %}
     </div>
 </div>
 <div class="row">
 
-    <h4 class="h4">Comments</h4>
+    <h4 class="display-6">Comments</h4>
     {% for comment in comments %}
-    <p class="h6">{{comment.text}}</p>
-
+    <p>{{comment.text}}</p>
     {% if comment.user_id == session.get("user_id") %}
     <form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
+        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
         <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
-        <input type="submit" value="delete">
+        <input type="submit" value="delete comment" id="button_remove" class="btn btn-outline-danger" for="danger-outlined">
     </form>
     {% endif %}
+    <br />
     {% endfor %}
 
     <form action="/posts/{{post.post_id}}/comment" method="post">
