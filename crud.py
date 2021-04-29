@@ -10,6 +10,8 @@ from data.model import (
     Comment,
 )
 
+from sqlalchemy import or_
+
 from datetime import datetime
 
 
@@ -137,8 +139,17 @@ def search_posts(search_text, max_posts=15):
     """
     Return all posts
     """
+    if not search_text:
+        return []
+
     return (
-        Post.query.filter(Post.post_description.ilike(str.format("%{}%", search_text)))
+        Post.query.filter(
+            or_(
+                Post.post_description.ilike(f"%{search_text}%"),
+                Post.title.ilike(f"%{search_text}%"),
+                Post.makeup_type.ilike(f"%{search_text}%"),
+            )
+        )
         .limit(max_posts)
         .all()
     )
