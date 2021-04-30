@@ -249,7 +249,7 @@ def save_newlook_page():
 
     # Create resized post images
     for file in request.files.getlist("images"):
-        r = image_helpers.resize_image(file.stream, (500, 500))
+        r = image_helpers.resize_image(file.stream)
         results.append(r)
 
         (fullres_success, fullres_msg, resized_image_post) = r
@@ -281,15 +281,18 @@ def save_newlook_page():
 
         # Add to the database
         crud.create_makeupimage(post_id=post_id, image=file_name)
+        index += 1
     return redirect(f"/posts/{post_id}")
 
 
+###############################################################################
+# Posts related Functions
+###############################################################################
 @app.route("/posts")
 def get_all_posts():
     """View all posts"""
 
     posts = crud.get_posts()
-
     return render_template("all_posts.html", posts=posts)
 
 
@@ -311,6 +314,9 @@ def get_post(post_id):
     )
 
 
+###############################################################################
+# User related Functions
+###############################################################################
 @app.route("/user/<user_id>")
 def show_user(user_id):
     """
@@ -336,6 +342,9 @@ def show_user_favorites(user_id):
     return render_template("favorites.html", posts=crud.get_user_favorites(user_id))
 
 
+###############################################################################
+# Profile related Functions
+###############################################################################
 @app.route("/profile", methods=["GET"])
 def show_userprofile():
     """
@@ -437,23 +446,9 @@ def save_edit_profile():
     # Update user profile to reflect these new changes.
 
 
-@app.route("/posts/<post_id>/comment", methods=["POST"])
-def add_comment_from_post_page(post_id):
-
-    if not is_user_signed_in():
-        return redirect("/")
-
-    post = crud.get_post(post_id)
-    if not post:
-        return redirect("/")
-
-    user_id = session["user_id"]
-    comment = request.form.get("comment")
-
-    crud.create_comment(user_id=user_id, post_id=post_id, text=comment)
-    return redirect(f"/posts/{post_id}")
-
-
+###############################################################################
+# Post related Functions
+###############################################################################
 @app.route("/posts/<post_id>/delete", methods=["POST"])
 def delete_post_by_user(post_id):
     if not is_user_signed_in():
@@ -468,19 +463,6 @@ def delete_post_by_user(post_id):
     crud.delete_post_by_user(user_id=user_id, post_id=post_id)
 
     return redirect("/profile")
-
-
-@app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
-def delete_comment_from_post(post_id, comment_id):
-
-    if not is_user_signed_in():
-        return redirect("/")
-
-    user_id = session["user_id"]
-
-    crud.delete_comment(user_id=user_id, comment_id=comment_id)
-    flash("Comment deleted")
-    return redirect(f"/posts/{post_id}")
 
 
 @app.route("/posts/<post_id>/edit", methods=["GET"])
@@ -528,7 +510,7 @@ def save_edit_post_page(post_id):
             flash("No image found")
             return redirect(f"/posts/{post_id}/edit")
 
-        index = 0
+        index = len(crud.get_post(post_id=post_id).makeupimages)
         results = []
 
         # Create thumbnail image
@@ -546,7 +528,7 @@ def save_edit_post_page(post_id):
 
         # Create resized post images
         for file in request.files.getlist("images"):
-            r = image_helpers.resize_image(file.stream, (500, 500))
+            r = image_helpers.resize_image(file.stream)
             results.append(r)
 
             (fullres_success, fullres_msg, resized_image_post) = r
@@ -555,7 +537,6 @@ def save_edit_post_page(post_id):
                 return redirect(f"/posts/{post_id}/edit")
 
         # Store all resized post images and thumbnails here
-
         # Save thumbnail image
         file_name = str.format("{0}_p.jpg", post_id)
         path = os.path.join(UPLOAD_FOLDER_POST_PICTURES, file_name)
@@ -571,12 +552,16 @@ def save_edit_post_page(post_id):
 
             # Add to the database
             crud.create_makeupimage(post_id=post_id, image=file_name)
+            index += 1
 
         return redirect(f"/posts/{post_id}")
 
     return render_template(f"/posts/{post_id}")
 
 
+###############################################################################
+# New Product related Functions
+###############################################################################
 @app.route("/newproduct", methods=["GET"])
 def display_product_page():
     """Display a new product"""
@@ -605,8 +590,6 @@ def add_a_new_product():
         flash("Add product link")
         return redirect("/newproduct")
 
-    # user_id = session["user_id"]
-
     if "file1" not in request.files:
         flash("Upload a product image")
         return redirect("/newproduct")
@@ -630,20 +613,6 @@ def add_a_new_product():
         return redirect("/profile")
 
 
-@app.route("/products/search.json", methods=["GET"])
-def search_product_by_name():
-    """
-    Search Product that match the name in DB
-    """
-    name = request.args.get("q")
-    if name is None:
-        return jsonify({})
-
-    results = crud.get_products_by_name(name)
-
-    return jsonify(results)
-
-
 @app.route("/products/add", methods=["POST"])
 def add_product():
     """
@@ -659,15 +628,26 @@ def add_product():
     return jsonify(product)
 
 
-@app.route("/favorites/<user_id>", methods=["GET"])
-def get_favorites_for_user(user_id):
+###############################################################################
+# Search related Functions
+###############################################################################
+@app.route("/products/search.json", methods=["GET"])
+def search_product_by_name():
     """
-    Get list of all favorites for this user
+    Search Product that match the name in DB
     """
-    # return crud.load_favorites
-    pass
+    name = request.args.get("q")
+    if name is None:
+        return jsonify({})
+
+    results = crud.get_products_by_name(name)
+
+    return jsonify(results)
 
 
+###############################################################################
+# Favorites related Functions
+###############################################################################
 @app.route("/favorites/user/<post_id>", methods=["GET"])
 def get_is_post_favorite_by_user(post_id):
     """
@@ -731,6 +711,42 @@ def remove_post_from_user_favorites(post_id):
     return jsonify({})
 
 
+###############################################################################
+# Comment related Functions
+###############################################################################
+@app.route("/posts/<post_id>/comment", methods=["POST"])
+def add_comment_from_post_page(post_id):
+
+    if not is_user_signed_in():
+        return redirect("/")
+
+    post = crud.get_post(post_id)
+    if not post:
+        return redirect("/")
+
+    user_id = session["user_id"]
+    comment = request.form.get("comment")
+
+    crud.create_comment(user_id=user_id, post_id=post_id, text=comment)
+    return redirect(f"/posts/{post_id}")
+
+
+@app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
+def delete_comment_from_post(post_id, comment_id):
+
+    if not is_user_signed_in():
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    crud.delete_comment(user_id=user_id, comment_id=comment_id)
+    flash("Comment deleted")
+    return redirect(f"/posts/{post_id}")
+
+
+###############################################################################
+# Search Functions
+###############################################################################
 @app.route("/search", methods=["GET"])
 def search():
     search_text = request.args.get("search_text")
