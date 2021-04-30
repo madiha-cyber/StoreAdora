@@ -82,66 +82,34 @@
         <form id="newlook" action="/newlook" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="card">
-                <div class="card-header">Add details</div>
+                <div class="card-header">Add New Look</div>
                 <div class="card-body">
-                    <input type="hidden" name="form_id" value="new_look" accept="image/jpeg" />
-
-                    <p>Post Title:<input type="text" name="title" /></p>
-
-                    <p>Post Description: <input type="text" name="description" /></p>
-                    <!-- Example https://select2.org/data-sources/ajax -->
-
-                </div>
-            </div>
-            <br />
-            <div class="card">
-                <div class="card-header"> Search a Product</div>
-                <div class="card-body">
-
-                    <select id="selProduct" style="width:400px;">
+                    <p>Title:<input type="text" name="title" class="form-control" /></p>
+                    <p>Description: <input type="text" name="description" class="form-control" /></p>
+                    <p>Select Products Used OR <a href="/newproduct">Add New Product</a></p>
+                    <select id="selProduct" style="width:400px;" class="form-control">
                         <!-- <option value="-1">- Search for Product to Add -</option> -->
                     </select>
                     <br />
                     <div id="products"></div>
-
-                </div>
-            </div>
-
-
-            <a href="/newproduct">Add New Product</a>
-            <br />
-            <br />
-            <div class="card">
-                <div class="card-header">Choose a Makeup Type</div>
-                <div class="card-body">
-
-                    Makeup Type: <select name="makeup_type" id="makeup_type">
-                        <option value="dramatic">Dramatic</option>
-                        <option value="wedding">Wedding</option>
-                        <option value="classic">Classic</option>
-                        <option value="runway">Runway</option>
-                        <option value="specialeffects">Special Effects</option>
-                    </select>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="card">
-                <div class="card-header"> Select Image</div>
-                <div class="card-body">
-
-                    <input type='file' name="images" id="images" accept="image/jpeg" multiple>
                     <br />
-                    <br />
+                    <p>
+                        Makeup Type: <select name="makeup_type" id="makeup_type">
+                            <option value="dramatic">Dramatic</option>
+                            <option value="wedding">Wedding</option>
+                            <option value="classic">Classic</option>
+                            <option value="runway">Runway</option>
+                            <option value="specialeffects">Special Effects</option>
+                        </select>
+                    </p>
+                    <p> Select Image
+                    <input class="form-control" type='file' name="images" id="images" accept="image/jpeg" multiple />
+                    </p>
                     <input type="submit" name="Save" />
                 </div>
-                <br />
-
             </div>
         </form>
     </div>
 </div>
-</div>
-
 
 {% endblock %}
