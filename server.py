@@ -20,6 +20,16 @@ UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
 UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
 UPLOAD_FOLDER_PRODUCT_PICTURES = "./static/images/products/"
 
+###############################################################################
+# Helper Functions
+###############################################################################
+def is_user_signed_in():
+    """
+    Check if user's session exists
+    """
+    # return "user_id" in session and session["user_id"] is not None
+    return session.get("user_id") is not None
+
 
 def flash_errors(form):
     """Flashes form errors"""
@@ -43,14 +53,6 @@ class LoginForm(FlaskForm):
         "Password",
         validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
     )
-
-
-def is_user_signed_in():
-    """
-    Check if user's session exists
-    """
-    # return "user_id" in session and session["user_id"] is not None
-    return session.get("user_id") is not None
 
 
 @app.route("/login", methods=["GET"])
@@ -182,7 +184,7 @@ def homepage():
 
 
 ###############################################################################
-# New Post Related Forms & Functions
+# New Look Related Forms & Functions
 ###############################################################################
 class NewLookForm(FlaskForm):
     description = StringField(
@@ -450,11 +452,6 @@ def add_comment_from_post_page(post_id):
 
     crud.create_comment(user_id=user_id, post_id=post_id, text=comment)
     return redirect(f"/posts/{post_id}")
-
-
-# @app.route("/posts/<post_id>/comments", methods=["GET"])
-# def add_comments_to_the_post():
-#     """ Adds a comment to the post"""
 
 
 @app.route("/posts/<post_id>/delete", methods=["POST"])

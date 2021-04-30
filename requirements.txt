@@ -15,3 +15,4 @@ pillow
 dataclasses
 flask_wtf
 wtforms[email]
+faker

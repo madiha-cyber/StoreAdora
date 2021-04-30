@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from data.model import UserProfile, db, connect_to_db
 from crud import *
 from datetime import datetime
+from faker import Faker
 
 
 def create(
@@ -100,6 +101,8 @@ def add_sample_data():
     )
     products_list.append(p)
 
+    faker = Faker()
+
     u = create(
         email="amanda@outlook.com",
         password="123456",
@@ -110,43 +113,43 @@ def add_sample_data():
         posts=[
             {
                 "title": "NATIVE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["1_0.jpg", "1_1.jpg", "1_2.jpg"],
             },
             {
                 "title": "LA PERLE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["2_0.jpg", "2_1.jpg", "2_2.jpg"],
             },
             {
                 "title": "AMATO",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["3_0.jpg"],
             },
             {
                 "title": "SPLASH",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["4_0.jpg"],
             },
             {
                 "title": "MARIE CLAIRE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["5_0.jpg"],
             },
             {
                 "title": "SPACE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["6_0.jpg", "6_1.jpg", "6_2.jpg"],
             },
             {
                 "title": "SPLASH 2012",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["7_0.jpg", "7_1.jpg", "7_2.jpg"],
             },
@@ -166,43 +169,43 @@ def add_sample_data():
         posts=[
             {
                 "title": "GROVE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["8_0.jpg", "8_1.jpg", "8_2.jpg", "8_3.jpg"],
             },
             {
                 "title": "HOUSE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["9_0.jpg", "9_1.jpg"],
             },
             {
                 "title": "STEPHEN",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["10_0.jpg", "10_1.jpg"],
             },
             {
                 "title": "GQ MAGAZINE",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["11_0.jpg", "11_1.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["12_0.jpg", "12_1.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["13_0.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["14_0.jpg"],
             },
@@ -222,19 +225,19 @@ def add_sample_data():
         posts=[
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["15_0.jpg", "15_1.jpg", "15_2.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["16_0.jpg", "16_1.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["17_0.jpg", "17_1.jpg"],
             },
@@ -254,13 +257,13 @@ def add_sample_data():
         posts=[
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["18_0.jpg", "18_1.jpg", "18_2.jpg"],
             },
             {
                 "title": "Dramatic Makeup",
-                "description": "This is a look that I created for runway",
+                "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["19_0.jpg", "19_1.jpg", "19_2.jpg"],
             },
@@ -270,13 +273,9 @@ def add_sample_data():
     )
     users_list.append(u)
 
-    create_comment(1, 1, "This is a commnet on post 1")
-    create_comment(1, 2, "This is a commnet on post 2")
-    create_comment(1, 3, "This is a commnet on post 3")
-    create_comment(1, 4, "This is a commnet on post 4")
-    create_comment(2, 4, "This is a commnet on post 4")
-    create_comment(3, 4, "This is a commnet on post 4")
-    create_comment(4, 4, "This is a commnet on post 4")
+    for post_id in range(1, 19):
+        for comment_count in range(randint(1, 10)):
+            create_comment(randint(1, 4), post_id, faker.paragraph())
 
     db.session.add_all(profiles_list)
     db.session.commit()

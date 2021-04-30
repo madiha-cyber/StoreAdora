@@ -57,6 +57,7 @@ def resize_image(src_img_stream, required_size=(100, 100)):
         return (False, "Image size too big or small", None)
 
     # smallest_side = min(original_size[0], original_size[1])
+    # TODO: Fix this
 
     # if original_size[0] > original_size[1]:
     #     x = (original_size[0] - smallest_side) / 2
