@@ -68,25 +68,25 @@
             </p>
         </div>
         {% if post.user_id == session.get("user_id") %}
-        <div>
+        <div class="col">
             <form action="/posts/{{post.post_id}}/delete" method="post">
                 <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
 
                 <input class="btn btn-outline-danger" for="danger-outlined" type="submit" value="delete">
             </form>
 
-            <a class="btn btn-outline-primary" href="/posts/{{post.post_id}}/edit">Edit</a>
+            <a class="btn btn-outline-primary btn-block" href="/posts/{{post.post_id}}/edit">Edit</a>
         </div>
         {% endif %}
         <hr />
         <div>
             <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
                 checked>
-            <button type="submit" id="button_add" for="success-outlined" class="btn btn-outline-success">Add to
+            <button type="submit" id="button_add" for="success-outlined" class="btn btn-outline-success btn-block">Add to
                 favorites</button>
 
             <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-            <button type="submit" id="button_remove" class="btn btn-outline-danger" for="danger-outlined">Remove from
+            <button type="submit" id="button_remove" class="btn btn-outline-danger btn-block" for="danger-outlined">Remove from
                 favorites</button>
         </div>
         <br />
@@ -98,25 +98,41 @@
     </div>
 </div>
 <div class="row">
+    <div class="col">
+        <h4 class="display-6">Comments</h4>
 
-    <h4 class="display-6">Comments</h4>
-    {% for comment in comments %}
-    <p>{{comment.text}}</p>
-    {% if comment.user_id == session.get("user_id") %}
-    <form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
-        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-        <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
-        <input type="submit" value="delete comment" id="button_remove" class="btn btn-outline-danger" for="danger-outlined">
-    </form>
-    {% endif %}
-    <br />
-    {% endfor %}
+        {% for comment in comments %}
+        <div class="card bg-light mb-3" style="max-width: 30rem;">
+            <div class="card-header">{{comment.user.userprofiles[0].first_name}}</div>
+            <div class="card-body">
+                <p class="card-text">{{comment.text}}
+                    {% if comment.user_id == session.get("user_id") %}
+                <form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
+                    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined"
+                        autocomplete="off">
+                    <input type="hidden" name="comment_id" value="{{comment.comment_id}}" />
+                    <input type="submit" value="delete comment" id="button_remove" class="btn btn-outline-danger"
+                        for="danger-outlined">
+                </form>
 
-    <form action="/posts/{{post.post_id}}/comment" method="post">
-        <textarea name="comment" id="comment" style="font-family:sans-serif;"></textarea>
-        <br />
-        <input type="submit" value="Comment" title="Comment">
-    </form>
+                {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="card bg-light mb-3" style="max-width: 30rem;">
+            <div class="card-header">Write your comment</div>
+            <div class="card-body">
+                <p class="card-text">
+                <form action="/posts/{{post.post_id}}/comment" method="post">
+                    <textarea name="comment" id="comment" rows="3" cols="50" style="font-family:sans-serif;"></textarea>
+                    <br />
+                    <input type="submit" value="Save" title="Comment">
+                </form>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
