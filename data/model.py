@@ -29,7 +29,9 @@ class User(db.Model):
 
 
 class UserProfile(db.Model):
-    """Each user's profile"""
+    """
+    Each user's profile
+    """
 
     __tablename__ = "userprofiles"
 
@@ -56,21 +58,14 @@ class UserProfile(db.Model):
         nullable=True,
     )
 
-    # user = db.relationship('User', backref=userprofile)
-    # ^ what do you want to call 'users'?
-    #                                ^ backref: what do you want 'user' to call you?
-    # madiha = <User id=1 email='madiharules@gmail.com'>
-    # madiha.??? < that's backref
-
-    # last note about 1:1 https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#relationships-one-to-one
-    # we also have to specify uselist=False as an option when calling db.relationship(uselist=False)
-
     def __repr__(self):
         return f"<UserProfile user_id={self.user_id} insta_handle={self.insta_handle} >"
 
 
 class Post(db.Model):
-    """A Post created by the user"""
+    """
+    A Post created by the user
+    """
 
     __tablename__ = "posts"
 
@@ -92,7 +87,9 @@ class Post(db.Model):
 
 
 class MakeupImage(db.Model):
-    """Images of each post"""
+    """
+    Images of each post
+    """
 
     __tablename__ = "makeupimages"
 
@@ -109,7 +106,9 @@ class MakeupImage(db.Model):
 
 
 class Favorite(db.Model):
-    """Favorite Post of each User"""
+    """
+    Favorite Post of each User
+    """
 
     __tablename__ = "favorites"
 
@@ -160,6 +159,7 @@ class PostProducts(db.Model):
     def __repr__(self):
         return f"<PostProducts post_product_id={self.post_product_id} product_id={self.product_id} post_id={self.post_id}>"
 
+
 class Comment(db.Model):
 
     __tablename__ = "comments"
@@ -170,8 +170,8 @@ class Comment(db.Model):
     text = db.Column(db.String)
     date_added = db.Column(db.DateTime)
 
-    user = db.relationship("User" , backref = "comments")
-    post = db.relationship("Post", backref = "comments")
+    user = db.relationship("User", backref="comments")
+    post = db.relationship("Post", backref="comments")
 
     def __repr__(self):
         return f"<Comments comment_id={self.comment_id} user_id={self.user_id} post_id={self.post_id}>"
@@ -186,13 +186,3 @@ def connect_to_db(flask_app, db_uri="postgresql:///finalproject", echo=True):
     db.init_app(flask_app)
 
     print("Connected to the db!")
-
-
-if __name__ == "__main__":
-    from server import app
-
-    # Call connect_to_db(app, echo=False) if your program output gets
-    # too annoying; this will tell SQLAlchemy not to print out every
-    # query it executes.
-
-    connect_to_db(app)

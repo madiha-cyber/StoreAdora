@@ -32,7 +32,9 @@ def is_user_signed_in():
 
 
 def flash_errors(form):
-    """Flashes form errors"""
+    """
+    Flashes form errors
+    """
     for field, errors in form.errors.items():
         for error in errors:
             flash(
@@ -178,7 +180,9 @@ def signup_user():
 ###############################################################################
 @app.route("/")
 def homepage():
-    """View homepage"""
+    """
+    View homepage
+    """
     posts = crud.get_posts(max_posts=12)
     return render_template("homepage.html", posts=posts)
 
@@ -202,14 +206,18 @@ class NewLookForm(FlaskForm):
 
 @app.route("/newlook", methods=["GET"])
 def show_newlook_page():
-    """Show newlook page"""
+    """
+    Show newlook page
+    """
     form = NewLookForm()
     return render_template("newlook.html", form=form)
 
 
 @app.route("/newlook", methods=["POST"])
 def save_newlook_page():
-    """Create new look"""
+    """
+    Create new look
+    """
 
     # Check User Logged In Already
     if not is_user_signed_in():
@@ -290,7 +298,9 @@ def save_newlook_page():
 ###############################################################################
 @app.route("/posts")
 def get_all_posts():
-    """View all posts"""
+    """
+    View all posts
+    """
 
     posts = crud.get_posts()
     return render_template("all_posts.html", posts=posts)
@@ -298,7 +308,9 @@ def get_all_posts():
 
 @app.route("/posts/<post_id>")
 def get_post(post_id):
-    """View each post"""
+    """
+    View each post
+    """
 
     post = crud.get_post(post_id)
     products = crud.get_products_for_post(post_id)
@@ -467,7 +479,9 @@ def delete_post_by_user(post_id):
 
 @app.route("/posts/<post_id>/edit", methods=["GET"])
 def show_edit_post_page(post_id):
-    """ """
+    """
+    Edit Post Page
+    """
     # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
@@ -489,7 +503,9 @@ def show_edit_post_page(post_id):
 
 @app.route("/posts/<post_id>/edit", methods=["POST"])
 def save_edit_post_page(post_id):
-    """ """
+    """
+    Edit Post Page
+    """
     # Check User Logged In Already
     if not is_user_signed_in():
         return redirect("/")
@@ -564,13 +580,17 @@ def save_edit_post_page(post_id):
 ###############################################################################
 @app.route("/newproduct", methods=["GET"])
 def display_product_page():
-    """Display a new product"""
+    """
+    Display a new product
+    """
     return render_template("newproduct.html")
 
 
 @app.route("/newproduct", methods=["POST"])
 def add_a_new_product():
-    """Adds a new product"""
+    """
+    Adds a new product
+    """
 
     if not is_user_signed_in():
         return redirect("/newproduct")
