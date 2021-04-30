@@ -339,7 +339,8 @@ def show_user(user_id):
         return render_template("user_profile_not_found.html")
 
     userprofile = crud.get_user_profile(user_id)
-    return render_template("user_profile.html", user=user, userprofile=userprofile)
+    posts = crud.get_posts_for_user(user_id=user_id)
+    return render_template("user_profile.html", user=user, userprofile=userprofile, posts=posts)
 
 
 @app.route("/user/<user_id>/favorites")
