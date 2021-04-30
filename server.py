@@ -578,12 +578,28 @@ def save_edit_post_page(post_id):
 ###############################################################################
 # New Product related Functions
 ###############################################################################
+class NewProductForm(FlaskForm):
+    title = StringField(
+        "Title",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    details = StringField(
+        "Details",
+        validators=[validators.DataRequired(), validators.Length(min=6, max=35)],
+    )
+    url = StringField(
+        "Url",
+        validators=[validators.DataRequired(), validators.Length(min=6)],
+    )
+    picture = FileField("Picture", validators=[FileRequired()])
+
+
 @app.route("/newproduct", methods=["GET"])
 def display_product_page():
     """
     Display a new product
     """
-    return render_template("newproduct.html")
+    return render_template("newproduct.html", form=NewProductForm())
 
 
 @app.route("/newproduct", methods=["POST"])
@@ -595,26 +611,12 @@ def add_a_new_product():
     if not is_user_signed_in():
         return redirect("/newproduct")
 
-    product_title = request.form.get("product_title")
-    if product_title is None or len(product_title) < 3:
-        flash("Select a product title")
+    form = NewProductForm()
+    if not form.validate_on_submit():
+        flash_errors(form)
         return redirect("/newproduct")
 
-    product_details = request.form.get("product_details")
-    if product_details is None or len(product_details) > 150:
-        flash("Add product details")
-        return redirect("/newproduct")
-
-    product_url = request.form.get("product_url")
-    if product_url is None:
-        flash("Add product link")
-        return redirect("/newproduct")
-
-    if "file1" not in request.files:
-        flash("Upload a product image")
-        return redirect("/newproduct")
-
-    f = request.files["file1"]
+    f = request.files["picture"]
 
     result = image_helpers.resize_image_square_crop(f.stream, (50, 50))
     (success, msg, resized_image) = result
@@ -623,7 +625,7 @@ def add_a_new_product():
         return redirect("/newproduct")
     else:
         p = crud.create_product(
-            details=product_details, title=product_title, url=product_url
+            details=form.details.data, title=form.title.data, url=form.url.data
         )
         file_name = f"{p.product_id}.jpg"
         path = os.path.join(UPLOAD_FOLDER_PRODUCT_PICTURES, file_name)

@@ -1,38 +1,22 @@
 {% extends 'base.html' %}
 {% block title %} StoreAdora {% endblock %}
-
 {% block body %}
-
-
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">Add a new product</div>
             <div class="card-body">
                 <form action="/newproduct" method="POST" enctype="multipart/form-data">
-                    Product Title:<input type="text" name="product_title" />
-
-                    <br />
+                    {{ form.hidden_tag() }}
+                    Product Title:<input type="text" name="title" class="form-control" />
+                    Product Details: <input type="text" name="details" class="form-control" />
+                    Product Url: <input type="text" name="url" class="form-control">
+                    Product Image: <input type='file' name="picture" class="form-control">
                     <br/>
-                    Product details: <input type="text" name="product_details" />
-                    <br />
-                    <br/>
-
-                    Add product url: <input type="text" name="product_url">
-                    <br/>
-
-                    <br/>
-                    Add product Image: <input type="hidden" name="form_id" value="profile_picture" />
-                    <input type='file' name="file1">
-                    <br/>
-                    <br/>
-                    <input type="submit" name="Save" />
-
+                    <input type="submit" value="Add New Product" class="btn btn-primary " />
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-
 {%endblock%}

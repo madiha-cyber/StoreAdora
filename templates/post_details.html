@@ -58,7 +58,9 @@
     <div class="col-3">
         <div>
             <p class="h6">Influencer:</p>
-            <p>{{post.user.userprofiles[0].first_name}} {{post.user.userprofiles[0].last_name}}</p>
+            <a href="/user/{{post.user_id}}" class="text-decoration-none text-dark">
+                <p>{{post.user.userprofiles[0].first_name}} {{post.user.userprofiles[0].last_name}}</p>
+            </a>
             <p class="h6">Look:</p>
             <p>{{post.makeup_type}}
             </p>
@@ -67,28 +69,32 @@
                 {{post.post_description}}
             </p>
         </div>
+        <hr />
         {% if post.user_id == session.get("user_id") %}
         <div class="col">
             <form action="/posts/{{post.post_id}}/delete" method="post">
                 <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-
-                <input class="btn btn-outline-danger" for="danger-outlined" type="submit" value="delete">
+                <input class="btn btn-outline-danger form-control p-1" for="danger-outlined" type="submit"
+                    value="Delete Look">
             </form>
-
-            <a class="btn btn-outline-primary btn-block" href="/posts/{{post.post_id}}/edit">Edit</a>
+            <br />
+            <a class="btn btn-outline-primary form-control p-1" href="/posts/{{post.post_id}}/edit">Edit Look</a>
         </div>
+        <br />
         {% endif %}
-        <hr />
         <div>
             <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
                 checked>
-            <button type="submit" id="button_add" for="success-outlined" class="btn btn-outline-success btn-block">Add to
+            <button type="submit" id="button_add" for="success-outlined"
+                class="btn btn-outline-success form-control">Add to
                 favorites</button>
 
             <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-            <button type="submit" id="button_remove" class="btn btn-outline-danger btn-block" for="danger-outlined">Remove from
+            <button type="submit" id="button_remove" class="btn btn-outline-danger btn-block"
+                for="danger-outlined">Remove from
                 favorites</button>
         </div>
+        <hr />
         <br />
         <h6 class="display-6">products</h6>
         {% for product in products %}
