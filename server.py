@@ -70,7 +70,7 @@ def show_login_page():
     form = LoginForm()
 
     # If session does not exists display login page
-    return render_template("login_page.html", form=form)
+    return render_template("login.html", form=form)
 
 
 @app.route("/login", methods=["POST"])
@@ -318,7 +318,7 @@ def get_post(post_id):
     comments = crud.get_comments_by_post_id(post_id)
 
     return render_template(
-        "post.details.html",
+        "post_details.html",
         post=post,
         products=products,
         post_images=post_images,
