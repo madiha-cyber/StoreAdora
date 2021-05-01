@@ -318,7 +318,12 @@ def get_products_by_name(name):
     """
     return products by their name
     """
-    return Product.query.filter(Product.title.ilike(str.format("%{}%", name))).all()
+    return Product.query.filter(
+        or_(
+            Product.title.ilike(f"%{name}%"),
+            Product.details.ilike(f"%{name}%")
+        )
+    ).all()
 
 
 def get_comments_by_post_id(post_id):
