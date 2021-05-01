@@ -24,18 +24,22 @@ When you open the web application you are presented with top looks created by th
 - AJAX
 - Bootstrap
 
-## Data
-- User email, password, name
-- User's insta_handle & bio
-- Product tile, description and website link
-- Makeup title, description and makeup type
-- Favorites
 
 ## Screenshots
 ![Homepage Screenshot](readme/1.jpg "Homepage")
 ![Post Screenshot](readme/2.jpg "Post")
 ![Post Screenshot](readme/3.jpg "Post")
 ![Search Screenshot](readme/4.jpg "Search")
+
+## DataModel
+- User email, password, name
+- User's insta_handle & bio
+- Product tile, description and website link
+- Makeup title, description and makeup type
+- Favorites
+
+
+![DataModel Screenshot](readme/datamodel.png "DataModel")
 
 ## Roadmap
 
