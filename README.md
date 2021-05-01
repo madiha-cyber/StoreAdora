@@ -12,8 +12,13 @@ When you open the web application you are presented with top looks created by th
 
 ## Technologies required (besides typical Hackbright tech stack)
 - Python
-- Jinga
-- PostgresSQL
+  - Jinja
+  - Flask
+  - FlaskForms
+  - Pillow
+  - SQLAlchemy
+  - Faker
+- PostgreSQL
 - HTML
 - Javascript
 - AJAX
