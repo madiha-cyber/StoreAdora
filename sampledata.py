@@ -303,9 +303,15 @@ def add_sample_data():
         profile_picture="1.jpg",
     )
 
+    # Create random comments
     for post_id in range(1, 19):
         for comment_count in range(randint(1, 10)):
             create_comment(randint(1, 4), post_id, faker.paragraph())
+
+    # Create Favorites
+    for user_id in range(1, 4):
+        for _ in range(1, randint(5, 10)):
+            create_favorites(user_id, randint(1, 19))
 
     db.session.commit()
 

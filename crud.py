@@ -45,6 +45,11 @@ def create_post(user_id, title, post_description, makeup_type, products=[]):
 def create_favorites(user_id, post_id):
     """
     """
+
+    f = Favorite.query.filter(Favorite.user_id == user_id).filter(Favorite.post_id==post_id).all()
+    if f:
+        return f[0]
+
     f = Favorite(user_id=user_id, post_id=post_id, date_favorites=datetime.now())
     db.session.add(f)
     db.session.commit()
