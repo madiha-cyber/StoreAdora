@@ -98,8 +98,8 @@
         <br />
         <h6 class="display-6">products</h6>
         {% for product in products %}
-        <p><a href="{{product.url}}" class="text-dark text-decoration-none">
-            <img src="/static/images/products/{{product.image}}" height="25" width="25" />{{product.title}}</a></p>
+        <p><a href="{{product.url}}" class="text-dark text-decoration-none" target="blank">
+            <img src="/static/images/products/{{product.image}}" height="50" width="50" />{{product.title}}</a></p>
         {% endfor %}
     </div>
 </div>

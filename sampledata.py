@@ -1,6 +1,6 @@
 import os
 import json
-from random import choice, randint
+from random import choice, randint, sample
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from data.model import UserProfile, db, connect_to_db
@@ -18,7 +18,6 @@ def create(
     bio,
     posts,
     profile_picture,
-    products=[],
 ):
     u = create_user(email=email, password=password)
     u.userprofiles.append(
@@ -41,65 +40,83 @@ def create(
         for post_image in post["images"]:
             p.makeupimages.append(MakeupImage(image=post_image))
 
-        p.products.append(
-            Product(
-                title="Foundation",
-                details="Nars Longwear",
-                url="https://www.sephora.com/",
-                image="1.png",
-            )
-        )
+        p.products.extend(post["products"])
         u.posts.append(p)
         db.session.commit()
 
-    # for product in products:
-    #     create_postproducts(product.product_id, o.post_id)
     return u
 
 
 def add_sample_data():
 
-    users_list = []
-    profiles_list = []
-    posts_list = []
-    favorites_list = []
-    products_list = []
-
-    # Product 1
-    p = create_product(
-        "Foundation",
-        "Nars Longwear",
-        "https://www.sephora.com/",
-        "1.png",
-    )
-    products_list.append(p)
-
-    # Product 2
-    p = create_product(
-        "Concealer",
-        "Huda Beauty Concealer for Dark Skin",
-        "https://www.sephora.com/",
-        "2.png",
-    )
-    products_list.append(p)
-
-    # Product 3
-    p = create_product(
-        "Concealer",
-        "Huda Beauty Concealer For Light Skin",
-        "https://www.sephora.com/",
-        "3.png",
-    )
-    products_list.append(p)
-
-    # Product 4
-    p = create_product(
-        "Concealer",
-        "Huda Beauty makeup brushes",
-        "https://www.sephora.com/",
-        "1.png",
-    )
-    products_list.append(p)
+    products_list = [
+        create_product(
+            "Face Brushes",
+            "PRO Concealer Brush #57",
+            "https://www.sephora.com/product/pro-airbrush-concealer-brush-57-P313020",
+            "1.webp",
+        ),
+        create_product(
+            "Face Brushes",
+            "FENTY BEAUTY by Rihanna : Portable Contour & Concealer Brush 150",
+            "https://www.sephora.com/product/portable-contour-concealer-brush-150-P34587546",
+            "2.webp",
+        ),
+        create_product(
+            "Concealer",
+            "Huda Beauty Nude Obsessions Eyeshadow Palette",
+            "https://www.sephora.com/product/nude-obsessions-eyeshadow-palette-P450887",
+            "3.webp",
+        ),
+        create_product(
+            "Tinted Moisturizer Oil",
+            "Laura Mercier: Tinted Moisturizer Oil Free Natural Skin Perfector Broad Spectrum SPF 20",
+            "https://www.sephora.com/product/tinted-moisturizer-broad-spectrum-oil-free-P140906?icid2=new%20arrivals:p140906:product",
+            "4.webp",
+        ),
+        create_product(
+            "Tinted Moisturizer",
+            "NARS: Pure Radiant Tinted Moisturizer Broad Spectrum SPF 30",
+            "https://www.sephora.com/product/pure-radiant-tinted-moisturizer-spf-30-pa-P302923",
+            "5.webp",
+        ),
+        create_product(
+            "Eye Pallettes",
+            "HUDA BEAUTY : The New Nude Eyeshadow Palette",
+            "https://www.sephora.com/product/the-new-nude-eyeshadow-palette-P43818047?skuId=2137289&icid2=products%20grid:p43818047:product",
+            "6.webp",
+        ),
+        create_product(
+            "Foundation",
+            "NARS: Sheer Glow Foundation",
+            "https://www.sephora.com/product/sheer-glow-foundation-P247355",
+            "7.webp",
+        ),
+        create_product(
+            "Concealer",
+            "NARS: Radiant Creamy Concealer",
+            "https://www.sephora.com/product/radiant-creamy-concealer-P377873",
+            "8.webp",
+        ),
+        create_product(
+            "Concealer",
+            "Kosas: Revealer Super Creamy + Brightening Concealer and Daytime Eye Cream",
+            "https://www.sephora.com/product/kosas-revealer-concealer-P456151",
+            "9.webp",
+        ),
+        create_product(
+            "Concealer",
+            "Yves Saint Laurent: Touche Eclat High Cover Radiant Under-Eye Concealer",
+            "https://www.sephora.com/product/touche-eclat-high-cover-radiant-concealer-P440971",
+            "10.webp",
+        ),
+        create_product(
+            "Eye Pallets",
+            "HUDA BEAUTY : Pastel Obsessions Eyeshadow Palette",
+            "https://www.sephora.com/product/huda-beauty-pastel-obsessions-eyeshadow-palette-P489310288",
+            "11.webp",
+        ),
+    ]
 
     faker = Faker()
 
@@ -116,48 +133,53 @@ def add_sample_data():
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["1_0.jpg", "1_1.jpg", "1_2.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "LA PERLE",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["2_0.jpg", "2_1.jpg", "2_2.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "AMATO",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["3_0.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "SPLASH",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["4_0.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "MARIE CLAIRE",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["5_0.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "SPACE",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["6_0.jpg", "6_1.jpg", "6_2.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "SPLASH 2012",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["7_0.jpg", "7_1.jpg", "7_2.jpg"],
+                "products": sample(products_list, 5),
             },
         ],
         profile_picture="1.jpg",
-        products=products_list,
     )
-    users_list.append(u)
 
     u = create(
         email="huda@outlook.com",
@@ -172,48 +194,53 @@ def add_sample_data():
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["8_0.jpg", "8_1.jpg", "8_2.jpg", "8_3.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "HOUSE",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["9_0.jpg", "9_1.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "STEPHEN",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["10_0.jpg", "10_1.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "GQ MAGAZINE",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["11_0.jpg", "11_1.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["12_0.jpg", "12_1.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["13_0.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["14_0.jpg"],
+                "products": sample(products_list, 5),
             },
         ],
         profile_picture="2.jpg",
-        products=products_list,
     )
-    users_list.append(u)
 
     u = create(
         email="madihagoheer@outlook.com",
@@ -228,24 +255,25 @@ def add_sample_data():
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["15_0.jpg", "15_1.jpg", "15_2.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["16_0.jpg", "16_1.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["17_0.jpg", "17_1.jpg"],
+                "products": sample(products_list, 5),
             },
         ],
         profile_picture="3.jpg",
-        products=products_list,
     )
-    users_list.append(u)
 
     u = create(
         email="myreengoheer@outlook.com",
@@ -260,24 +288,23 @@ def add_sample_data():
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["18_0.jpg", "18_1.jpg", "18_2.jpg"],
+                "products": sample(products_list, 5),
             },
             {
                 "title": "Dramatic Makeup",
                 "description": faker.paragraph(),
                 "makeup_type": "Dramatic",
                 "images": ["19_0.jpg", "19_1.jpg", "19_2.jpg"],
+                "products": sample(products_list, 5),
             },
         ],
         profile_picture="1.jpg",
-        products=products_list,
     )
-    users_list.append(u)
 
     for post_id in range(1, 19):
         for comment_count in range(randint(1, 10)):
             create_comment(randint(1, 4), post_id, faker.paragraph())
 
-    db.session.add_all(profiles_list)
     db.session.commit()
 
     print("Added objects to DB")

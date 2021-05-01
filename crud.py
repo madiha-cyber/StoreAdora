@@ -82,7 +82,7 @@ def remove_post_from_user_favorites(user_id, post_id):
     return result
 
 
-def create_product(details, title, url=None, image=None):
+def create_product(title, details, url=None, image=None):
     """
     """
     p = Product(
