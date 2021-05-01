@@ -81,8 +81,9 @@
 
         <form id="newlook" action="/newlook" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            <div class="card">
-                <div class="card-header">Add New Look</div>
+
+            <div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+                <div class="card-header text-dark" style="background-color: var(--accentcolor1);">Add New Look</div>
                 <div class="card-body">
                     <p>Title:<input type="text" name="title" class="form-control" /></p>
                     <p>Description: <input type="text" name="description" class="form-control" /></p>
@@ -103,7 +104,8 @@
                         </select>
                     </p>
                     <p> Select Image
-                    <input class="form-control" type='file' name="images" id="images" accept="image/jpeg" multiple />
+                        <input class="form-control" type='file' name="images" id="images" accept="image/jpeg"
+                            multiple />
                     </p>
                     <input type="submit" name="Save" />
                 </div>

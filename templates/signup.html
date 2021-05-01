@@ -2,25 +2,31 @@
 {% block title %} Sign up {% endblock %}
 
 {% block body %}
-<h1 class="display-6">Sign Up</h1>
-<form action="/signup" method="POST">
-    {{ form.hidden_tag() }}
-    <p>
-        First name
-        {{ form.first_name(class_="form-control", placeholder="Enter First Name") }}
-    </p>
-    <p>
-        Last name
-        {{form.last_name(class_="form-control", placeholder="Enter Last Name") }}
-    </p>
-    <p> Email
-        {{ form.email(class_="form-control", aria_describedby="emailHelp", placeholder="Enter email") }}
-    </p>
-    <p>
-        Password
-        {{ form.password(class_="form-control", placeholder="Password") }}
-    </p>
-    <input type="submit" name="Enter">
-</form>
+<div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+    <div class="card-header text-dark" style="background-color: var(--accentcolor1);">
 
+        <h1 class="display-6">Sign Up</h1>
+    </div>
+    <div class="card-body" style="background-color: var(--accentcolor1);">
+        <form action="/signup" method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                First name
+                {{ form.first_name(class_="form-control", placeholder="Enter First Name") }}
+            </p>
+            <p>
+                Last name
+                {{form.last_name(class_="form-control", placeholder="Enter Last Name") }}
+            </p>
+            <p> Email
+                {{ form.email(class_="form-control", aria_describedby="emailHelp", placeholder="Enter email") }}
+            </p>
+            <p>
+                Password
+                {{ form.password(class_="form-control", placeholder="Password") }}
+            </p>
+            <input type="submit" name="Enter">
+        </form>
+    </div>
+</div>
 {% endblock %}

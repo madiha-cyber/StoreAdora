@@ -3,16 +3,18 @@
 {% block body %}
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header">Add a new product</div>
-            <div class="card-body">
+        <div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+            <div class="card-header text-dark" style="background-color: var(--accentcolor1) ;">
+                <h2 class="display-6">Add a New Product</h2>
+            </div>
+            <div class="card-body text-dark" style="background-color: var(--accentcolor1);">
                 <form action="/newproduct" method="POST" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
                     Product Title:<input type="text" name="title" class="form-control" />
                     Product Details: <input type="text" name="details" class="form-control" />
                     Product Url: <input type="text" name="url" class="form-control">
                     Product Image: <input type='file' name="picture" class="form-control">
-                    <br/>
+                    <br />
                     <input type="submit" value="Add New Product" class="btn btn-primary " />
                 </form>
             </div>

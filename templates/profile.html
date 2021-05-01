@@ -5,9 +5,10 @@
 {% block body %}
 
 <h4 class="display-6 d-flex justify-content-center">Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h4>
-<div class="card">
-    <div class="card-header">Your Profile</div>
-    <div class="card-body">
+
+<div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+    <div class="card-header text-dark" style="background-color: var(--accentcolor1);">Your Profile</div>
+    <div class="card-body text-dark" style="background-color: var(--accentcolor1);">
         <div class="row">
             <div class="col">
                 {%if userprofile.profile_picture%}
@@ -18,9 +19,13 @@
             </div>
             <div class="col">
                 <div class="display-6" style="font-size: 98%">First Name: {{userprofile.first_name}}</div>
+                </br>
                 <div class="display-6" style="font-size: 98%">Last Name: {{userprofile.last_name}}</div>
+                </br>
                 <div class="display-6" style="font-size: 98%">Insta Handle: {{userprofile.insta_handle}}</div>
+                </br>
                 <div class="display-6" style="font-size: 98%">Bio: {{userprofile.bio}}</div>
+                </br>
                 <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
                     checked>
                 <a href="/profile/edit" id="button_add" for="success-outlined" class="btn btn-outline-success">Edit
@@ -30,9 +35,9 @@
     </div>
 </div>
 <br />
-<div class="card">
-    <div class="card-header">Your Looks</div>
-    <div class="card-body">
+<div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+    <div class="card-header text-dark" style="background-color: var(--accentcolor1) ;">Your Looks</div>
+    <div class="card-body text-dark" style="background-color: var(--accentcolor1);">
         {% include 'pictures_grid.html' %}
     </div>
 </div>

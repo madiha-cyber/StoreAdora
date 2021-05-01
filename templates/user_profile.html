@@ -2,10 +2,15 @@
 {% block title %} {{user.user_id}} {% endblock %}
 
 {% block body %}
-<div class="card bg-light mb-3">
-    <div class="card-header">{{userprofile.first_name}} {{userprofile.last_name}}'s Profile</div>
-    <div class="card-body">
-        <p class="card-text">
+<div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
+    <div class="card-header text-dark">
+        <h2 class="display-6">{{userprofile.first_name}}
+            {{userprofile.last_name}}'s Profile</h2>
+    </div>
+
+
+    <div class="card-body text-dark">
+        <p class="card-text-dark">
 
         <p>Instagram: {{userprofile.insta_handle}}</p>
         <p>Bio: {{userprofile.bio}}</p>
