@@ -7,8 +7,8 @@
 <h4 class="display-6 d-flex justify-content-center">Welcome {{userprofile.first_name}} {{userprofile.last_name}}</h4>
 
 <div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
-    <div class="card-header text-dark" style="background-color: var(--accentcolor1);">Your Profile</div>
-    <div class="card-body text-dark" style="background-color: var(--accentcolor1);">
+    <div class="card-header text-dark" >Your Profile</div>
+    <div class="card-body text-dark">
         <div class="row">
             <div class="col">
                 {%if userprofile.profile_picture%}
@@ -36,8 +36,8 @@
 </div>
 <br />
 <div class="card mb-3" style="max-width: 200; border-color: var(--accentcolor1);">
-    <div class="card-header text-dark" style="background-color: var(--accentcolor1) ;">Your Looks</div>
-    <div class="card-body text-dark" style="background-color: var(--accentcolor1);">
+    <div class="card-header text-dark">Your Looks</div>
+    <div class="card-body text-dark" >
         {% include 'pictures_grid.html' %}
     </div>
 </div>

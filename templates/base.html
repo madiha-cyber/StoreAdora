@@ -35,7 +35,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
     <style>
-        :root{
+        :root {
             --accentcolor1: #F6F1D1;
             --accentcolor2: #FFddFF;
         }
@@ -81,6 +81,7 @@
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/posts">MAKEUP
                                     LOOKS</a>
+
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/user/{{session['user_id']}}/favorites">FAVORITES</a>
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
@@ -93,6 +94,11 @@
                                     href="/logout">LOGOUT</a>
 
                                 {% else %}
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/">HOME</a>
+                                <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
+                                    href="/posts">MAKEUP
+                                    LOOKS</a>
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"
                                     href="/login">LOGIN</a>
                                 <a class="display-6 text-decoration-none p-1 text-dark" style="font-size: 80%"

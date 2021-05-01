@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} {{post.title}} - {% endblock %}
+{% block title %} {{post.title}} {% endblock %}
 
 {% block body %}
 <script>
@@ -82,6 +82,8 @@
         </div>
         <br />
         {% endif %}
+
+        {% if session.get("user_id") %}
         <div>
             <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off"
                 checked>
@@ -91,15 +93,16 @@
 
             <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
             <button type="submit" id="button_remove" class="btn btn-outline-danger form-control
-                for="danger-outlined">Remove from
+                for=" danger-outlined">Remove from
                 favorites</button>
         </div>
         <hr />
+        {% endif %}
         <br />
         <h6 class="display-6">products</h6>
         {% for product in products %}
         <p><a href="{{product.url}}" class="text-dark text-decoration-none" target="blank">
-            <img src="/static/images/products/{{product.image}}" height="50" width="50" />{{product.title}}</a></p>
+                <img src="/static/images/products/{{product.image}}" height="50" width="50" />{{product.title}}</a></p>
         {% endfor %}
     </div>
 </div>
@@ -126,6 +129,7 @@
             </div>
         </div>
         {% endfor %}
+        {% if session.get("user_id") %}
         <div class="card bg-light mb-3" style="max-width: 30rem;">
             <div class="card-header">Write your comment</div>
             <div class="card-body">
@@ -138,6 +142,7 @@
                 </p>
             </div>
         </div>
+        {%endif%}
     </div>
 </div>
 

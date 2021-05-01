@@ -1,20 +1,25 @@
 # StoreAdora
-## Project Proposal
 
-### Overview
+## Overview
 
-A visual platform for users where they can post creative makeup looks and also check various makeup looks posted by other influencers.
+StoreAdora, a visual platform,  enables users to learn and share different makeup looks. Users can browse through many looks created by the influencers. Along with that, they can see what products were used in those looks and where to buy them.
 
-### Technologies required (besides typical Hackbright tech stack)
+This web application is a fully functional web application which allows user to register, login/logout, create new posts, add new products, manage favorites, edit profile, search and much more.
+
+When you open the web application you are presented with top looks created by the influencers. You can then continue browsing through the website as an anonymous user, or you can sign-up/login to get an enhanced experience. When you are logged in you get much more options such as the ability to create a new look, add looks to your favorites, add new products, and comment on posts.
+
+
+
+## Technologies required (besides typical Hackbright tech stack)
 - Python
 - Jinga
 - PostgresSQL
 - HTML
 - Javascript
-- Ajax
+- AJAX
 - Bootstrap
 
-### Data
+## Data
 - User email, password, name
 - User's insta_handle & bio
 - Product tile, description and website link
