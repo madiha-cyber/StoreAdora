@@ -126,9 +126,10 @@ class Favorite(db.Model):
         return f"<Favorite favorites_id={self.favorites_id} user_id={self.user_id}  post_id={self.post_id} date_favorites={self.date_favorites}>"
 
 
-#
+# Add dataclass so that we can use jsonify on it.
 @dataclass
 class Product(db.Model):
+    # Defines the fields so that jsonify can convert this object to dictionary
     product_id: int
     title: str
     details: str

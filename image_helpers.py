@@ -56,6 +56,7 @@ def resize_image(src_img_stream):
     if original_size[1] > 5000 or original_size[1] < 5:
         return (False, "Image size too big or small", None)
 
+    # If image is bigger than 1000 pixels then make it smaller
     if original_size[0] > 1000:
 
         if original_size[0] > original_size[1]:
@@ -63,7 +64,7 @@ def resize_image(src_img_stream):
             required_size = (1000, (int) (1000 / ratio))
         else:
             ratio = original_size[0] / original_size[1]
-            required_size = (1000, (int) (1000 * ratio))
+            required_size = (1000, (int) (1000 / ratio))
         resize_image = img.resize(required_size)
     else:
         resize_image = img

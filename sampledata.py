@@ -202,7 +202,7 @@ def add_sample_data():
                 "title": "HOUSE",
                 "description": faker.paragraph(),
                 "makeup_type": choice(looks_list),
-                "images": ["9_0.jpg", "9_1.jpg"],
+                "images": ["9_0.jpg"],
                 "products": sample(products_list, 5),
             },
             {
