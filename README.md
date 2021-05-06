@@ -9,6 +9,10 @@ This web application is a fully functional web application which allows user to 
 When you open the web application you are presented with top looks created by the influencers. You can then continue browsing through the website as an anonymous user, or you can sign-up/login to get an enhanced experience. When you are logged in you get much more options such as the ability to create a new look, add looks to your favorites, add new products, and comment on posts.
 
 
+## Demo
+
+[![Final Project](https://img.youtube.com/vi/WZE2Jo0jE3c/0.jpg)](https://www.youtube.com/watch?v=WZE2Jo0jE3c "Final Project")
+
 
 ## Technologies required (besides typical Hackbright tech stack)
 - Python
