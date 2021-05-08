@@ -1,12 +1,8 @@
 import os
-import json
 from random import choice, randint, sample
-from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-from data.model import UserProfile
+from data.model import UserProfile, Post, MakeupImage
 from app import db
-from crud import *
-from datetime import datetime
+import crud
 from faker import Faker
 
 
@@ -20,7 +16,7 @@ def create(
     posts,
     profile_picture,
 ):
-    u = create_user(email=email, password=password)
+    u = crud.create_user(email=email, password=password)
     u.userprofiles.append(
         UserProfile(
             user_id=u.user_id,
@@ -53,67 +49,67 @@ def add_sample_data():
     looks_list = ["Dramatic", "Wedding", "Classic", "Runway", "Special Effects"]
 
     products_list = [
-        create_product(
+        crud.create_product(
             "Face Brushes",
             "PRO Concealer Brush #57",
             "https://www.sephora.com/product/pro-airbrush-concealer-brush-57-P313020",
             "1.webp",
         ),
-        create_product(
+        crud.create_product(
             "Face Brushes",
             "FENTY BEAUTY by Rihanna : Portable Contour & Concealer Brush 150",
             "https://www.sephora.com/product/portable-contour-concealer-brush-150-P34587546",
             "2.webp",
         ),
-        create_product(
+        crud.create_product(
             "Concealer",
             "Huda Beauty Nude Obsessions Eyeshadow Palette",
             "https://www.sephora.com/product/nude-obsessions-eyeshadow-palette-P450887",
             "3.webp",
         ),
-        create_product(
+        crud.create_product(
             "Tinted Moisturizer Oil",
             "Laura Mercier: Tinted Moisturizer Oil Free Natural Skin Perfector Broad Spectrum SPF 20",
             "https://www.sephora.com/product/tinted-moisturizer-broad-spectrum-oil-free-P140906?icid2=new%20arrivals:p140906:product",
             "4.webp",
         ),
-        create_product(
+        crud.create_product(
             "Tinted Moisturizer",
             "NARS: Pure Radiant Tinted Moisturizer Broad Spectrum SPF 30",
             "https://www.sephora.com/product/pure-radiant-tinted-moisturizer-spf-30-pa-P302923",
             "5.webp",
         ),
-        create_product(
+        crud.create_product(
             "Eye Pallettes",
             "HUDA BEAUTY : The New Nude Eyeshadow Palette",
             "https://www.sephora.com/product/the-new-nude-eyeshadow-palette-P43818047?skuId=2137289&icid2=products%20grid:p43818047:product",
             "6.webp",
         ),
-        create_product(
+        crud.create_product(
             "Foundation",
             "NARS: Sheer Glow Foundation",
             "https://www.sephora.com/product/sheer-glow-foundation-P247355",
             "7.webp",
         ),
-        create_product(
+        crud.create_product(
             "Concealer",
             "NARS: Radiant Creamy Concealer",
             "https://www.sephora.com/product/radiant-creamy-concealer-P377873",
             "8.webp",
         ),
-        create_product(
+        crud.create_product(
             "Concealer",
             "Kosas: Revealer Super Creamy + Brightening Concealer and Daytime Eye Cream",
             "https://www.sephora.com/product/kosas-revealer-concealer-P456151",
             "9.webp",
         ),
-        create_product(
+        crud.create_product(
             "Concealer",
             "Yves Saint Laurent: Touche Eclat High Cover Radiant Under-Eye Concealer",
             "https://www.sephora.com/product/touche-eclat-high-cover-radiant-concealer-P440971",
             "10.webp",
         ),
-        create_product(
+        crud.create_product(
             "Eye Pallets",
             "HUDA BEAUTY : Pastel Obsessions Eyeshadow Palette",
             "https://www.sephora.com/product/huda-beauty-pastel-obsessions-eyeshadow-palette-P489310288",
@@ -185,8 +181,8 @@ def add_sample_data():
     )
 
     u = create(
-        email="huda@outlook.com",
-        password="123456",
+        email="email1@outlook.com",
+        password="password",
         first_name="madiha",
         last_name="Latif",
         insta_handle="@madihagoheerofficial",
@@ -246,8 +242,8 @@ def add_sample_data():
     )
 
     u = create(
-        email="madihagoheer@outlook.com",
-        password="123456",
+        email="email2@outlook.com",
+        password="password",
         first_name="Madiha",
         last_name="Goheer",
         insta_handle="@madihagoheerofficial",
@@ -278,9 +274,9 @@ def add_sample_data():
         profile_picture="3.jpg",
     )
 
-    u = create(
-        email="myreengoheer@outlook.com",
-        password="123456",
+    create(
+        email="email3@outlook.com",
+        password="password",
         first_name="Myreen",
         last_name="Goheer",
         insta_handle="@madihagoheerofficial",
@@ -307,12 +303,12 @@ def add_sample_data():
     # Create random comments
     for post_id in range(1, 19):
         for comment_count in range(randint(1, 10)):
-            create_comment(randint(1, 4), post_id, faker.paragraph())
+            crud.create_comment(randint(1, 4), post_id, faker.paragraph())
 
     # Create Favorites
     for user_id in range(1, 4):
         for _ in range(1, randint(5, 10)):
-            create_favorites(user_id, randint(1, 19))
+            crud.create_favorites(user_id, randint(1, 19))
 
     db.session.commit()
 
@@ -324,8 +320,6 @@ def add_sample_images():
 
 
 if __name__ == "__main__":
-    from app import db
-
     os.system("rm -r static/images/profile/*.jpg")
     os.system("rm -r static/images/products/*")
     os.system("rm -r static/images/posts/*.jpg")

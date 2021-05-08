@@ -1,6 +1,5 @@
 """Models for StoreAdora"""
 
-from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from app import db
 

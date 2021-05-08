@@ -70,16 +70,53 @@ When you open the web application you are presented with top looks created by th
 - User can have favorite posts.
 - Users can Edit their profile, add profile picture edit their personal information.
 
-# How to Run
-## Setup
+# How to
+
+## Setup & Run
+
+IMPORTANT!! This requires that you already have PostgreSQL installed. If you have not done that already please do that by following this link: https://wiki.postgresql.org/wiki/PostgreSQL_For_Development_With_Vagrant
+
+Here are step by step instructions:
+
+* In your terminal type: `git clone https://github.com/madihagoheer/StoreAdora.git`
+* Go to the folder: `cd StoreAdora`
+* Setup virtualenv via:
+  * On mac/linux run: `virtualenv env`
+  * On windows run: `virtualenv env --always-copy`
+* Enter virtualenv via: `source env/bin/activate`
+* Install required python libraries via: `pip3 install -r requirements.txt`
+* Setup the data and seed with sample data with: `python3 seed_data.py`
+* Launch the web app using: `python3 server.py`
+* To view this web app in browser simply follow this link: **http://localhost:5000**
+
+
+Once the website is up and running you can either create new account, or use these accounts that were added as part of seed_data.
+|email|password|
+|--|--|
+|email1@outlook.com|password|
+|email2@outlook.com|password|
+|email3@outlook.com|password|
+
+
+## Running tests
+
+CAUTION!!! This section assumes that you have already completed the "Setup & Run" section above.
+### Run Tests Only
+You can run tests with
 ```
-pip3 install -r requirements.txt
+python3 tests.py
 ```
-## Initialize Sample Data
+### Run Tests and Detailed Code Coverage Report
+Run these
 ```
-python3 seed_data.py
+coverage run --source=. tests.py
+coverage html
 ```
-## Run
+Once you run these commands the report will be stored in a new folder called "htmlcov". You can view that report by opening **[htmlconv/index.html](htmlconv/index.html)** in browser.
+
+### Run Tests and Small Code Coverage Report
+
 ```
-python3 server.py
+coverage run --source=. tests.py
+coverage report -m
 ```

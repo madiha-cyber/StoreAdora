@@ -1,13 +1,13 @@
 """Server for StoreAdora flask_app"""
 
-from flask import Flask, render_template, request, flash, session, redirect, jsonify
+from flask import render_template, request, flash, session, redirect, jsonify
 import os
 import crud
 import image_helpers
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from flask_wtf.file import FileField, FileAllowed, FileRequired
+from flask_wtf.file import FileField, FileRequired
 from wtforms import validators
 from app import flask_app
 
