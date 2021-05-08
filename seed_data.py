@@ -316,7 +316,7 @@ def add_sample_data():
 
     db.session.commit()
 
-    print("Added objects to DB")
+    print("SUCCESS! Seeded the DB")
 
 
 def add_sample_images():

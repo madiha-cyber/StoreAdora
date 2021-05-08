@@ -3,7 +3,7 @@ import flask
 import server
 import os
 import app
-import sampledata
+import seed_data
 import crud
 import re
 import io
@@ -228,7 +228,7 @@ class FlaskTests(TestCase):
         app.db.create_all()
 
         # Add sample data
-        sampledata.create(
+        seed_data.create(
             email="amanda@outlook.com",
             password="123456",
             first_name="Amanda",
@@ -247,7 +247,7 @@ class FlaskTests(TestCase):
             profile_picture="1.jpg",
         )
 
-        sampledata.create_product(
+        seed_data.create_product(
             "Face Brushes",
             "PRO Concealer Brush #57",
             "https://www.sephora.com/product/pro-airbrush-concealer-brush-57-P313020",

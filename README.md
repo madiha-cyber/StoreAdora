@@ -77,7 +77,7 @@ pip3 install -r requirements.txt
 ```
 ## Initialize Sample Data
 ```
-python3 sampledata.py
+python3 seed_data.py
 ```
 ## Run
 ```
