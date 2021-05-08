@@ -14,5 +14,5 @@ flask_wtf
 wtforms[email]
 # Dummy Data
 faker
-pytest
-pytest-flask-sqlalchemy
+# Test related libraries
+coverage

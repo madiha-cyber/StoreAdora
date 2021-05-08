@@ -114,7 +114,7 @@
         <div class="card bg-light mb-3" style="max-width: 30rem;">
             <div class="card-header">{{comment.user.userprofiles[0].first_name}}</div>
             <div class="card-body">
-                <p class="card-text">{{comment.text}}
+                <p class="card-text" comment_id="{{comment.comment_id}}">{{comment.text}}
                     {% if comment.user_id == session.get("user_id") %}
                 <form action="/posts/{{post.post_id}}/comments/{{comment.comment_id}}/delete" method="post">
                     <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined"
