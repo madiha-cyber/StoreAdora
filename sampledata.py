@@ -3,7 +3,8 @@ import json
 from random import choice, randint, sample
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from data.model import UserProfile, db, connect_to_db
+from data.model import UserProfile
+from app import db
 from crud import *
 from datetime import datetime
 from faker import Faker
@@ -323,7 +324,7 @@ def add_sample_images():
 
 
 if __name__ == "__main__":
-    from flask import Flask
+    from app import db
 
     os.system("rm -r static/images/profile/*.jpg")
     os.system("rm -r static/images/products/*")
@@ -331,8 +332,6 @@ if __name__ == "__main__":
     os.system("dropdb finalproject")
     os.system("createdb finalproject")
 
-    app = Flask(__name__)
-    connect_to_db(app)
     db.create_all()
     add_sample_data()
     add_sample_images()

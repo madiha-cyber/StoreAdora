@@ -1,7 +1,6 @@
 from data.model import (
     User,
     UserProfile,
-    db,
     Post,
     Favorite,
     Product,
@@ -9,6 +8,7 @@ from data.model import (
     MakeupImage,
     Comment,
 )
+from app import db
 
 from sqlalchemy import or_
 
@@ -16,8 +16,7 @@ from datetime import datetime
 
 
 def create_user(email, password):
-    """
-    """
+    """ """
     u = User(email=email, password=password)
     db.session.add(u)
     db.session.commit()
@@ -25,8 +24,7 @@ def create_user(email, password):
 
 
 def create_post(user_id, title, post_description, makeup_type, products=[]):
-    """
-    """
+    """ """
     p = Post(
         user_id=user_id,
         title=title,
@@ -43,10 +41,13 @@ def create_post(user_id, title, post_description, makeup_type, products=[]):
 
 
 def create_favorites(user_id, post_id):
-    """
-    """
+    """ """
 
-    f = Favorite.query.filter(Favorite.user_id == user_id).filter(Favorite.post_id==post_id).all()
+    f = (
+        Favorite.query.filter(Favorite.user_id == user_id)
+        .filter(Favorite.post_id == post_id)
+        .all()
+    )
     if f:
         return f[0]
 
@@ -57,8 +58,7 @@ def create_favorites(user_id, post_id):
 
 
 def load_favorites(user_id):
-    """
-    """
+    """ """
     return Favorite.query.filter(Favorite.user_id == user_id).all()
 
 
@@ -75,8 +75,7 @@ def get_is_post_favorite_by_user(user_id, post_id):
 
 
 def remove_post_from_user_favorites(user_id, post_id):
-    """
-    """
+    """ """
 
     result = (
         Favorite.query.filter(Favorite.user_id == user_id)
@@ -88,8 +87,7 @@ def remove_post_from_user_favorites(user_id, post_id):
 
 
 def create_product(title, details, url=None, image=None):
-    """
-    """
+    """ """
     p = Product(
         title=title,
         details=details,
@@ -103,8 +101,7 @@ def create_product(title, details, url=None, image=None):
 
 # Adding image in the product after creating a new product in the databse we got a new product_id
 def set_product_image(product_id, image):
-    """
-    """
+    """ """
 
     p = Product.query.get(product_id)
     p.image = image
@@ -112,8 +109,7 @@ def set_product_image(product_id, image):
 
 
 def create_makeupimage(post_id, image):
-    """
-    """
+    """ """
     m = MakeupImage(post_id=post_id, image=image)
     db.session.add(m)
     db.session.commit()
@@ -121,8 +117,7 @@ def create_makeupimage(post_id, image):
 
 
 def create_postproducts(product_id, post_id):
-    """
-    """
+    """ """
     p = PostProducts(product_id=product_id, post_id=post_id)
     db.session.add(p)
     db.session.commit()
@@ -182,8 +177,7 @@ def get_products_for_post(post_id):
 
 
 def get_post(post_id):
-    """
-    """
+    """ """
     return Post.query.filter(Post.post_id == post_id).first()
 
 
@@ -215,8 +209,7 @@ def get_user_profile(user_id):
 
 
 def get_user_favorites(user_id):
-    """
-    """
+    """ """
     return User.query.get(user_id).favorites
 
 
@@ -231,8 +224,7 @@ def get_user_favorites(user_id):
 
 
 def get_user_by_id(user_id):
-    """
-    """
+    """ """
     return User.query.filter(User.user_id == user_id).first()
 
 
@@ -250,14 +242,12 @@ def set_user_profile_picture(user_id, file_name):
 
 
 def get_post_images(post_id):
-    """
-    """
+    """ """
     return MakeupImage.query.filter(MakeupImage.post_id == post_id).all()
 
 
 def get_posts_for_user(user_id):
-    """
-    """
+    """ """
     return Post.query.filter(Post.user_id == user_id).all()
 
 
@@ -319,10 +309,7 @@ def get_products_by_name(name):
     return products by their name
     """
     return Product.query.filter(
-        or_(
-            Product.title.ilike(f"%{name}%"),
-            Product.details.ilike(f"%{name}%")
-        )
+        or_(Product.title.ilike(f"%{name}%"), Product.details.ilike(f"%{name}%"))
     ).all()
 
 

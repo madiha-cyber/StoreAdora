@@ -2,8 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
+from app import db
 
-db = SQLAlchemy()
 
 #
 # Data Model for this file: https://dbdiagram.io/d/605d6433ecb54e10c33d565e
@@ -176,14 +176,3 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"<Comments comment_id={self.comment_id} user_id={self.user_id} post_id={self.post_id}>"
-
-
-def connect_to_db(flask_app, db_uri="postgresql:///finalproject", echo=True):
-    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-    flask_app.config["SQLALCHEMY_ECHO"] = echo
-    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-    db.app = flask_app
-    db.init_app(flask_app)
-
-    print("Connected to the db!")

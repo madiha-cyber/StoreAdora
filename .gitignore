@@ -3,3 +3,4 @@ env/
 __pycache__
 static/images/*
 .vscode
+.pytest_cache

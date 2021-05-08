@@ -1,7 +1,6 @@
-"""Server for StoreAdora app"""
+"""Server for StoreAdora flask_app"""
 
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
-from data.model import connect_to_db
 import os
 import crud
 import image_helpers
@@ -10,11 +9,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import validators
-
-app = Flask(__name__, static_url_path="/static")
-app.secret_key = "dev"
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-# app.jinja_env.undefined = StrictUndefined
+from app import flask_app
 
 UPLOAD_FOLDER_PROFILE_PICTURE = "./static/images/profile/"
 UPLOAD_FOLDER_POST_PICTURES = "./static/images/posts/"
@@ -57,7 +52,7 @@ class LoginForm(FlaskForm):
     )
 
 
-@app.route("/login", methods=["GET"])
+@flask_app.route("/login", methods=["GET"])
 def show_login_page():
     """
     Show Login page
@@ -73,7 +68,7 @@ def show_login_page():
     return render_template("login.html", form=form)
 
 
-@app.route("/login", methods=["POST"])
+@flask_app.route("/login", methods=["POST"])
 def login_user():
     """
     Login the user and redirect to /profile page
@@ -97,7 +92,7 @@ def login_user():
         return redirect("/profile")
 
 
-@app.route("/logout", methods=["GET"])
+@flask_app.route("/logout", methods=["GET"])
 def logout_user():
     """
     logout the user
@@ -130,7 +125,7 @@ class SignupForm(FlaskForm):
     )
 
 
-@app.route("/signup", methods=["GET"])
+@flask_app.route("/signup", methods=["GET"])
 def show_signup_page():
     """
     Show Signup page
@@ -143,7 +138,7 @@ def show_signup_page():
     return render_template("signup.html", form=form)
 
 
-@app.route("/signup", methods=["POST"])
+@flask_app.route("/signup", methods=["POST"])
 def signup_user():
     """
     Create new Account then redirect to /profile page
@@ -178,7 +173,7 @@ def signup_user():
 ###############################################################################
 # Home Page Functions
 ###############################################################################
-@app.route("/")
+@flask_app.route("/")
 def homepage():
     """
     View homepage
@@ -204,7 +199,7 @@ class NewLookForm(FlaskForm):
     products = StringField("Products")
 
 
-@app.route("/newlook", methods=["GET"])
+@flask_app.route("/newlook", methods=["GET"])
 def show_newlook_page():
     """
     Show newlook page
@@ -213,7 +208,7 @@ def show_newlook_page():
     return render_template("newlook.html", form=form)
 
 
-@app.route("/newlook", methods=["POST"])
+@flask_app.route("/newlook", methods=["POST"])
 def save_newlook_page():
     """
     Create new look
@@ -296,7 +291,7 @@ def save_newlook_page():
 ###############################################################################
 # Posts related Functions
 ###############################################################################
-@app.route("/posts")
+@flask_app.route("/posts")
 def get_all_posts():
     """
     View all posts
@@ -306,7 +301,7 @@ def get_all_posts():
     return render_template("all_posts.html", posts=posts)
 
 
-@app.route("/posts/<post_id>")
+@flask_app.route("/posts/<post_id>")
 def get_post(post_id):
     """
     View each post
@@ -329,7 +324,7 @@ def get_post(post_id):
 ###############################################################################
 # User related Functions
 ###############################################################################
-@app.route("/user/<user_id>")
+@flask_app.route("/user/<user_id>")
 def show_user(user_id):
     """
     Show details on a particular user.
@@ -340,10 +335,12 @@ def show_user(user_id):
 
     userprofile = crud.get_user_profile(user_id)
     posts = crud.get_posts_for_user(user_id=user_id)
-    return render_template("user_profile.html", user=user, userprofile=userprofile, posts=posts)
+    return render_template(
+        "user_profile.html", user=user, userprofile=userprofile, posts=posts
+    )
 
 
-@app.route("/user/<user_id>/favorites")
+@flask_app.route("/user/<user_id>/favorites")
 def show_user_favorites(user_id):
     """
     Show Favorites of a particular user.
@@ -358,7 +355,7 @@ def show_user_favorites(user_id):
 ###############################################################################
 # Profile related Functions
 ###############################################################################
-@app.route("/profile", methods=["GET"])
+@flask_app.route("/profile", methods=["GET"])
 def show_userprofile():
     """
     Home page for logged in user.
@@ -378,7 +375,7 @@ def show_userprofile():
     )
 
 
-@app.route("/profile/edit", methods=["GET"])
+@flask_app.route("/profile/edit", methods=["GET"])
 def show_edit_profile_page():
     """
     Show edit profile page.
@@ -393,7 +390,7 @@ def show_edit_profile_page():
     return render_template("edit_profile.html", user=user, userprofile=userprofile)
 
 
-@app.route("/profile/edit", methods=["POST"])
+@flask_app.route("/profile/edit", methods=["POST"])
 def save_edit_profile():
     """
     Save edit profile changes
@@ -462,7 +459,7 @@ def save_edit_profile():
 ###############################################################################
 # Post related Functions
 ###############################################################################
-@app.route("/posts/<post_id>/delete", methods=["POST"])
+@flask_app.route("/posts/<post_id>/delete", methods=["POST"])
 def delete_post_by_user(post_id):
     if not is_user_signed_in():
         return redirect("/")
@@ -478,7 +475,7 @@ def delete_post_by_user(post_id):
     return redirect("/profile")
 
 
-@app.route("/posts/<post_id>/edit", methods=["GET"])
+@flask_app.route("/posts/<post_id>/edit", methods=["GET"])
 def show_edit_post_page(post_id):
     """
     Edit Post Page
@@ -502,7 +499,7 @@ def show_edit_post_page(post_id):
     )
 
 
-@app.route("/posts/<post_id>/edit", methods=["POST"])
+@flask_app.route("/posts/<post_id>/edit", methods=["POST"])
 def save_edit_post_page(post_id):
     """
     Edit Post Page
@@ -595,7 +592,7 @@ class NewProductForm(FlaskForm):
     picture = FileField("Picture", validators=[FileRequired()])
 
 
-@app.route("/newproduct", methods=["GET"])
+@flask_app.route("/newproduct", methods=["GET"])
 def display_product_page():
     """
     Display a new product
@@ -603,7 +600,7 @@ def display_product_page():
     return render_template("newproduct.html", form=NewProductForm())
 
 
-@app.route("/newproduct", methods=["POST"])
+@flask_app.route("/newproduct", methods=["POST"])
 def add_a_new_product():
     """
     Adds a new product
@@ -636,7 +633,7 @@ def add_a_new_product():
         return redirect("/profile")
 
 
-@app.route("/products/add", methods=["POST"])
+@flask_app.route("/products/add", methods=["POST"])
 def add_product():
     """
     Add new Product to DB
@@ -654,7 +651,7 @@ def add_product():
 ###############################################################################
 # Search related Functions
 ###############################################################################
-@app.route("/products/search.json", methods=["GET"])
+@flask_app.route("/products/search.json", methods=["GET"])
 def search_product_by_name():
     """
     Search Product that match the name in DB
@@ -671,7 +668,7 @@ def search_product_by_name():
 ###############################################################################
 # Favorites related Functions
 ###############################################################################
-@app.route("/favorites/user/<post_id>", methods=["GET"])
+@flask_app.route("/favorites/user/<post_id>", methods=["GET"])
 def get_is_post_favorite_by_user(post_id):
     """
     Is this post in user's favorite?
@@ -687,7 +684,7 @@ def get_is_post_favorite_by_user(post_id):
         return jsonify({})
 
 
-@app.route("/favorites/user/add/<post_id>", methods=["GET"])
+@flask_app.route("/favorites/user/add/<post_id>", methods=["GET"])
 def add_post_to_user_favorites(post_id):
     """
     Add a post to user's favorites
@@ -709,7 +706,7 @@ def add_post_to_user_favorites(post_id):
     return jsonify({"id": f.favorites_id})
 
 
-@app.route("/favorites/user/remove/<post_id>", methods=["GET"])
+@flask_app.route("/favorites/user/remove/<post_id>", methods=["GET"])
 def remove_post_from_user_favorites(post_id):
     """
     Remove a post from user's favorites
@@ -737,7 +734,7 @@ def remove_post_from_user_favorites(post_id):
 ###############################################################################
 # Comment related Functions
 ###############################################################################
-@app.route("/posts/<post_id>/comment", methods=["POST"])
+@flask_app.route("/posts/<post_id>/comment", methods=["POST"])
 def add_comment_from_post_page(post_id):
 
     if not is_user_signed_in():
@@ -754,7 +751,7 @@ def add_comment_from_post_page(post_id):
     return redirect(f"/posts/{post_id}")
 
 
-@app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
+@flask_app.route("/posts/<post_id>/comments/<comment_id>/delete", methods=["POST"])
 def delete_comment_from_post(post_id, comment_id):
 
     if not is_user_signed_in():
@@ -770,7 +767,7 @@ def delete_comment_from_post(post_id, comment_id):
 ###############################################################################
 # Search Functions
 ###############################################################################
-@app.route("/search", methods=["GET"])
+@flask_app.route("/search", methods=["GET"])
 def search():
     search_text = request.args.get("search_text")
 
@@ -779,5 +776,4 @@ def search():
 
 
 if __name__ == "__main__":
-    connect_to_db(app)
-    app.run(host="0.0.0.0", debug=True)
+    flask_app.run(host="0.0.0.0", debug=True)
