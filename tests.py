@@ -96,109 +96,103 @@ class FlaskTests(TestCase):
         self.assertNotIn("1_p.jpg", content)
 
     def test_user_personal_profile_page(self):
-        with server.flask_app.test_client() as c:
-            with c.session_transaction() as session:
-                session["user_id"] = "1"
+        with self.client.session_transaction() as session:
+            session["user_id"] = "1"
 
-            response = c.get("/profile")
-            content = response.get_data(as_text=True)
+        response = self.client.get("/profile")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("Your Profile", content)
-            self.assertIn("Amanda Cerney", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your Profile", content)
+        self.assertIn("Amanda Cerney", content)
 
     def test_user_personal_edit_page(self):
-        with server.flask_app.test_client() as c:
-            with c.session_transaction() as session:
-                session["user_id"] = "1"
+        with self.client.session_transaction() as session:
+            session["user_id"] = "1"
 
-            response = c.get("/profile/edit")
-            content = response.get_data(as_text=True)
+        response = self.client.get("/profile/edit")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("First name:", content)
-            self.assertIn("Last name:", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("First name:", content)
+        self.assertIn("Last name:", content)
 
     def test_favorites_with_images_page(self):
-        with server.flask_app.test_client() as c:
-            with c.session_transaction() as session:
-                session["user_id"] = "1"
+        with self.client.session_transaction() as session:
+            session["user_id"] = "1"
 
-            # Add to favorites
-            response = c.get("/favorites/user/add/1")
+        # Add to favorites
+        response = self.client.get("/favorites/user/add/1")
 
-            # Check image is in favorites
-            response = c.get("/user/1/favorites")
-            content = response.get_data(as_text=True)
+        # Check image is in favorites
+        response = self.client.get("/user/1/favorites")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("Favorites", content)
-            self.assertIn("1_p.jpg", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Favorites", content)
+        self.assertIn("1_p.jpg", content)
 
-            # Remove from favorites
-            response = c.get("/favorites/user/remove/1")
+        # Remove from favorites
+        response = self.client.get("/favorites/user/remove/1")
 
-            # Check image is not in favorites
-            response = c.get("/user/1/favorites")
-            content = response.get_data(as_text=True)
+        # Check image is not in favorites
+        response = self.client.get("/user/1/favorites")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("Favorites", content)
-            self.assertNotIn("1_p.jpg", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Favorites", content)
+        self.assertNotIn("1_p.jpg", content)
 
     def test_comment(self):
-        with server.flask_app.test_client() as c:
-            with c.session_transaction() as session:
-                session["user_id"] = "1"
+        with self.client.session_transaction() as session:
+            session["user_id"] = "1"
 
-            # Write a comment
-            response = c.post("/posts/1/comment", data={"comment": "test comment"})
-            self.assertEqual(response.status_code, 302)
+        # Write a comment
+        response = self.client.post("/posts/1/comment", data={"comment": "test comment"})
+        self.assertEqual(response.status_code, 302)
 
-            # Load page to see comment added
-            response = c.get("/posts/1")
-            content = response.get_data(as_text=True)
+        # Load page to see comment added
+        response = self.client.get("/posts/1")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("test comment", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("test comment", content)
 
-            m = re.search('comment_id="([0-9]+)', content)
-            comment_id = m.group(1)
+        m = re.search('comment_id="([0-9]+)', content)
+        comment_id = m.group(1)
 
-            # Delete a comment
-            response = c.post(f"/posts/1/comments/{comment_id}/delete")
-            self.assertEqual(response.status_code, 302)
+        # Delete a comment
+        response = self.client.post(f"/posts/1/comments/{comment_id}/delete")
+        self.assertEqual(response.status_code, 302)
 
-            # Load page to see comment removed
-            response = c.get("/posts/1")
-            content = response.get_data(as_text=True)
+        # Load page to see comment removed
+        response = self.client.get("/posts/1")
+        content = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertNotIn("test comment", content)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("test comment", content)
 
     def test_create_post(self):
-        with server.flask_app.test_client() as c:
-            with c.session_transaction() as session:
-                session["user_id"] = "1"
+        with self.client.session_transaction() as session:
+            session["user_id"] = "1"
 
-            img = None
-            with open("data/sampledata/posts/1_0.jpg", "rb") as f:
-                img = io.BytesIO(f.read())
+        with open("data/sampledata/posts/1_0.jpg", "rb") as sample_image_file:
+            img = io.BytesIO(sample_image_file.read())
 
-            # Create a new post
-            response = c.post(
-                "/newlook",
-                data={
-                    "description": "test description",
-                    "title": "test_title",
-                    "makeup_type": "runway",
-                    "images": (img, "test.jpg"),
-                },
-                content_type="multipart/form-data",
-            )
-            self.assertEqual(response.status_code, 302)
+        # Create a new post
+        response = self.client.post(
+            "/newlook",
+            data={
+                "description": "test description",
+                "title": "test_title",
+                "makeup_type": "runway",
+                "images": (img, "test.jpg"),
+            },
+            content_type="multipart/form-data",
+        )
+        self.assertEqual(response.status_code, 302)
 
-    # Test Setup
+    # setUp is called before calling every test method in this class
     def setUp(self):
 
         # Get test Flask test client
@@ -207,21 +201,18 @@ class FlaskTests(TestCase):
         # Connect to test db
         app.connect_to_db(server.flask_app, "postgresql:///testdb")
 
+    # tearDown is called after calling every test method in this class
     def tearDown(self):
         app.db.session.close()
 
-    @classmethod
-    def tearDownClass(cls):
-        super(FlaskTests, cls).tearDownClass()
-        app.db.drop_all()
-
+    # setUpClass is called once before any tests is run in this class
     @classmethod
     def setUpClass(cls):
         super(FlaskTests, cls).setUpClass()
 
-        app.connect_to_db(server.flask_app, "postgresql:///testdb")
-
         server.flask_app.config["WTF_CSRF_ENABLED"] = False
+
+        app.connect_to_db(server.flask_app, "postgresql:///testdb")
 
         # Create tables
         app.db.create_all()
@@ -253,6 +244,11 @@ class FlaskTests(TestCase):
             "1.webp",
         )
 
+    # tearDownClass is called after all tests have been run in this class.
+    @classmethod
+    def tearDownClass(cls):
+        super(FlaskTests, cls).tearDownClass()
+        app.db.drop_all()
 
 if __name__ == "__main__":
     import unittest
