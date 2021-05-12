@@ -5,6 +5,7 @@ import app
 import seed_data
 import re
 import io
+import crud
 
 
 class FlaskTests(TestCase):
@@ -245,7 +246,7 @@ class FlaskTests(TestCase):
             profile_picture="1.jpg",
         )
 
-        seed_data.create_product(
+        crud.create_product(
             "Face Brushes",
             "PRO Concealer Brush #57",
             "https://www.sephora.com/product/pro-airbrush-concealer-brush-57-P313020",
