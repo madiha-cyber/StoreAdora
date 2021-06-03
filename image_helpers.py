@@ -21,12 +21,12 @@ def resize_image_square_crop(src_img_stream, required_size=(100, 100)):
     # min of (width, height)
     smallest_side = min(original_size[0], original_size[1])
 
-    # if width is greater than height then crop the width
+    # Simple math to crop the sides:
+    # if width is greater than height then crop the width to make it same as the height.
     if original_size[0] > original_size[1]:
         x = (original_size[0] - smallest_side) / 2
-        #
         new_size = (x, 0, x + smallest_side, original_size[1])
-    # if heigth is greater than width then crop the heigth
+    # if heigth is greater than width then crop the heigth to make it same as the width.
     elif original_size[0] < original_size[1]:
         y = (original_size[1] - smallest_side) / 2
         new_size = (0, y, smallest_side, y + smallest_side)
@@ -34,8 +34,9 @@ def resize_image_square_crop(src_img_stream, required_size=(100, 100)):
     else:
         new_size = (0, 0, smallest_side, smallest_side)
 
-    # crop the image based on new size
+    # crop the image based on new size that we just calculated
     cropped_image = img.crop(new_size)
+
     # resize the image based on required size
     resize_image = cropped_image.resize(required_size)
     return (True, "Resized the image", resize_image)
@@ -61,10 +62,10 @@ def resize_image(src_img_stream):
 
         if original_size[0] > original_size[1]:
             ratio = original_size[0] / original_size[1]
-            required_size = (1000, (int) (1000 / ratio))
+            required_size = (1000, (int)(1000 / ratio))
         else:
             ratio = original_size[0] / original_size[1]
-            required_size = (1000, (int) (1000 / ratio))
+            required_size = (1000, (int)(1000 / ratio))
         resize_image = img.resize(required_size)
     else:
         resize_image = img

@@ -27,17 +27,17 @@ def create(
             profile_picture=profile_picture,
         )
     )
-    for post in posts:
+    for y in posts:
         p = Post(
             user_id=u.user_id,
-            title=post["title"],
-            post_description=post["description"],
-            makeup_type=post["makeup_type"],
+            title=y["title"],
+            post_description=y["description"],
+            makeup_type=y["makeup_type"],
         )
-        for post_image in post["images"]:
-            p.makeupimages.append(MakeupImage(image=post_image))
+        for x in y["images"]:
+            p.makeupimages.append(MakeupImage(image=x))
 
-        p.products.extend(post["products"])
+        p.products.extend(y["products"])
         u.posts.append(p)
         db.session.commit()
 

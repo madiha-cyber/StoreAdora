@@ -28,7 +28,8 @@ def is_user_signed_in():
 
 def flash_errors(form):
     """
-    Flashes form errors
+    Get all FlashForm Errors and call Flask flash function to pass them to jinja
+    So that we can display it in HTML.
     """
     for field, errors in form.errors.items():
         for error in errors:
@@ -62,9 +63,10 @@ def show_login_page():
     if is_user_signed_in():
         return redirect("/profile")
 
+    # Create a LoginForm to use in render_template
     form = LoginForm()
 
-    # If session does not exists display login page
+    # Display the login.html page
     return render_template("login.html", form=form)
 
 
@@ -78,11 +80,14 @@ def login_user():
     if is_user_signed_in():
         return redirect("/profile")
 
+    # Load the form sent by user and validate it to make sure the form input is correct.
+    # If the form validates then we will check the username and password in the database to see if they match.
     form = LoginForm()
     if not form.validate_on_submit():
         flash_errors(form)
         return redirect("/login")
 
+    # The crud function will check if there is a user with this user name and password. If there is then it will return that user.
     user = crud.get_user_by_email_and_password(form.email.data, form.password.data)
     if not user:
         flash("Invalid email/password")
@@ -97,9 +102,10 @@ def logout_user():
     """
     logout the user
     """
-    # Check User Logged In Already
+    # Check User Logged In Already. If user is logged in we simply delte that user from session.
     if is_user_signed_in():
         del session["user_id"]
+
     return redirect("/")
 
 
@@ -656,12 +662,16 @@ def search_product_by_name():
     """
     Search Product that match the name in DB
     """
+
+    # Get the search item that user wants to search
     name = request.args.get("q")
     if name is None:
         return jsonify({})
 
+    # Look in the database to get list of all products that match that search text
     results = crud.get_products_by_name(name)
 
+    # Return the results as JSON list back
     return jsonify(results)
 
 

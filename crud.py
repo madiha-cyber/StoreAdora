@@ -185,16 +185,9 @@ def get_user_by_email_and_password(email, password):
     """
     Return a user by email and password
     """
-    # user = User.query.filter(User.email == email).first()
-    # if user.password == password:
-    #   return user
-    # else:
-    #   (something about wrong password)
 
-    # shorter version
-    # return user if user.password == password else 'Wrong password'
-
-    # return User.query.filter(User.email == email).filter(User.password == password).first()
+    # Look in the Users table if a user with this email & password exists. If
+    # it does not then it will return None.
     return (
         User.query.filter(User.email == email).filter(User.password == password).first()
     )
@@ -211,16 +204,6 @@ def get_user_profile(user_id):
 def get_user_favorites(user_id):
     """ """
     return User.query.get(user_id).favorites
-
-
-# >>> madiha = User.query.get(1)
-# <User user_id=1 email='madiha@gmail.com' ... >
-# >>> madiha.user_profile.insta_handle
-# 'madiha_insta_handle'
-# >>> madiha.posts
-# [<Post id=1...>, <Post id=2...>, ...]
-# >>> for post in madiha.posts:
-# ...     <a href=post.id>post.name</a>
 
 
 def get_user_by_id(user_id):

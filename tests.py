@@ -11,32 +11,40 @@ import crud
 class FlaskTests(TestCase):
     # Test Routes
     def test_home_page(self):
+        # Load the page
         response = self.client.get("/")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Learn how to create different makeup looks", content)
         self.assertIn("1_p.jpg", content)
 
     def test_user_profile(self):
+        # Load the page
         response = self.client.get("/user/1")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Amanda Cerney", content)
 
     def test_all_posts_page(self):
+        # Load the page
         response = self.client.get("/posts")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Makeup Looks", content)
         self.assertIn("1_p.jpg", content)
 
     def test_posts_page(self):
+        # Load the page
         response = self.client.get("/posts/1")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("NATIVE", content)
         self.assertIn("1_0.jpg", content)
@@ -44,90 +52,112 @@ class FlaskTests(TestCase):
         self.assertIn("1_2.jpg", content)
 
     def test_login_page(self):
+        # Load the page
         response = self.client.get("/login")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Email address", content)
 
     def test_signup_page(self):
+        # Load the page
         response = self.client.get("/signup")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sign Up", content)
 
     def test_search_notfound_page(self):
+        # Load the page
         response = self.client.get("/search?search_text=wedding")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn('Results for "wedding"', content)
         self.assertNotIn("1_p.jpg", content)
 
     def test_search_found_page(self):
+        # Load the page
         response = self.client.get("/search?search_text=dramatic")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn('Results for "dramatic"', content)
         self.assertIn("1_p.jpg", content)
 
     def test_product_search_notfound(self):
+        # Load the page
         response = self.client.get("/products/search.json?q=abc")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertEqual("[]\n", content)
 
     def test_product_search_found(self):
+        # Load the page
         response = self.client.get("/products/search.json?q=Face")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("1.webp", content)
 
     def test_favorites_page(self):
+        # Load the page
         response = self.client.get("/user/1/favorites")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Favorites", content)
         self.assertNotIn("1_p.jpg", content)
 
     def test_user_personal_profile_page(self):
+        # Store user_id in session for logged in user testing
         with self.client.session_transaction() as session:
             session["user_id"] = "1"
 
+        # Load the page
         response = self.client.get("/profile")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Your Profile", content)
         self.assertIn("Amanda Cerney", content)
 
     def test_user_personal_edit_page(self):
+        # Store user_id in session for logged in user testing
         with self.client.session_transaction() as session:
             session["user_id"] = "1"
 
+        # Load the page
         response = self.client.get("/profile/edit")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("First name:", content)
         self.assertIn("Last name:", content)
 
     def test_favorites_with_images_page(self):
+        # Store user_id in session for logged in user testing
         with self.client.session_transaction() as session:
             session["user_id"] = "1"
 
-        # Add to favorites
+        # Load the page to Add to favorites
         response = self.client.get("/favorites/user/add/1")
 
-        # Check image is in favorites
+        # Load the page. Check image is in favorites
         response = self.client.get("/user/1/favorites")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Favorites", content)
         self.assertIn("1_p.jpg", content)
@@ -139,15 +169,17 @@ class FlaskTests(TestCase):
         response = self.client.get("/user/1/favorites")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("Favorites", content)
         self.assertNotIn("1_p.jpg", content)
 
     def test_comment(self):
+        # Store user_id in session for logged in user testing
         with self.client.session_transaction() as session:
             session["user_id"] = "1"
 
-        # Write a comment
+        # Post to a page to Write a comment
         response = self.client.post("/posts/1/comment", data={"comment": "test comment"})
         self.assertEqual(response.status_code, 302)
 
@@ -155,13 +187,14 @@ class FlaskTests(TestCase):
         response = self.client.get("/posts/1")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertIn("test comment", content)
 
         m = re.search('comment_id="([0-9]+)', content)
         comment_id = m.group(1)
 
-        # Delete a comment
+        # Post to a page to Delete a comment
         response = self.client.post(f"/posts/1/comments/{comment_id}/delete")
         self.assertEqual(response.status_code, 302)
 
@@ -169,17 +202,19 @@ class FlaskTests(TestCase):
         response = self.client.get("/posts/1")
         content = response.get_data(as_text=True)
 
+        # Validate result
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("test comment", content)
 
     def test_create_post(self):
+        # Store user_id in session for logged in user testing
         with self.client.session_transaction() as session:
             session["user_id"] = "1"
 
         with open("data/sampledata/posts/1_0.jpg", "rb") as sample_image_file:
             img = io.BytesIO(sample_image_file.read())
 
-        # Create a new post
+        # Post to a page to Create a new post
         response = self.client.post(
             "/newlook",
             data={
@@ -191,6 +226,19 @@ class FlaskTests(TestCase):
             content_type="multipart/form-data",
         )
         self.assertEqual(response.status_code, 302)
+        # Get the new post URL from the response
+        m = re.search("(/posts/[0-9]+)", response.get_data(as_text=True))
+        new_post_url = m.group(1)
+
+        # Load page to see new post created
+        response = self.client.get(new_post_url)
+        content = response.get_data(as_text=True)
+
+        # Validate result
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("2_0.jpg", content)
+        self.assertIn("test_title", content)
+
 
     # setUp is called before calling every test method in this class
     def setUp(self):
